@@ -51,6 +51,7 @@ func New() *Client {
 }
 
 func (c *Client) Do(ctx context.Context, req *http.Request, f func(*http.Response) error) error {
+	// checks
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -86,6 +87,5 @@ func (c *Client) Do(ctx context.Context, req *http.Request, f func(*http.Respons
 	}
 
 	defer res.Body.Close()
-
 	return f(res)
 }
