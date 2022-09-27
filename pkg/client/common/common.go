@@ -20,4 +20,7 @@ var (
 
 	// ErrReauthFailure failed to re-authenticate to the symbl platform
 	ErrReauthFailure = errors.New("failed to re-authenticate to the symbl platform")
+
+	// ErrInvalidWaitTime the time to wait agurment is invalid
+	ErrInvalidWaitTime = errors.New("the time to wait agurment is invalid")
 )
