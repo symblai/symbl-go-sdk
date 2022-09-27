@@ -10,6 +10,7 @@ API reference: https://docs.symbl.ai/reference
 package sdk
 
 import (
+	_ "github.com/dvonthenen/symbl-go-sdk/cmd/cli"
 	_ "github.com/dvonthenen/symbl-go-sdk/pkg/client"
 )
 
