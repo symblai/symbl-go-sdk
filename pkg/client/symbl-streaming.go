@@ -37,6 +37,7 @@ func getDefaultConfig() *StreamingConfig {
 	config.Speaker.Name = defaultUserName
 	config.Speaker.UserID = defaultUserID
 
+	// TODO remove... the above seems to work
 	// config.Type = requestStart
 	// config.InsightTypes = []string{"topic", "question", "action_item"}
 	// config.Config.ConfidenceThreshold = defaultConfidenceThreshold
@@ -63,6 +64,7 @@ type StreamingConfig struct {
 	} `json:"speaker"`
 }
 
+// TODO remove... the above seems to work
 // type StreamingConfig struct {
 // 	Type         string   `json:"type"`
 // 	InsightTypes []string `json:"insightTypes"`
@@ -80,13 +82,14 @@ type StreamingConfig struct {
 // }
 
 type StreamClient struct {
+	*streaming.WebSocketClient
+
 	restClient *RestClient
-	WsClient   *streaming.WebSocketClient
 }
 
 // NewClient creates a new client on the Symbl.ai platform. The client authenticates with the
 // server with APP_ID/APP_SECRET.
-func NewStreamClient(ctx context.Context) (*StreamClient, error) {
+func NewStreamClient(ctx context.Context, callback streaming.WebSocketMessageCallback) (*StreamClient, error) {
 	klog.V(6).Infof("NewStreamClient ENTER\n")
 
 	config := getDefaultConfig()
@@ -102,7 +105,7 @@ func NewStreamClient(ctx context.Context) (*StreamClient, error) {
 	klog.V(6).Infof("AppId: %s\n", restClient.creds.AppId)
 	klog.V(6).Infof("AppSecret: %s\n", restClient.creds.AppSecret)
 
-	// TODO: conversationID???
+	// generate unique id... not even sure why this is needed, but hey
 	id := uuid.New()
 	klog.V(2).Infof("UUID: %s\n", id.String())
 
@@ -110,13 +113,20 @@ func NewStreamClient(ctx context.Context) (*StreamClient, error) {
 	klog.V(6).Infof("IMPORTANT: Never print in production\n")
 	klog.V(6).Infof("streamPath: %s\n", streamPath)
 
-	wsClient, err := streaming.NewWebSocketClient(symblPlatformHost, streamPath, restClient.accessToken)
+	// create client
+	creds := streaming.Credentials{
+		Host:      symblPlatformHost,
+		Channel:   streamPath,
+		AccessKey: restClient.auth.AccessToken,
+	}
+	wsClient, err := streaming.NewWebSocketClient(creds, callback)
 	if err != nil {
 		klog.V(2).Infof("streaming.NewWebSocketClient failed. Err: %v\n", err)
 		klog.V(6).Infof("NewStreamClient LEAVE\n")
 		return nil, err
 	}
 
+	// establish connection
 	wsConnection := wsClient.Connect()
 	if wsConnection == nil {
 		klog.V(2).Infof("streaming.NewWebSocketClient failed. Err: %v\n", err)
@@ -124,6 +134,7 @@ func NewStreamClient(ctx context.Context) (*StreamClient, error) {
 		return nil, common.ErrWebSocketInitializationFailed
 	}
 
+	// write Symbl config to Platform
 	err = wsClient.Write(config)
 	if err != nil {
 		klog.V(2).Infof("wsClient.Write failed. Err: %v\n", err)
@@ -131,9 +142,10 @@ func NewStreamClient(ctx context.Context) (*StreamClient, error) {
 		return nil, err
 	}
 
+	// save client for return
 	streamClient := &StreamClient{
-		restClient: restClient,
-		WsClient:   wsClient,
+		wsClient,
+		restClient,
 	}
 
 	klog.V(2).Infof("NewStreamClientWithCreds Succeeded\n")
@@ -141,59 +153,60 @@ func NewStreamClient(ctx context.Context) (*StreamClient, error) {
 	return streamClient, nil
 }
 
-// NewStreamClientWithCreds creates a new client on the Symbl.ai platform. The client authenticates with the
-// server with APP_ID/APP_SECRET.
-func NewStreamClientWithCreds(ctx context.Context, creds Credentials) (*StreamClient, error) {
-	klog.V(6).Infof("NewStreamClientWithCreds ENTER\n")
+// TODO: Delete this... redundant
+// // NewStreamClientWithCreds creates a new client on the Symbl.ai platform. The client authenticates with the
+// // server with APP_ID/APP_SECRET.
+// func NewStreamClientWithCreds(ctx context.Context, creds Credentials) (*StreamClient, error) {
+// 	klog.V(6).Infof("NewStreamClientWithCreds ENTER\n")
 
-	config := getDefaultConfig()
+// 	config := getDefaultConfig()
 
-	restClient, err := NewRestClientWithCreds(ctx, creds)
-	if err != nil {
-		klog.V(2).Infof("NewRestClientWithCreds failed. Err: %v\n", err)
-		klog.V(6).Infof("NewStreamClientWithCreds LEAVE\n")
-		return nil, err
-	}
+// 	restClient, err := NewRestClientWithCreds(ctx, creds)
+// 	if err != nil {
+// 		klog.V(2).Infof("NewRestClientWithCreds failed. Err: %v\n", err)
+// 		klog.V(6).Infof("NewStreamClientWithCreds LEAVE\n")
+// 		return nil, err
+// 	}
 
-	klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	klog.V(6).Infof("AppId: %s\n", restClient.creds.AppId)
-	klog.V(6).Infof("AppSecret: %s\n", restClient.creds.AppSecret)
+// 	klog.V(6).Infof("IMPORTANT: Never print in production\n")
+// 	klog.V(6).Infof("AppId: %s\n", restClient.creds.AppId)
+// 	klog.V(6).Infof("AppSecret: %s\n", restClient.creds.AppSecret)
 
-	// TODO: conversationID???
-	id := uuid.New()
-	klog.V(2).Infof("UUID: %s\n", id.String())
+// 	// TODO: conversationID???
+// 	id := uuid.New()
+// 	klog.V(2).Infof("UUID: %s\n", id.String())
 
-	streamPath := version.GetStreamingAPI(version.StreamPath, id)
-	klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	klog.V(6).Infof("streamPath: %s\n", streamPath)
+// 	streamPath := version.GetStreamingAPI(version.StreamPath, id)
+// 	klog.V(6).Infof("IMPORTANT: Never print in production\n")
+// 	klog.V(6).Infof("streamPath: %s\n", streamPath)
 
-	wsClient, err := streaming.NewWebSocketClient(symblPlatformHost, streamPath, restClient.accessToken)
-	if err != nil {
-		klog.V(2).Infof("streaming.NewWebSocketClient failed. Err: %v\n", err)
-		klog.V(6).Infof("NewStreamClient LEAVE\n")
-		return nil, err
-	}
+// 	wsClient, err := streaming.NewWebSocketClient(symblPlatformHost, streamPath, restClient.auth.AccessToken)
+// 	if err != nil {
+// 		klog.V(2).Infof("streaming.NewWebSocketClient failed. Err: %v\n", err)
+// 		klog.V(6).Infof("NewStreamClient LEAVE\n")
+// 		return nil, err
+// 	}
 
-	wsConnection := wsClient.Connect()
-	if wsConnection == nil {
-		klog.V(2).Infof("streaming.NewWebSocketClient failed. Err: %v\n", err)
-		klog.V(6).Infof("NewStreamClient LEAVE\n")
-		return nil, common.ErrWebSocketInitializationFailed
-	}
+// 	wsConnection := wsClient.Connect()
+// 	if wsConnection == nil {
+// 		klog.V(2).Infof("streaming.NewWebSocketClient failed. Err: %v\n", err)
+// 		klog.V(6).Infof("NewStreamClient LEAVE\n")
+// 		return nil, common.ErrWebSocketInitializationFailed
+// 	}
 
-	err = wsClient.Write(config)
-	if err != nil {
-		klog.V(2).Infof("wsClient.Write failed. Err: %v\n", err)
-		klog.V(6).Infof("NewStreamClient LEAVE\n")
-		return nil, err
-	}
+// 	err = wsClient.Write(config)
+// 	if err != nil {
+// 		klog.V(2).Infof("wsClient.Write failed. Err: %v\n", err)
+// 		klog.V(6).Infof("NewStreamClient LEAVE\n")
+// 		return nil, err
+// 	}
 
-	streamClient := &StreamClient{
-		restClient: restClient,
-		WsClient:   wsClient,
-	}
+// 	streamClient := &StreamClient{
+// 		wsClient,
+// 		restClient,
+// 	}
 
-	klog.V(2).Infof("NewStreamClientWithCreds Succeeded\n")
-	klog.V(6).Infof("NewStreamClientWithCreds LEAVE\n")
-	return streamClient, nil
-}
+// 	klog.V(2).Infof("NewStreamClientWithCreds Succeeded\n")
+// 	klog.V(6).Infof("NewStreamClientWithCreds LEAVE\n")
+// 	return streamClient, nil
+// }

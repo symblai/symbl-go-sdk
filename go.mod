@@ -12,5 +12,3 @@ require (
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 	k8s.io/klog/v2 v2.80.1 // indirect
 )
-
-replace github.com/gorilla/websocket => ../../gorilla/websocket
