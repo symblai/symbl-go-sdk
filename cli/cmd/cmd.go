@@ -63,7 +63,7 @@ func main() {
 	// streaming
 	ctx := context.Background()
 
-	client, err := symbl.NewStreamClient(ctx)
+	client, err := symbl.NewStreamClient(ctx, nil)
 	if err == nil {
 		fmt.Println("Succeeded!")
 	} else {
@@ -78,7 +78,7 @@ func main() {
 	fmt.Printf("\n\n\n")
 	bufio.NewReader(os.Stdin).ReadBytes('\n')
 
-	client.WsClient.Stop()
+	client.Stop()
 
 	klog.Info("Succeeded")
 }

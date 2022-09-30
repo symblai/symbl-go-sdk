@@ -40,8 +40,8 @@ func (e *StatusError) Error() string {
 type RestClient struct {
 	*rest.Client
 
-	creds       *Credentials
-	accessToken string
+	creds *Credentials
+	auth  *authResp
 }
 
 // Credentials is the input needed to login to the Symbl.ai platform
@@ -156,9 +156,9 @@ func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient
 	})
 
 	c := &RestClient{
-		Client:      restClient,
-		creds:       &creds,
-		accessToken: resp.AccessToken,
+		Client: restClient,
+		creds:  &creds,
+		auth:   &resp,
 	}
 
 	klog.V(2).Infof("NewWithCreds Succeeded\n")
@@ -197,7 +197,7 @@ func (c *RestClient) Do(ctx context.Context, req *http.Request, resBody interfac
 
 				klog.V(2).Info("Re-authorized with the symbl.ai platform\n")
 				c.Client = newClient.Client
-				c.accessToken = newClient.accessToken
+				c.auth = newClient.auth
 			}
 		} else {
 			return err
