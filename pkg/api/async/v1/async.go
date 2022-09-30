@@ -25,7 +25,7 @@ const (
 )
 
 type Client struct {
-	*symbl.Client
+	*symbl.RestClient
 }
 
 // Input parameters for calls
@@ -47,7 +47,7 @@ type JobConversation struct {
 	ConversationID string `json:"conversationId"`
 }
 
-func New(client *symbl.Client) *Client {
+func New(client *symbl.RestClient) *Client {
 	return &Client{client}
 }
 

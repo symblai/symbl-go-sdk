@@ -9,9 +9,7 @@ import (
 
 const (
 	AsyncAPIVersion string = "v1"
-)
 
-const (
 	JobStatusURI    string = "https://api.symbl.ai/%s/job/%s"
 	ProcessAudioURI string = "https://api.symbl.ai/%s/process/audio?name=%s"
 	TopicsURI       string = "https://api.symbl.ai/%s/conversations/%s/topics?parentRefs=true&sentiment=true"

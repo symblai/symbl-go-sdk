@@ -23,4 +23,7 @@ var (
 
 	// ErrInvalidWaitTime the time to wait agurment is invalid
 	ErrInvalidWaitTime = errors.New("the time to wait agurment is invalid")
+
+	// ErrWebSocketInitializationFailed websocket initialization failed
+	ErrWebSocketInitializationFailed = errors.New("websocket initialization failed")
 )

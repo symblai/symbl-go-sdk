@@ -144,6 +144,7 @@ func (c *Client) WithHeader(
 // 	klog.V(4).Infof("Content-Type; %s\n", contentType)
 
 // 	klog.V(6).Infof("------------------------\n")
+//	klog.V(6).Infof("IMPORTANT: Never print in production\n")
 // 	klog.V(6).Infof("req:\n%v\n", req)
 // 	klog.V(6).Infof("------------------------\n")
 
@@ -197,6 +198,7 @@ func (c *Client) WithHeader(
 // 	}
 
 // 	klog.V(6).Infof("------------------------\n")
+//	klog.V(6).Infof("IMPORTANT: Never print in production\n")
 // 	klog.V(6).Infof("resBody:\n%v\n", resBody)
 // 	klog.V(6).Infof("------------------------\n")
 
@@ -267,6 +269,7 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 	}
 
 	klog.V(6).Infof("------------------------\n")
+	klog.V(6).Infof("IMPORTANT: Never print in production\n")
 	klog.V(6).Infof("req:\n%v\n", req)
 	klog.V(6).Infof("------------------------\n")
 
@@ -321,6 +324,7 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 	}
 
 	klog.V(6).Infof("------------------------\n")
+	klog.V(6).Infof("IMPORTANT: Never print in production\n")
 	klog.V(6).Infof("resBody:\n%v\n", resBody)
 	klog.V(6).Infof("------------------------\n")
 
@@ -352,6 +356,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 	}
 
 	klog.V(6).Infof("------------------------\n")
+	klog.V(6).Infof("IMPORTANT: Never print in production\n")
 	klog.V(6).Infof("req:\n%v\n", req)
 	klog.V(6).Infof("------------------------\n")
 
@@ -406,6 +411,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 	}
 
 	klog.V(6).Infof("------------------------\n")
+	klog.V(6).Infof("IMPORTANT: Never print in production\n")
 	klog.V(6).Infof("resBody:\n%v\n", resBody)
 	klog.V(6).Infof("------------------------\n")
 

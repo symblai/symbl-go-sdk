@@ -1,3 +1,6 @@
+// Copyright 2022 Symbl.ai SDK contributors. All Rights Reserved.
+// SPDX-License-Identifier: MIT
+
 /*
 Package provides Go library for making API calls on the Symbl.ai platform
 

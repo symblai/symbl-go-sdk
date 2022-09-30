@@ -37,10 +37,11 @@ func (e *StatusError) Error() string {
 	return fmt.Sprintf("%s %s: %s", e.Resp.Request.Method, e.Resp.Request.URL, e.Resp.Status)
 }
 
-type Client struct {
+type RestClient struct {
 	*rest.Client
 
-	creds *Credentials
+	creds       *Credentials
+	accessToken string
 }
 
 // Credentials is the input needed to login to the Symbl.ai platform
@@ -56,9 +57,9 @@ type authResp struct {
 	ExpiresIn   int    `json:"expiresIn"`
 }
 
-// NewClient creates a new client on the Symbl.ai platform. The client authenticates with the
+// NewRestClient creates a new client on the Symbl.ai platform. The client authenticates with the
 // server with APP_ID/APP_SECRET.
-func New(ctx context.Context) (*Client, error) {
+func NewRestClient(ctx context.Context) (*RestClient, error) {
 	var appId string
 	if v := os.Getenv("APP_ID"); v != "" {
 		klog.V(4).Info("APP_ID found")
@@ -80,12 +81,12 @@ func New(ctx context.Context) (*Client, error) {
 		AppId:     appId,
 		AppSecret: appSecret,
 	}
-	return NewWithCreds(ctx, c)
+	return NewRestClientWithCreds(ctx, c)
 }
 
-// NewClientWithCreds creates a new client on the Symbl.ai platform. The client authenticates with the
+// NewRestClientWithCreds creates a new client on the Symbl.ai platform. The client authenticates with the
 // server with APP_ID/APP_SECRET.
-func NewWithCreds(ctx context.Context, creds Credentials) (*Client, error) {
+func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient, error) {
 	klog.V(6).Infof("NewWithCreds ENTER\n")
 
 	// checks
@@ -116,9 +117,10 @@ func NewWithCreds(ctx context.Context, creds Credentials) (*Client, error) {
 		return nil, err
 	}
 
-	// klog.V(6).Infof("------------------------\n")
-	// klog.V(6).Infof("creds:\n%v\n", creds)
-	// klog.V(6).Infof("------------------------\n")
+	klog.V(6).Infof("------------------------\n")
+	klog.V(6).Infof("IMPORTANT: Never print in production\n")
+	klog.V(6).Infof("creds:\n%v\n", creds)
+	klog.V(6).Infof("------------------------\n")
 
 	req, err := http.NewRequestWithContext(ctx, "POST", common.AuthURI, bytes.NewBuffer([]byte(jsonStr)))
 	if err != nil {
@@ -143,18 +145,20 @@ func NewWithCreds(ctx context.Context, creds Credentials) (*Client, error) {
 		return nil, common.ErrAuthFailure
 	}
 
-	// klog.V(6).Infof("------------------------\n")
-	// klog.V(6).Infof("resp:\n%v\n", resp)
-	// klog.V(6).Infof("------------------------\n")
+	klog.V(6).Infof("------------------------\n")
+	klog.V(6).Infof("IMPORTANT: Never print in production\n")
+	klog.V(6).Infof("resp:\n%v\n", resp)
+	klog.V(6).Infof("------------------------\n")
 
 	restClient.SetAuthorization(&rest.AccessToken{
 		AccessToken: resp.AccessToken,
 		ExpiresOn:   time.Now().Add(time.Second * time.Duration(resp.ExpiresIn)),
 	})
 
-	c := &Client{
-		Client: restClient,
-		creds:  &creds,
+	c := &RestClient{
+		Client:      restClient,
+		creds:       &creds,
+		accessToken: resp.AccessToken,
 	}
 
 	klog.V(2).Infof("NewWithCreds Succeeded\n")
@@ -162,11 +166,11 @@ func NewWithCreds(ctx context.Context, creds Credentials) (*Client, error) {
 	return c, nil
 }
 
-func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{}) error {
+func (c *RestClient) DoFile(ctx context.Context, filePath string, resBody interface{}) error {
 	return c.Client.DoFile(ctx, filePath, resBody)
 }
 
-func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{}) error {
+func (c *RestClient) Do(ctx context.Context, req *http.Request, resBody interface{}) error {
 	klog.V(6).Infof("symbl.Do ENTER\n")
 
 	var err error
@@ -184,7 +188,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 			if e.Resp.StatusCode == http.StatusUnauthorized {
 
 				klog.V(2).Info("Received http.StatusUnauthorized\n")
-				newClient, reauthErr := NewWithCreds(ctx, *c.creds)
+				newClient, reauthErr := NewRestClientWithCreds(ctx, *c.creds)
 				if reauthErr != nil {
 					klog.Errorf("unable to re-authorize to symbl platform\n")
 					klog.V(6).Infof("symbl.Do LEAVE\n")
@@ -193,6 +197,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 
 				klog.V(2).Info("Re-authorized with the symbl.ai platform\n")
 				c.Client = newClient.Client
+				c.accessToken = newClient.accessToken
 			}
 		} else {
 			return err
