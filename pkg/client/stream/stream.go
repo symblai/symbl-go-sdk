@@ -1,7 +1,7 @@
 // Copyright 2022 Symbl.ai SDK contributors. All Rights Reserved.
 // SPDX-License-Identifier: MIT
 
-package streaming
+package stream
 
 import (
 	"context"
@@ -22,17 +22,6 @@ import (
 const (
 	pingPeriod = 30 * time.Second
 )
-
-type WebSocketMessageCallback interface {
-	Message(byMsg []byte) error
-}
-
-// Credentials is the input needed to login to the Symbl.ai platform
-type Credentials struct {
-	Host      string `validate:"required"`
-	Channel   string `validate:"required"`
-	AccessKey string `validate:"required"`
-}
 
 // WebSocketClient return websocket client connection
 type WebSocketClient struct {
@@ -145,9 +134,17 @@ func (conn *WebSocketClient) listen() {
 				msgType, bytMsg, err := ws.ReadMessage()
 				if err != nil {
 					klog.V(2).Infof("Cannot read websocket message. Err: %v\n", err)
-					conn.closeWs()
-					break
+					// conn.closeWs()
+					// break
 				}
+
+				// TODO delete
+				// klog.V(6).Infof("\n\n\n")
+				// klog.V(6).Infof("IMPORTANT: Never print in production\n")
+				// klog.V(6).Infof("WebSocketClient::listen msgType: %d\n", msgType)
+				// klog.V(6).Infof("WebSocketClient::listen bytMsg: %v\n", bytMsg)
+				// klog.V(6).Infof("WebSocketClient::listen bytMsg: %s\n", string(bytMsg))
+				// klog.V(6).Infof("\n\n\n")
 
 				if conn.callback != nil {
 					conn.callback.Message(bytMsg)
@@ -160,13 +157,49 @@ func (conn *WebSocketClient) listen() {
 	}
 }
 
-// Write data to the websocket server
-func (conn *WebSocketClient) Write(payload interface{}) error {
-	data, err := json.Marshal(payload)
+// Write struct to the websocket server
+func (conn *WebSocketClient) WriteBinary(byData []byte) error {
+	ed := &EncapsulatedMessage{
+		Type: websocket.BinaryMessage,
+		Data: byData,
+	}
+	data, err := json.Marshal(ed)
 	if err != nil {
 		klog.V(2).Infof("WebSocketClient::Write json.Marshal failed. Err: %v\n", err)
 		return err
 	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond*50)
+	defer cancel()
+
+	for {
+		select {
+		case conn.sendBuf <- data:
+			return nil
+		case <-ctx.Done():
+			return fmt.Errorf("context canceled")
+		}
+	}
+}
+
+// WriteJSON struct to the websocket server
+func (conn *WebSocketClient) WriteJSON(payload interface{}) error {
+	dataStruct, err := json.Marshal(payload)
+	if err != nil {
+		klog.V(2).Infof("WebSocketClient::Write json.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	ed := &EncapsulatedMessage{
+		Type: websocket.TextMessage,
+		Data: dataStruct,
+	}
+	data, err := json.Marshal(ed)
+	if err != nil {
+		klog.V(2).Infof("WebSocketClient::Write json.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond*50)
 	defer cancel()
 
@@ -188,13 +221,27 @@ func (conn *WebSocketClient) listenWrite() {
 			continue
 		}
 
+		var em EncapsulatedMessage
+		err := json.Unmarshal([]byte(data), &em)
+		if err != nil {
+			klog.V(6).Infof("WebSocketClient::listenWrite json.Unmarshal failed. Err: %v\n", err)
+			continue
+		}
+
+		// TODO delete
+		// klog.V(6).Infof("\n\n\n")
+		// klog.V(6).Infof("IMPORTANT: Never print in production\n")
+		// klog.V(6).Infof("WebSocketClient::listenWrite Type: %d\n", em.Type)
+		// klog.V(6).Infof("WebSocketClient::listenWrite Data: %v\n", em.Data)
+		// klog.V(6).Infof("WebSocketClient::listenWrite Data: %s\n", string(em.Data))
+		// klog.V(6).Infof("\n\n\n")
+
 		if err := ws.WriteMessage(
-			websocket.TextMessage,
-			data,
+			em.Type,
+			em.Data,
 		); err != nil {
 			klog.V(2).Infof("WebSocketClient::listenWrite Write failed. Err: %v\n", err)
 		}
-		klog.V(2).Infof("WebSocketClient::listenWrite Write succeeded.\nSend: %s\n", data)
 	}
 }
 
