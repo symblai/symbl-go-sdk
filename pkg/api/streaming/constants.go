@@ -3,6 +3,13 @@
 
 package streaming
 
+import "errors"
+
+var (
+	// ErrInvalidMessageType invalid message type
+	ErrInvalidMessageType = errors.New("invalid message type")
+)
+
 const (
 	SymblPlatformHost string = "api.symbl.ai"
 

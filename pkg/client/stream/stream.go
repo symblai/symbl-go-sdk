@@ -134,8 +134,8 @@ func (conn *WebSocketClient) listen() {
 				msgType, bytMsg, err := ws.ReadMessage()
 				if err != nil {
 					klog.V(2).Infof("Cannot read websocket message. Err: %v\n", err)
-					// conn.closeWs()
-					// break
+					conn.closeWs()
+					break
 				}
 
 				// TODO delete
