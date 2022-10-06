@@ -8,8 +8,12 @@ import "errors"
 var (
 	// ErrInvalidMessageType invalid message type
 	ErrInvalidMessageType = errors.New("invalid message type")
+
+	// ErrUserCallbackNotDefined user callback object not defined
+	ErrUserCallbackNotDefined = errors.New("user callback object not defined")
 )
 
+// Handshake Related
 const (
 	SymblPlatformHost string = "api.symbl.ai"
 
@@ -17,6 +21,7 @@ const (
 	TypeRequestStop  string = "stop_request"
 )
 
+// Message Types
 const (
 	MessageTypeInitListening    string = "started_listening"
 	MessageTypeInitConversation string = "conversation_created"

@@ -69,6 +69,25 @@ func main() {
 	// klog.Info("Succeeded")
 
 	/*
+		// TODO implement an unhandled message that can be passed along to the user
+		klog.Errorf("Invalid Message Type: %s\n", smt.Message.Type)
+		// b, err := json.MarshalIndent(string(byMsg), "", "    ")
+		// if err != nil {
+		// 	klog.V(6).Infof("SymblMessageRouter MarshalIndent failed. Err: %v\n", err)
+		// 	klog.V(6).Infof("SymblMessageRouter LEAVE\n")
+		// 	return err
+		// }
+		// klog.V(4).Infof("\n\n\n")
+		// klog.V(4).Infof("New Object Type:\n")
+		// klog.V(4).Infof("%s", string(b))
+		// klog.V(4).Infof("\n\n\n")
+		fmt.Printf("\n\n\n")
+		fmt.Printf("New Object Type:\n")
+		fmt.Printf("%s", string(byMsg))
+		fmt.Printf("\n\n\n")
+	*/
+
+	/*
 		------------------------------------
 		streaming
 		------------------------------------
@@ -76,7 +95,7 @@ func main() {
 	// websocket stuff
 	ctx := context.Background()
 
-	client, err := symbl.NewStreamClient(ctx)
+	client, err := symbl.NewStreamClientWithDefaults(ctx)
 	if err == nil {
 		fmt.Println("Succeeded!")
 	} else {
