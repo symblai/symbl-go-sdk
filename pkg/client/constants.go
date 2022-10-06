@@ -1,7 +1,7 @@
 // Copyright 2022 Symbl.ai SDK contributors. All Rights Reserved.
 // SPDX-License-Identifier: MIT
 
-package rest
+package symbl
 
 import (
 	"errors"

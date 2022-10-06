@@ -37,11 +37,13 @@ func (smr *SymblMessageRouter) Message(byMsg []byte) error {
 		return err
 	}
 
-	switch smt.Message.Type {
+	switch mt.Type {
 	case MessageTypeError:
 		return smr.HandleError(byMsg)
+	case MessageTypeMessage:
+		klog.V(6).Infof("Valid message\n")
 	default:
-		klog.Errorf("Invalid Type: %s\n", smt.Message.Type)
+		klog.Errorf("Invalid Type: %s\n", mt.Type)
 		return ErrInvalidMessageType
 	}
 
