@@ -8,8 +8,6 @@ import (
 )
 
 const (
-	UseDefaultWaitForCompletion int = 0
-
 	JobStatusInProgress string = "in_progress"
 	JobStatusComplete   string = "completed"
 )

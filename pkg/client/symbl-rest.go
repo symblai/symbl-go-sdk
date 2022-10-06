@@ -145,6 +145,10 @@ func (c *RestClient) DoFile(ctx context.Context, filePath string, resBody interf
 	return c.Client.DoFile(ctx, filePath, resBody)
 }
 
+func (c *RestClient) DoURL(ctx context.Context, url string, resBody interface{}) error {
+	return c.Client.DoURL(ctx, url, resBody)
+}
+
 func (c *RestClient) Do(ctx context.Context, req *http.Request, resBody interface{}) error {
 	klog.V(6).Infof("symbl.Do ENTER\n")
 

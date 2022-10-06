@@ -62,7 +62,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, f func(*http.Respons
 		defer d.done()
 	}
 
-	req.Header.Set(`User-Agent`, c.UserAgent)
+	req.Header.Set("User-Agent", c.UserAgent)
 
 	ext := ""
 	if d.enabled() {

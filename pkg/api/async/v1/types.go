@@ -6,11 +6,7 @@ package async
 /*
 	Input parameters for API calls
 */
-// WaitForJobStatusOpts parameter needed for Wait call
-type WaitForJobStatusOpts struct {
-	JobId         string `validate:"required"`
-	WaitInSeconds int
-}
+// TODO
 
 /*
 	Output structs for API calls
