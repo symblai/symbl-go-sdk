@@ -7,6 +7,13 @@ import (
 	"errors"
 )
 
+const (
+	UseDefaultWaitForCompletion int = 0
+
+	JobStatusInProgress string = "in_progress"
+	JobStatusComplete   string = "completed"
+)
+
 var (
 	// ErrInvalidInput required input was not found
 	ErrInvalidInput = errors.New("required input was not found")
