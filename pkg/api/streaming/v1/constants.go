@@ -23,9 +23,12 @@ const (
 
 // Message Types
 const (
-	MessageTypeInitListening    string = "started_listening"
-	MessageTypeInitConversation string = "conversation_created"
-	MessageTypeInitRecognition  string = "recognition_started"
+	MessageTypeInitListening        string = "started_listening"
+	MessageTypeInitConversation     string = "conversation_created"
+	MessageTypeInitRecognition      string = "recognition_started"
+	MessageTypeSessionModified      string = "session_modified"
+	MessageTypeTeardownConversation string = "conversation_completed"
+	MessageTypeTeardownRecognition  string = "recognition_stopped"
 
 	MessageTypeError   string = "error"
 	MessageTypeMessage string = "message"

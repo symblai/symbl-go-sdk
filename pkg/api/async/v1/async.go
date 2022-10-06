@@ -11,6 +11,7 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
 	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
 )
@@ -57,7 +58,34 @@ func (c *Client) PostFile(ctx context.Context, filePath string) (*JobConversatio
 	return &jobConvo, nil
 }
 
-// TODO use URL
+func (c *Client) PostURL(ctx context.Context, url string) (*JobConversation, error) {
+	klog.V(6).Infof("async.PostURL ENTER\n")
+
+	// checks
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	klog.V(2).Infof("url: %s\n", url)
+
+	// send the file!
+	var jobConvo JobConversation
+
+	err := c.DoURL(ctx, url, &jobConvo)
+	if e, ok := err.(*symbl.StatusError); ok {
+		klog.Errorf("DoURL failed. HTTP Code: %v\n", e.Resp.StatusCode)
+		klog.V(6).Infof("async.PostURL LEAVE\n")
+		return nil, e
+	}
+
+	klog.V(6).Infof("------------------------\n")
+	klog.V(6).Infof("jobConvo:\n%v\n", jobConvo)
+	klog.V(6).Infof("------------------------\n")
+
+	klog.V(2).Infof("async.PostURL Succeeded\n")
+	klog.V(6).Infof("async.PostURL LEAVE\n")
+	return &jobConvo, nil
+}
 
 func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool, error) {
 	klog.V(6).Infof("async.WaitForJobCompleteOnce ENTER\n")
@@ -109,7 +137,7 @@ func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool
 	return complete, nil
 }
 
-func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts WaitForJobStatusOpts) (bool, error) {
+func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts interfaces.WaitForJobStatusOpts) (bool, error) {
 	klog.V(6).Infof("async.WaitForJobComplete ENTER\n")
 
 	// validate input
@@ -135,7 +163,7 @@ func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts WaitForJo
 	}
 
 	numOfLoops := float64(defaultWaitForCompletion) / float64(defaultDelayBetweenCheck)
-	if jobStatusOpts.WaitInSeconds != UseDefaultWaitForCompletion {
+	if jobStatusOpts.WaitInSeconds != interfaces.UseDefaultWaitForCompletion {
 		numOfLoops = float64(jobStatusOpts.WaitInSeconds) / float64(defaultDelayBetweenCheck)
 		klog.V(4).Infof("User provided jobStatusOpts.WaitInSeconds\n")
 	}

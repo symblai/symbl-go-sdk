@@ -31,3 +31,10 @@ type StatusError struct {
 func (e *StatusError) Error() string {
 	return fmt.Sprintf("%s %s: %s", e.Resp.Request.Method, e.Resp.Request.URL, e.Resp.Status)
 }
+
+// ProcessAudioURLRequest for processing a URL
+type ProcessAudioURLRequest struct {
+	URL          string `json:"url"`
+	Name         string `json:"name"`
+	LanguageCode string `json:"languageCode"`
+}

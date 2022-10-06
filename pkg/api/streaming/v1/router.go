@@ -76,6 +76,12 @@ func (smr *SymblMessageRouter) Message(byMsg []byte) error {
 		return smr.InitializedConversation(byMsg)
 	case MessageTypeInitRecognition:
 		klog.V(2).Infof("Symbl Platform Initialized Recognition\n")
+	case MessageTypeSessionModified:
+		klog.V(2).Infof("Symbl Platform Session Modified\n")
+	case MessageTypeTeardownConversation:
+		klog.V(2).Infof("Symbl Platform Conversation Complete\n")
+	case MessageTypeTeardownRecognition:
+		klog.V(2).Infof("Symbl Platform Recognition Stopped\n")
 	case MessageTypeError:
 		return smr.HandleError(byMsg)
 		// pass insights to the user

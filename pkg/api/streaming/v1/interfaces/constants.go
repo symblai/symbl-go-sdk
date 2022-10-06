@@ -7,4 +7,9 @@ const (
 	MessageTypeRecognitionResult string = "recognition_result"
 	MessageTypeMessageResponse   string = "message_response"
 	MessageTypeInsightResponse   string = "insight_response"
+
+	// TODO
+	// message
+	// topic_response
+	// tracker_response
 )

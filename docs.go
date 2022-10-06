@@ -13,9 +13,6 @@ API reference: https://docs.symbl.ai/reference
 package sdk
 
 import (
-	_ "github.com/dvonthenen/symbl-go-sdk/cmd/cli"
+	_ "github.com/dvonthenen/symbl-go-sdk/cli/cmd"
 	_ "github.com/dvonthenen/symbl-go-sdk/pkg/client"
 )
-
-// Copyright 2022 Symbl.ai SDK contributors. All Rights Reserved.
-// SPDX-License-Identifier: MIT
