@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	klog "k8s.io/klog/v2"
 
-	streaming "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming"
+	streaming "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
 	stream "github.com/dvonthenen/symbl-go-sdk/pkg/client/stream"
 )
@@ -112,4 +112,19 @@ func NewStreamClient(ctx context.Context) (*StreamClient, error) {
 	klog.V(2).Infof("NewStreamClientWithCreds Succeeded\n")
 	klog.V(6).Infof("NewStreamClient LEAVE\n")
 	return streamClient, nil
+}
+
+func (sc *StreamClient) Stop() {
+	// signal stop to Symbl Platform
+	stopMsg := &streaming.MessageType{
+		Type: streaming.TypeRequestStop,
+	}
+
+	err := sc.WriteJSON(stopMsg)
+	if err != nil {
+		klog.Errorf("wsClient.WriteJSON failed. Err: %v\n", err)
+	}
+
+	// stop websocket
+	sc.WebSocketClient.Stop()
 }
