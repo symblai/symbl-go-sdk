@@ -10,6 +10,7 @@ import (
 	klog "k8s.io/klog/v2"
 
 	streaming "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1"
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
 	stream "github.com/dvonthenen/symbl-go-sdk/pkg/client/stream"
 )
@@ -44,12 +45,16 @@ func getDefaultConfig() *StreamingConfig {
 	return config
 }
 
-// NewClient creates a new client on the Symbl.ai platform. The client authenticates with the
-// server with APP_ID/APP_SECRET.
-func NewStreamClient(ctx context.Context) (*StreamClient, error) {
-	klog.V(6).Infof("NewStreamClient ENTER\n")
-
+func NewStreamClientWithDefaults(ctx context.Context) (*StreamClient, error) {
 	config := getDefaultConfig()
+	callback := streaming.NewDefaultMessageRouter()
+	return NewStreamClient(ctx, config, callback)
+}
+
+// NewStreamClient creates a new client on the Symbl.ai platform. The client authenticates with the
+// server with APP_ID/APP_SECRET.
+func NewStreamClient(ctx context.Context, config *StreamingConfig, callback interfaces.InsightCallback) (*StreamClient, error) {
+	klog.V(6).Infof("NewStreamClient ENTER\n")
 
 	// create rest client
 	restClient, err := NewRestClient(ctx)
@@ -71,7 +76,7 @@ func NewStreamClient(ctx context.Context) (*StreamClient, error) {
 	klog.V(4).Infof("streamPath: %s\n", streamPath)
 
 	// init symbl websocket message router
-	symblStreaming := streaming.New()
+	symblStreaming := streaming.New(callback)
 
 	// create client
 	creds := stream.Credentials{
