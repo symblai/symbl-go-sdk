@@ -16,35 +16,12 @@ import (
 )
 
 const (
-	UseDefaultWaitForCompletion int   = 0
-	defaultWaitForCompletion    int   = 60
-	defaultDelayBetweenCheck    int64 = 2
-
-	JobStatusInProgress string = "in_progress"
-	JobStatusComplete   string = "completed"
+	defaultWaitForCompletion int   = 60
+	defaultDelayBetweenCheck int64 = 2
 )
 
 type Client struct {
 	*symbl.RestClient
-}
-
-// Input parameters for calls
-type WaitForJobStatusOpts struct {
-	JobId         string `validate:"required"`
-	WaitInSeconds int
-}
-
-// output structs
-// JobStatus captures the API for getting status
-type JobStatus struct {
-	ID     string `json:"id"`
-	Status string `json:"status"`
-}
-
-// JobConversation represents processing an Async API request
-type JobConversation struct {
-	JobID          string `json:"jobId"`
-	ConversationID string `json:"conversationId"`
 }
 
 func New(client *symbl.RestClient) *Client {
@@ -66,7 +43,7 @@ func (c *Client) PostFile(ctx context.Context, filePath string) (*JobConversatio
 
 	err := c.DoFile(ctx, filePath, &jobConvo)
 	if e, ok := err.(*symbl.StatusError); ok {
-		klog.V(2).Infof("DoFile failed. HTTP Code: %v\n", e.Resp.StatusCode)
+		klog.Errorf("DoFile failed. HTTP Code: %v\n", e.Resp.StatusCode)
 		klog.V(6).Infof("async.PostFile LEAVE\n")
 		return nil, e
 	}
@@ -79,6 +56,8 @@ func (c *Client) PostFile(ctx context.Context, filePath string) (*JobConversatio
 	klog.V(6).Infof("async.PostFile LEAVE\n")
 	return &jobConvo, nil
 }
+
+// TODO use URL
 
 func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool, error) {
 	klog.V(6).Infof("async.WaitForJobCompleteOnce ENTER\n")
