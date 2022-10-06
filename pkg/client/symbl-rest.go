@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -15,7 +14,6 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
-	common "github.com/dvonthenen/symbl-go-sdk/pkg/client/common"
 	rest "github.com/dvonthenen/symbl-go-sdk/pkg/client/rest"
 )
 
@@ -27,34 +25,11 @@ const (
 	defaultDelayBetweenReauth int64 = 2
 )
 
-type HeadersContext struct{}
-
-type StatusError struct {
-	*rest.StatusError
-}
-
-func (e *StatusError) Error() string {
-	return fmt.Sprintf("%s %s: %s", e.Resp.Request.Method, e.Resp.Request.URL, e.Resp.Status)
-}
-
 type RestClient struct {
 	*rest.Client
 
 	creds *Credentials
 	auth  *authResp
-}
-
-// Credentials is the input needed to login to the Symbl.ai platform
-type Credentials struct {
-	Type      string `json:"type"`
-	AppId     string `json:"appId" validate:"required"`
-	AppSecret string `json:"appSecret" validate:"required"`
-}
-
-// authResp represents a Symbl platform bearer access token with expiry information.
-type authResp struct {
-	AccessToken string `json:"accessToken"`
-	ExpiresIn   int    `json:"expiresIn"`
 }
 
 // NewRestClient creates a new client on the Symbl.ai platform. The client authenticates with the
@@ -66,7 +41,7 @@ func NewRestClient(ctx context.Context) (*RestClient, error) {
 		appId = v
 	} else {
 		klog.Error("APP_ID not found")
-		return nil, common.ErrInvalidInput
+		return nil, ErrInvalidInput
 	}
 	var appSecret string
 	if v := os.Getenv("APP_SECRET"); v != "" {
@@ -74,7 +49,7 @@ func NewRestClient(ctx context.Context) (*RestClient, error) {
 		appSecret = v
 	} else {
 		klog.Errorln("APP_SECRET not found")
-		return nil, common.ErrInvalidInput
+		return nil, ErrInvalidInput
 	}
 
 	c := Credentials{
@@ -117,12 +92,12 @@ func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient
 		return nil, err
 	}
 
-	klog.V(6).Infof("------------------------\n")
-	klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	klog.V(6).Infof("creds:\n%v\n", creds)
-	klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
+	// klog.V(6).Infof("creds:\n%v\n", creds)
+	// klog.V(6).Infof("------------------------\n")
 
-	req, err := http.NewRequestWithContext(ctx, "POST", common.AuthURI, bytes.NewBuffer([]byte(jsonStr)))
+	req, err := http.NewRequestWithContext(ctx, "POST", AuthURI, bytes.NewBuffer([]byte(jsonStr)))
 	if err != nil {
 		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("NewWithCreds LEAVE\n")
@@ -142,13 +117,13 @@ func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient
 	if resp.AccessToken == "" {
 		klog.Errorf("Symbl auth token is empty\n")
 		klog.V(6).Infof("NewWithCreds LEAVE\n")
-		return nil, common.ErrAuthFailure
+		return nil, ErrAuthFailure
 	}
 
-	klog.V(6).Infof("------------------------\n")
-	klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	klog.V(6).Infof("resp:\n%v\n", resp)
-	klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
+	// klog.V(6).Infof("resp:\n%v\n", resp)
+	// klog.V(6).Infof("------------------------\n")
 
 	restClient.SetAuthorization(&rest.AccessToken{
 		AccessToken: resp.AccessToken,

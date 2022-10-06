@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	klog "k8s.io/klog/v2"
 
@@ -21,38 +20,11 @@ import (
 	simple "github.com/dvonthenen/symbl-go-sdk/pkg/client/simple"
 )
 
-var (
-	// ErrInvalidInput required input was not found
-	ErrInvalidInput = errors.New("required input was not found")
-)
-
 // Client which extends basic client to support REST
 type Client struct {
 	*simple.Client
 
 	auth *AccessToken
-}
-
-// AccessToken represents a Symbl platform bearer access token with expiry information.
-type AccessToken struct {
-	AccessToken string
-	ExpiresOn   time.Time
-}
-
-// RawResponse may be used with the Do method as the resBody argument in order
-// to capture the raw response data.
-type RawResponse struct {
-	bytes.Buffer
-}
-
-type HeadersContext struct{}
-
-type StatusError struct {
-	Resp *http.Response
-}
-
-func (e *StatusError) Error() string {
-	return fmt.Sprintf("%s %s: %s", e.Resp.Request.Method, e.Resp.Request.URL, e.Resp.Status)
 }
 
 func New() *Client {
@@ -134,7 +106,6 @@ func (c *Client) WithHeader(
 // 	}
 
 // 	req.Header.Set("Accept", "application/json")
-// 	// TODO: verify this is correct
 // 	if c.auth != nil && c.auth.AccessToken != "" {
 // 		req.Header.Set("Authorization", "Bearer "+c.auth.AccessToken)
 // 	}
@@ -142,11 +113,6 @@ func (c *Client) WithHeader(
 // 	contentType := m.FormDataContentType()
 // 	req.Header.Set("Content-Type", contentType)
 // 	klog.V(4).Infof("Content-Type; %s\n", contentType)
-
-// 	klog.V(6).Infof("------------------------\n")
-//	klog.V(6).Infof("IMPORTANT: Never print in production\n")
-// 	klog.V(6).Infof("req:\n%v\n", req)
-// 	klog.V(6).Infof("------------------------\n")
 
 // 	err = c.Client.Do(ctx, req, func(res *http.Response) error {
 // 		switch res.StatusCode {
@@ -196,11 +162,6 @@ func (c *Client) WithHeader(
 // 		klog.Errorf("err = c.Client.Do failed. Err: %v\n", err)
 // 		return err
 // 	}
-
-// 	klog.V(6).Infof("------------------------\n")
-//	klog.V(6).Infof("IMPORTANT: Never print in production\n")
-// 	klog.V(6).Infof("resBody:\n%v\n", resBody)
-// 	klog.V(6).Infof("------------------------\n")
 
 // 	klog.V(4).Infof("rest.DoMultiPartFile Succeeded\n")
 // 	klog.V(6).Infof("rest.DoMultiPartFile LEAVE\n")
@@ -255,7 +216,6 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 	}
 
 	req.Header.Set("Accept", "application/json")
-	// TODO: verify this is correct
 	if c.auth != nil && c.auth.AccessToken != "" {
 		req.Header.Set("Authorization", "Bearer "+c.auth.AccessToken)
 	}
@@ -268,10 +228,11 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 		}
 	}
 
-	klog.V(6).Infof("------------------------\n")
-	klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	klog.V(6).Infof("req:\n%v\n", req)
-	klog.V(6).Infof("------------------------\n")
+	// TODO Delete...
+	// klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
+	// klog.V(6).Infof("req:\n%v\n", req)
+	// klog.V(6).Infof("------------------------\n")
 
 	err = c.Client.Do(ctx, req, func(res *http.Response) error {
 		switch res.StatusCode {
@@ -323,10 +284,11 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 		return err
 	}
 
-	klog.V(6).Infof("------------------------\n")
-	klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	klog.V(6).Infof("resBody:\n%v\n", resBody)
-	klog.V(6).Infof("------------------------\n")
+	// TODO Delete...
+	// klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
+	// klog.V(6).Infof("resBody:\n%v\n", resBody)
+	// klog.V(6).Infof("------------------------\n")
 
 	klog.V(2).Infof("rest.DoFile Succeeded\n")
 	klog.V(6).Infof("rest.DoFile LEAVE\n")
@@ -350,15 +312,15 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 	}
 
 	req.Header.Set("Accept", "application/json")
-	// TODO: verify this is correct
 	if c.auth != nil && c.auth.AccessToken != "" {
 		req.Header.Set("Authorization", "Bearer "+c.auth.AccessToken)
 	}
 
-	klog.V(6).Infof("------------------------\n")
-	klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	klog.V(6).Infof("req:\n%v\n", req)
-	klog.V(6).Infof("------------------------\n")
+	// TODO Delete...
+	// klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
+	// klog.V(6).Infof("req:\n%v\n", req)
+	// klog.V(6).Infof("------------------------\n")
 
 	err := c.Client.Do(ctx, req, func(res *http.Response) error {
 		switch res.StatusCode {
@@ -410,10 +372,11 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 		return err
 	}
 
-	klog.V(6).Infof("------------------------\n")
-	klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	klog.V(6).Infof("resBody:\n%v\n", resBody)
-	klog.V(6).Infof("------------------------\n")
+	// TODO Delete...
+	// klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
+	// klog.V(6).Infof("resBody:\n%v\n", resBody)
+	// klog.V(6).Infof("------------------------\n")
 
 	klog.V(2).Infof("rest.Do Succeeded\n")
 	klog.V(6).Infof("rest.Do LEAVE\n")
