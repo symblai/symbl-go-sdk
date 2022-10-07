@@ -46,7 +46,7 @@ func (c *Client) GetTopics(ctx context.Context, conversationId string) (*interfa
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("WaitForJobComplete failed. HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetTopics LEAVE\n")
 			return nil, e
 		}
@@ -88,7 +88,7 @@ func (c *Client) GetQuestions(ctx context.Context, conversationId string) (*inte
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("WaitForJobComplete failed. HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetQuestions LEAVE\n")
 			return nil, e
 		}
@@ -130,7 +130,7 @@ func (c *Client) GetFollowUps(ctx context.Context, conversationId string) (*inte
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("WaitForJobComplete failed. HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetFollowUps LEAVE\n")
 			return nil, e
 		}
@@ -172,7 +172,7 @@ func (c *Client) GetEntities(ctx context.Context, conversationId string) (*inter
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("WaitForJobComplete failed. HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetEntities LEAVE\n")
 			return nil, e
 		}
@@ -214,7 +214,7 @@ func (c *Client) GetActionItems(ctx context.Context, conversationId string) (*in
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("WaitForJobComplete failed. HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetActionItems LEAVE\n")
 			return nil, e
 		}
@@ -256,7 +256,7 @@ func (c *Client) GetMessages(ctx context.Context, conversationId string) (*inter
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("WaitForJobComplete failed. HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetMessages LEAVE\n")
 			return nil, e
 		}
@@ -298,7 +298,7 @@ func (c *Client) GetSummary(ctx context.Context, conversationId string) (*interf
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("WaitForJobComplete failed. HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetSummary LEAVE\n")
 			return nil, e
 		}
@@ -340,7 +340,7 @@ func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*inte
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("WaitForJobComplete failed. HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetAnalytics LEAVE\n")
 			return nil, e
 		}
@@ -382,7 +382,7 @@ func (c *Client) GetTracker(ctx context.Context, conversationId string) (*interf
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("WaitForJobComplete failed. HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetTracker LEAVE\n")
 			return nil, e
 		}
