@@ -36,7 +36,6 @@ func getDefaultConfig() *StreamingConfig {
 	config.InsightTypes = []string{"topic", "question", "action_item", "follow_up"}
 	config.Config.MeetingTitle = "my-meeting"
 	config.Config.ConfidenceThreshold = defaultConfidenceThreshold
-	// config.Config.TimezoneOffset = 480
 	config.Config.SpeechRecognition.Encoding = "LINEAR16"
 	config.Config.SpeechRecognition.SampleRateHertz = defaultSampleRateHertz
 	config.Speaker.Name = defaultUserName
@@ -45,6 +44,7 @@ func getDefaultConfig() *StreamingConfig {
 	return config
 }
 
+// NewStreamClientWithDefaults same as NewStreamClient just using defaults
 func NewStreamClientWithDefaults(ctx context.Context) (*StreamClient, error) {
 	config := getDefaultConfig()
 	callback := streaming.NewDefaultMessageRouter()
