@@ -15,7 +15,7 @@ type WaitForJobStatusOpts struct {
 }
 
 /*
-	Output structs for API calls
+	Output structs for Async API calls
 */
 type TopicResult struct {
 	Topics []struct {

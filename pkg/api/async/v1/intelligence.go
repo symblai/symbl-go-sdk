@@ -22,6 +22,11 @@ func (c *Client) GetTopics(ctx context.Context, conversationId string) (*interfa
 	if ctx == nil {
 		ctx = context.Background()
 	}
+	if conversationId == "" {
+		klog.Errorf("conversationId is empty\n")
+		klog.V(6).Infof("async.GetTopics LEAVE\n")
+		return nil, ErrInvalidInput
+	}
 
 	// request
 	URI := version.GetAsyncAPI(version.TopicsURI, conversationId)
@@ -58,6 +63,11 @@ func (c *Client) GetQuestions(ctx context.Context, conversationId string) (*inte
 	// checks
 	if ctx == nil {
 		ctx = context.Background()
+	}
+	if conversationId == "" {
+		klog.Errorf("conversationId is empty\n")
+		klog.V(6).Infof("async.GetQuestions LEAVE\n")
+		return nil, ErrInvalidInput
 	}
 
 	// request
@@ -96,6 +106,11 @@ func (c *Client) GetFollowUps(ctx context.Context, conversationId string) (*inte
 	if ctx == nil {
 		ctx = context.Background()
 	}
+	if conversationId == "" {
+		klog.Errorf("conversationId is empty\n")
+		klog.V(6).Infof("async.GetFollowUps LEAVE\n")
+		return nil, ErrInvalidInput
+	}
 
 	// request
 	URI := version.GetAsyncAPI(version.FollowUpsURI, conversationId)
@@ -132,6 +147,11 @@ func (c *Client) GetEntities(ctx context.Context, conversationId string) (*inter
 	// checks
 	if ctx == nil {
 		ctx = context.Background()
+	}
+	if conversationId == "" {
+		klog.Errorf("conversationId is empty\n")
+		klog.V(6).Infof("async.GetEntities LEAVE\n")
+		return nil, ErrInvalidInput
 	}
 
 	// request
@@ -170,6 +190,11 @@ func (c *Client) GetActionItems(ctx context.Context, conversationId string) (*in
 	if ctx == nil {
 		ctx = context.Background()
 	}
+	if conversationId == "" {
+		klog.Errorf("conversationId is empty\n")
+		klog.V(6).Infof("async.GetActionItems LEAVE\n")
+		return nil, ErrInvalidInput
+	}
 
 	// request
 	URI := version.GetAsyncAPI(version.ActionItemsURI, conversationId)
@@ -206,6 +231,11 @@ func (c *Client) GetMessages(ctx context.Context, conversationId string) (*inter
 	// checks
 	if ctx == nil {
 		ctx = context.Background()
+	}
+	if conversationId == "" {
+		klog.Errorf("conversationId is empty\n")
+		klog.V(6).Infof("async.GetMessages LEAVE\n")
+		return nil, ErrInvalidInput
 	}
 
 	// request
@@ -244,6 +274,11 @@ func (c *Client) GetSummary(ctx context.Context, conversationId string) (*interf
 	if ctx == nil {
 		ctx = context.Background()
 	}
+	if conversationId == "" {
+		klog.Errorf("conversationId is empty\n")
+		klog.V(6).Infof("async.GetSummary LEAVE\n")
+		return nil, ErrInvalidInput
+	}
 
 	// request
 	URI := version.GetAsyncAPI(version.SummaryURI, conversationId)
@@ -281,6 +316,11 @@ func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*inte
 	if ctx == nil {
 		ctx = context.Background()
 	}
+	if conversationId == "" {
+		klog.Errorf("conversationId is empty\n")
+		klog.V(6).Infof("async.GetAnalytics LEAVE\n")
+		return nil, ErrInvalidInput
+	}
 
 	// request
 	URI := version.GetAsyncAPI(version.AnalyticsURI, conversationId)
@@ -317,6 +357,11 @@ func (c *Client) GetTracker(ctx context.Context, conversationId string) (*interf
 	// checks
 	if ctx == nil {
 		ctx = context.Background()
+	}
+	if conversationId == "" {
+		klog.Errorf("conversationId is empty\n")
+		klog.V(6).Infof("async.GetTracker LEAVE\n")
+		return nil, ErrInvalidInput
 	}
 
 	// request

@@ -97,7 +97,7 @@ func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient
 	// klog.V(6).Infof("creds:\n%v\n", creds)
 	// klog.V(6).Infof("------------------------\n")
 
-	req, err := http.NewRequestWithContext(ctx, "POST", AuthURI, bytes.NewBuffer([]byte(jsonStr)))
+	req, err := http.NewRequestWithContext(ctx, "POST", AuthURI, bytes.NewBuffer(jsonStr))
 	if err != nil {
 		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("NewWithCreds LEAVE\n")

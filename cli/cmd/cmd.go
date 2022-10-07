@@ -14,10 +14,29 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	klog "k8s.io/klog/v2"
 
+	management "github.com/dvonthenen/symbl-go-sdk/pkg/api/management/v1"
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/management/v1/interfaces"
+	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+)
+
+// async
+/*
+import (
+	"bytes"
+	"context"
+	"encoding/binary"
+	"flag"
+	"fmt"
+	"os"
+
+	"github.com/davecgh/go-spew/spew"
+	klog "k8s.io/klog/v2"
+
 	async "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1"
 	"github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
 	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
 )
+*/
 
 // streaming
 /*
@@ -44,9 +63,7 @@ func main() {
 	flag.Parse()
 
 	/*
-		------------------------------------
-		async (file)
-		------------------------------------
+		Management manipulation
 	*/
 	ctx := context.Background()
 
@@ -58,35 +75,118 @@ func main() {
 		os.Exit(1)
 	}
 
-	asyncClient := async.New(restClient)
+	mgmtClient := management.New(restClient)
 
-	jobConvo, err := asyncClient.PostFile(ctx, "newPhonecall.mp3")
-	if err == nil {
-		fmt.Printf("JobID: %s, ConversationID: %s\n", jobConvo.JobID, jobConvo.ConversationID)
-	} else {
-		fmt.Printf("PostFile failed. Err: %v\n", err)
-		os.Exit(1)
-	}
-
-	completed, err := asyncClient.WaitForJobComplete(ctx, interfaces.WaitForJobStatusOpts{JobId: jobConvo.JobID})
+	// list
+	trackersResult, err := mgmtClient.GetTrackers(ctx)
 	if err != nil {
-		fmt.Printf("WaitForJobComplete failed. Err: %v\n", err)
+		fmt.Printf("GetTrackers failed. Err: %v\n", err)
 		os.Exit(1)
 	}
-	if !completed {
-		fmt.Printf("WaitForJobComplete failed to complete. Use larger timeout\n")
-		os.Exit(1)
-	}
+	fmt.Printf("\n")
+	spew.Dump(trackersResult)
+	fmt.Printf("\n")
 
-	topicsResult, err := asyncClient.GetTopics(ctx, jobConvo.ConversationID)
+	// create
+	createTracker := interfaces.TrackerRequest{
+		Name:       "Test1",
+		Categories: []string{"cat1"},
+		Languages:  []string{interfaces.TrackerLanguageDefault},
+		Vocabulary: []string{"hello", "hi"},
+	}
+	createResponse, err := mgmtClient.CreateTracker(ctx, createTracker)
 	if err != nil {
-		fmt.Printf("Topics failed. Err: %v\n", err)
+		fmt.Printf("CreateTracker failed. Err: %v\n", err)
 		os.Exit(1)
 	}
+	fmt.Printf("\n")
+	spew.Dump(createResponse)
+	fmt.Printf("\n")
 
-	spew.Dump(topicsResult)
+	// list again
+	trackersResult, err = mgmtClient.GetTrackers(ctx)
+	if err != nil {
+		fmt.Printf("GetTrackers failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("\n")
+	spew.Dump(trackersResult)
+	fmt.Printf("\n")
+
+	// list again, again
+	trackersResult, err = mgmtClient.GetTrackers(ctx)
+	if err != nil {
+		fmt.Printf("GetTrackers failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("\n")
+	spew.Dump(trackersResult)
+	fmt.Printf("\n")
+
+	for _, tracker := range trackersResult.Trackers {
+		err = mgmtClient.DeleteTracker(ctx, tracker.ID)
+		if err != nil {
+			fmt.Printf("DeleteTracker failed. Err: %v\n", err)
+			os.Exit(1)
+		}
+	}
+
+	// list again, again, again
+	trackersResult, err = mgmtClient.GetTrackers(ctx)
+	if err != nil {
+		fmt.Printf("GetTrackers failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("\n")
+	spew.Dump(trackersResult)
+	fmt.Printf("\n")
 
 	klog.Info("Succeeded")
+
+	/*
+		------------------------------------
+		async (file)
+		------------------------------------
+	*/
+	// ctx := context.Background()
+
+	// restClient, err := symbl.NewRestClient(ctx)
+	// if err == nil {
+	// 	fmt.Println("Succeeded!")
+	// } else {
+	// 	fmt.Printf("New failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+
+	// asyncClient := async.New(restClient)
+
+	// jobConvo, err := asyncClient.PostFile(ctx, "newPhonecall.mp3")
+	// if err == nil {
+	// 	fmt.Printf("JobID: %s, ConversationID: %s\n", jobConvo.JobID, jobConvo.ConversationID)
+	// } else {
+	// 	fmt.Printf("PostFile failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+
+	// completed, err := asyncClient.WaitForJobComplete(ctx, interfaces.WaitForJobStatusOpts{JobId: jobConvo.JobID})
+	// if err != nil {
+	// 	fmt.Printf("WaitForJobComplete failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+	// if !completed {
+	// 	fmt.Printf("WaitForJobComplete failed to complete. Use larger timeout\n")
+	// 	os.Exit(1)
+	// }
+
+	// topicsResult, err := asyncClient.GetTopics(ctx, jobConvo.ConversationID)
+	// if err != nil {
+	// 	fmt.Printf("Topics failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+
+	// spew.Dump(topicsResult)
+
+	// klog.Info("Succeeded")
 
 	/*
 		------------------------------------
