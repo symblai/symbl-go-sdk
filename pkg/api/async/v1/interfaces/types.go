@@ -6,7 +6,30 @@ package interfaces
 import "time"
 
 /*
-	Input parameters for API calls
+	Shared definitions
+*/
+type User struct {
+	Name   string `json:"name" validate:"required"`
+	UserID string `json:"userId" validate:"required"`
+	Email  string `json:"email" validate:"required"`
+}
+
+type MessageRef struct {
+	ID string `json:"id" validate:"required"`
+}
+
+type Bookmark struct {
+	ID              string       `json:"id"`
+	Label           string       `json:"label"  validate:"required"`
+	Description     string       `json:"description"`
+	User            User         `json:"user" validate:"required"`
+	BeginTimeOffset int          `json:"beginTimeOffset" validate:"required"`
+	Duration        int          `json:"duration" validate:"required"`
+	MessageRefs     []MessageRef `json:"messageRefs" validate:"required"`
+}
+
+/*
+	Input parameters for Async API calls
 */
 // WaitForJobStatusOpts parameter needed for Wait call
 type WaitForJobStatusOpts struct {
@@ -14,8 +37,28 @@ type WaitForJobStatusOpts struct {
 	WaitInSeconds int
 }
 
+// BookmarkByMessageRefsRequest for creating bookmarks
+type BookmarkByMessageRefsRequest struct {
+	Label       string `json:"label" validate:"required"`
+	Description string `json:"description" validate:"required"`
+	User        User   `json:"user" validate:"required"`
+	// BeginTimeOffset int          `json:"beginTimeOffset"`
+	// Duration        int          `json:"duration"`
+	MessageRefs []MessageRef `json:"messageRefs" validate:"required"`
+}
+
+// BookmarkByMessageRefsRequest for creating bookmarks
+type BookmarkBtTimeDurationsRequest struct {
+	Label           string `json:"label" validate:"required"`
+	Description     string `json:"description" validate:"required"`
+	User            User   `json:"user" validate:"required"`
+	BeginTimeOffset int    `json:"beginTimeOffset" validate:"required"`
+	Duration        int    `json:"duration" validate:"required"`
+	// MessageRefs []MessageRef `json:"messageRefs"`
+}
+
 /*
-	Output structs for Async API calls
+	Output parameters for Async API calls
 */
 type TopicResult struct {
 	Topics []struct {
@@ -160,7 +203,7 @@ type SummaryResult struct {
 	} `json:"summary"`
 }
 
-type AnalytiscResult struct {
+type AnalyticsResult struct {
 	Metrics []struct {
 		Type    string  `json:"type"`
 		Percent float64 `json:"percent"`
@@ -198,4 +241,11 @@ type TrackerResult []struct {
 		} `json:"messageRefs"`
 		InsightRefs []interface{} `json:"insightRefs"`
 	} `json:"matches"`
+}
+
+/*
+	Output for Bookmark APIs
+*/
+type BookmarksResult struct {
+	Bookmarks []Bookmark `json:"bookmarks"`
 }

@@ -3,6 +3,7 @@
 
 package main
 
+/*
 import (
 	"bytes"
 	"context"
@@ -18,9 +19,10 @@ import (
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/management/v1/interfaces"
 	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
 )
+*/
 
 // async
-/*
+//*
 import (
 	"bytes"
 	"context"
@@ -33,10 +35,11 @@ import (
 	klog "k8s.io/klog/v2"
 
 	async "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1"
-	"github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
 	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
 )
-*/
+
+//*/
 
 // streaming
 /*
@@ -63,8 +66,10 @@ func main() {
 	flag.Parse()
 
 	/*
-		Entity manipulation
+		Bookmark manipulation
 	*/
+	conversationId := "6558697145237504"
+
 	ctx := context.Background()
 
 	restClient, err := symbl.NewRestClient(ctx)
@@ -75,26 +80,36 @@ func main() {
 		os.Exit(1)
 	}
 
-	mgmtClient := management.New(restClient)
+	asyncClient := async.New(restClient)
 
 	// list
-	entitiesResult, err := mgmtClient.GetEntites(ctx)
+	bookmarkResult, err := asyncClient.GetBookmarks(ctx, conversationId)
 	if err != nil {
-		fmt.Printf("GetEntites failed. Err: %v\n", err)
+		fmt.Printf("GetBookmarks failed. Err: %v\n", err)
 		os.Exit(1)
 	}
 	fmt.Printf("\n")
-	spew.Dump(entitiesResult)
+	spew.Dump(bookmarkResult)
 	fmt.Printf("\n")
 
 	// create
-	createEntity := interfaces.EntityRequest{
-		Type:     "Vehicle",
-		SubType:  "Honda",
-		Category: "Custom",
-		Values:   []string{"hrv", "crv"},
+	createBookmark := interfaces.BookmarkByMessageRefsRequest{
+		Label:       "TODO",
+		Description: "TODO",
+		User: interfaces.User{
+			Name:   "David",
+			UserID: "TODO",
+			Email:  "david.vonthenen@symbl.ai",
+		},
+		// BeginTimeOffset: 22,
+		// Duration:        33,
+		MessageRefs: []interfaces.MessageRef{
+			interfaces.MessageRef{
+				ID: "4510581827043328",
+			},
+		},
 	}
-	createResponse, err := mgmtClient.CreateEntity(ctx, createEntity)
+	createResponse, err := asyncClient.CreateBookmarkByMessageRefs(ctx, conversationId, createBookmark)
 	if err != nil {
 		fmt.Printf("CreateEntity failed. Err: %v\n", err)
 		os.Exit(1)
@@ -104,18 +119,18 @@ func main() {
 	fmt.Printf("\n")
 
 	// list again
-	entitiesResult, err = mgmtClient.GetEntites(ctx)
+	bookmarkResult, err = asyncClient.GetBookmarks(ctx, conversationId)
 	if err != nil {
-		fmt.Printf("GetEntites failed. Err: %v\n", err)
+		fmt.Printf("GetBookmarks failed. Err: %v\n", err)
 		os.Exit(1)
 	}
 	fmt.Printf("\n")
-	spew.Dump(entitiesResult)
+	spew.Dump(bookmarkResult)
 	fmt.Printf("\n")
 
 	// delete entities
-	for _, entity := range entitiesResult.Entities {
-		err = mgmtClient.DeleteEntity(ctx, entity.ID)
+	for _, bookmark := range bookmarkResult.Bookmarks {
+		err = asyncClient.DeleteBookmark(ctx, conversationId, bookmark.ID)
 		if err != nil {
 			fmt.Printf("DeleteEntity failed. Err: %v\n", err)
 			os.Exit(1)
@@ -123,16 +138,88 @@ func main() {
 	}
 
 	// list again, again
-	entitiesResult, err = mgmtClient.GetEntites(ctx)
+	bookmarkResult, err = asyncClient.GetBookmarks(ctx, conversationId)
 	if err != nil {
-		fmt.Printf("GetEntites failed. Err: %v\n", err)
+		fmt.Printf("GetBookmarks failed. Err: %v\n", err)
 		os.Exit(1)
 	}
 	fmt.Printf("\n")
-	spew.Dump(entitiesResult)
+	spew.Dump(bookmarkResult)
 	fmt.Printf("\n")
 
 	klog.Info("Succeeded")
+
+	/*
+		Entity manipulation
+	*/
+	// ctx := context.Background()
+
+	// restClient, err := symbl.NewRestClient(ctx)
+	// if err == nil {
+	// 	fmt.Println("Succeeded!")
+	// } else {
+	// 	fmt.Printf("New failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+
+	// mgmtClient := management.New(restClient)
+
+	// // list
+	// entitiesResult, err := mgmtClient.GetEntites(ctx)
+	// if err != nil {
+	// 	fmt.Printf("GetEntites failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Printf("\n")
+	// spew.Dump(entitiesResult)
+	// fmt.Printf("\n")
+
+	// // create
+	// createEntity := interfaces.EntityRequest{
+	// 	Type:     "Vehicle",
+	// 	SubType:  "Honda",
+	// 	Category: "Custom",
+	// 	Values:   []string{"hrv", "crv"},
+	// }
+	// createResponse, err := mgmtClient.CreateEntity(ctx, createEntity)
+	// if err != nil {
+	// 	fmt.Printf("CreateEntity failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Printf("\n")
+	// spew.Dump(createResponse)
+	// fmt.Printf("\n")
+
+	// // list again
+	// entitiesResult, err = mgmtClient.GetEntites(ctx)
+	// if err != nil {
+	// 	fmt.Printf("GetEntites failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Printf("\n")
+	// spew.Dump(entitiesResult)
+	// fmt.Printf("\n")
+
+	// // delete entities
+	// for _, entity := range entitiesResult.Entities {
+	// 	err = mgmtClient.DeleteEntity(ctx, entity.ID)
+	// 	if err != nil {
+	// 		fmt.Printf("DeleteEntity failed. Err: %v\n", err)
+	// 		os.Exit(1)
+	// 	}
+	// }
+
+	// // list again, again
+	// entitiesResult, err = mgmtClient.GetEntites(ctx)
+	// if err != nil {
+	// 	fmt.Printf("GetEntites failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Printf("\n")
+	// spew.Dump(entitiesResult)
+	// fmt.Printf("\n")
+
+	// klog.Info("Succeeded")
 
 	/*
 		Tracker manipulation

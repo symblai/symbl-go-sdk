@@ -27,6 +27,10 @@ const (
 	SummaryURI     string = "https://api.symbl.ai/%s/conversations/%s/summary?parentRefs=true&sentiment=true"
 	AnalyticsURI   string = "https://api.symbl.ai/%s/conversations/%s/analytics?parentRefs=true&sentiment=true"
 	TrackersURI    string = "https://api.symbl.ai/%s/conversations/%s/trackers?parentRefs=true&sentiment=true"
+
+	// bookmarks
+	BookmarksURI     string = "https://api.symbl.ai/%s/conversations/%s/bookmarks"
+	BookmarksByIdURI string = "https://api.symbl.ai/%s/conversations/%s/bookmarks/%s"
 )
 
 func GetAsyncAPI(URI string, args ...interface{}) string {

@@ -309,7 +309,7 @@ func (c *Client) GetSummary(ctx context.Context, conversationId string) (*interf
 	return &result, nil
 }
 
-func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*interfaces.AnalytiscResult, error) {
+func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*interfaces.AnalyticsResult, error) {
 	klog.V(6).Infof("async.GetAnalytics ENTER\n")
 
 	// checks
@@ -334,7 +334,7 @@ func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*inte
 	}
 
 	// check the status
-	var result interfaces.AnalytiscResult
+	var result interfaces.AnalyticsResult
 
 	err = c.Client.Do(ctx, req, &result)
 

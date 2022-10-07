@@ -50,6 +50,7 @@ func (c *Client) PostFile(ctx context.Context, filePath string) (*JobConversatio
 	}
 
 	klog.V(6).Infof("------------------------\n")
+	klog.V(6).Infof("IMPORTANT: Never print in production\n")
 	klog.V(6).Infof("jobConvo:\n%v\n", jobConvo)
 	klog.V(6).Infof("------------------------\n")
 
@@ -79,6 +80,7 @@ func (c *Client) PostURL(ctx context.Context, url string) (*JobConversation, err
 	}
 
 	klog.V(6).Infof("------------------------\n")
+	klog.V(6).Infof("IMPORTANT: Never print in production\n")
 	klog.V(6).Infof("jobConvo:\n%v\n", jobConvo)
 	klog.V(6).Infof("------------------------\n")
 
@@ -110,6 +112,7 @@ func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool
 	}
 
 	klog.V(6).Infof("------------------------\n")
+	klog.V(6).Infof("IMPORTANT: Never print in production\n")
 	klog.V(6).Infof("req:\n%v\n", req)
 	klog.V(6).Infof("------------------------\n")
 
@@ -127,6 +130,7 @@ func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool
 	}
 
 	klog.V(6).Infof("------------------------\n")
+	klog.V(6).Infof("IMPORTANT: Never print in production\n")
 	klog.V(6).Infof("jobStatus:\n%v\n", jobStatus)
 	klog.V(6).Infof("------------------------\n")
 
@@ -173,7 +177,7 @@ func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts interface
 	for i := 1; i <= int(numOfLoops); i++ {
 		// delay on subsequent calls
 		if i > 1 {
-			klog.V(2).Info("Sleep for retry...\n")
+			klog.V(4).Info("Sleep for retry...\n")
 			time.Sleep(time.Second * time.Duration(defaultDelayBetweenCheck))
 		}
 
