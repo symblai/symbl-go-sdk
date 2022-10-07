@@ -6,7 +6,7 @@ package interfaces
 import "time"
 
 /*
-	Definitions
+	Shared definitions
 */
 type Tracker struct {
 	ID          string    `json:"id"`
@@ -19,6 +19,14 @@ type Tracker struct {
 	UpdatedOn   time.Time `json:"updatedOn"`
 }
 
+type Entity struct {
+	ID       string   `json:"id"`
+	Type     string   `json:"type" validate:"required"`
+	SubType  string   `json:"subType" validate:"required"`
+	Category string   `json:"category" validate:"required"`
+	Values   []string `json:"values" validate:"required"`
+}
+
 /*
 	Input parameters for Management API calls
 */
@@ -29,6 +37,13 @@ type TrackerRequest struct {
 	Categories  []string `json:"categories" validate:"required"`
 	Languages   []string `json:"languages" validate:"required"`
 	Vocabulary  []string `json:"vocabulary" validate:"required"`
+}
+
+type EntityRequest struct {
+	Type     string   `json:"type" validate:"required"`
+	SubType  string   `json:"subType" validate:"required"`
+	Category string   `json:"category" validate:"required"`
+	Values   []string `json:"values" validate:"required"`
 }
 
 // ModifyTrackerRequest to modify a tracker
@@ -52,4 +67,9 @@ type TrackersResponse struct {
 // TrackerResponse result for an individual tracker
 type TrackerResponse struct {
 	Tracker Tracker `json:"tracker"`
+}
+
+// EntitiesResponse list of Entities
+type EntitiesResponse struct {
+	Entities []Entity `json:"entities"`
 }

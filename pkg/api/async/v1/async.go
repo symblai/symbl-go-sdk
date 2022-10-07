@@ -120,7 +120,7 @@ func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("WaitForJobComplete failed. HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.WaitForJobCompleteOnce LEAVE\n")
 			return false, e
 		}

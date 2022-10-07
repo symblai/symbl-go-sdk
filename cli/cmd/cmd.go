@@ -63,7 +63,7 @@ func main() {
 	flag.Parse()
 
 	/*
-		Management manipulation
+		Entity manipulation
 	*/
 	ctx := context.Background()
 
@@ -78,25 +78,25 @@ func main() {
 	mgmtClient := management.New(restClient)
 
 	// list
-	trackersResult, err := mgmtClient.GetTrackers(ctx)
+	entitiesResult, err := mgmtClient.GetEntites(ctx)
 	if err != nil {
-		fmt.Printf("GetTrackers failed. Err: %v\n", err)
+		fmt.Printf("GetEntites failed. Err: %v\n", err)
 		os.Exit(1)
 	}
 	fmt.Printf("\n")
-	spew.Dump(trackersResult)
+	spew.Dump(entitiesResult)
 	fmt.Printf("\n")
 
 	// create
-	createTracker := interfaces.TrackerRequest{
-		Name:       "Test1",
-		Categories: []string{"cat1"},
-		Languages:  []string{interfaces.TrackerLanguageDefault},
-		Vocabulary: []string{"hello", "hi"},
+	createEntity := interfaces.EntityRequest{
+		Type:     "Vehicle",
+		SubType:  "Honda",
+		Category: "Custom",
+		Values:   []string{"hrv", "crv"},
 	}
-	createResponse, err := mgmtClient.CreateTracker(ctx, createTracker)
+	createResponse, err := mgmtClient.CreateEntity(ctx, createEntity)
 	if err != nil {
-		fmt.Printf("CreateTracker failed. Err: %v\n", err)
+		fmt.Printf("CreateEntity failed. Err: %v\n", err)
 		os.Exit(1)
 	}
 	fmt.Printf("\n")
@@ -104,44 +104,107 @@ func main() {
 	fmt.Printf("\n")
 
 	// list again
-	trackersResult, err = mgmtClient.GetTrackers(ctx)
+	entitiesResult, err = mgmtClient.GetEntites(ctx)
 	if err != nil {
-		fmt.Printf("GetTrackers failed. Err: %v\n", err)
+		fmt.Printf("GetEntites failed. Err: %v\n", err)
 		os.Exit(1)
 	}
 	fmt.Printf("\n")
-	spew.Dump(trackersResult)
+	spew.Dump(entitiesResult)
 	fmt.Printf("\n")
 
-	// list again, again
-	trackersResult, err = mgmtClient.GetTrackers(ctx)
-	if err != nil {
-		fmt.Printf("GetTrackers failed. Err: %v\n", err)
-		os.Exit(1)
-	}
-	fmt.Printf("\n")
-	spew.Dump(trackersResult)
-	fmt.Printf("\n")
-
-	for _, tracker := range trackersResult.Trackers {
-		err = mgmtClient.DeleteTracker(ctx, tracker.ID)
+	// delete entities
+	for _, entity := range entitiesResult.Entities {
+		err = mgmtClient.DeleteEntity(ctx, entity.ID)
 		if err != nil {
-			fmt.Printf("DeleteTracker failed. Err: %v\n", err)
+			fmt.Printf("DeleteEntity failed. Err: %v\n", err)
 			os.Exit(1)
 		}
 	}
 
-	// list again, again, again
-	trackersResult, err = mgmtClient.GetTrackers(ctx)
+	// list again, again
+	entitiesResult, err = mgmtClient.GetEntites(ctx)
 	if err != nil {
-		fmt.Printf("GetTrackers failed. Err: %v\n", err)
+		fmt.Printf("GetEntites failed. Err: %v\n", err)
 		os.Exit(1)
 	}
 	fmt.Printf("\n")
-	spew.Dump(trackersResult)
+	spew.Dump(entitiesResult)
 	fmt.Printf("\n")
 
 	klog.Info("Succeeded")
+
+	/*
+		Tracker manipulation
+	*/
+	// ctx := context.Background()
+
+	// restClient, err := symbl.NewRestClient(ctx)
+	// if err == nil {
+	// 	fmt.Println("Succeeded!")
+	// } else {
+	// 	fmt.Printf("New failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+
+	// mgmtClient := management.New(restClient)
+
+	// // list
+	// trackersResult, err := mgmtClient.GetTrackers(ctx)
+	// if err != nil {
+	// 	fmt.Printf("GetTrackers failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Printf("\n")
+	// spew.Dump(trackersResult)
+	// fmt.Printf("\n")
+
+	// // create
+	// createTracker := interfaces.TrackerRequest{
+	// 	Name:       "Test1",
+	// 	Categories: []string{"cat1"},
+	// 	Languages:  []string{interfaces.TrackerLanguageDefault},
+	// 	Vocabulary: []string{"hello", "hi"},
+	// }
+	// createResponse, err := mgmtClient.CreateTracker(ctx, createTracker)
+	// if err != nil {
+	// 	fmt.Printf("CreateTracker failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Printf("\n")
+	// spew.Dump(createResponse)
+	// fmt.Printf("\n")
+
+	// // list again
+	// trackersResult, err = mgmtClient.GetTrackers(ctx)
+	// if err != nil {
+	// 	fmt.Printf("GetTrackers failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Printf("\n")
+	// spew.Dump(trackersResult)
+	// fmt.Printf("\n")
+
+	// // delete trackers
+	// for _, tracker := range trackersResult.Trackers {
+	// 	err = mgmtClient.DeleteTracker(ctx, tracker.ID)
+	// 	if err != nil {
+	// 		fmt.Printf("DeleteTracker failed. Err: %v\n", err)
+	// 		os.Exit(1)
+	// 	}
+	// }
+
+	// // list again, again
+	// trackersResult, err = mgmtClient.GetTrackers(ctx)
+	// if err != nil {
+	// 	fmt.Printf("GetTrackers failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Printf("\n")
+	// spew.Dump(trackersResult)
+	// fmt.Printf("\n")
+
+	// klog.Info("Succeeded")
 
 	/*
 		------------------------------------

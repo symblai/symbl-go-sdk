@@ -10,9 +10,14 @@ import (
 const (
 	ManagementAPIVersion string = "v1"
 
-	ManagementTrackerURI             string = "https://api.symbl.ai/%s/manage/trackers"
-	ManagementCreateTrackerURI       string = "https://api.symbl.ai/%s/manage/trackers"
-	ManagementModifyDeleteTrackerURI string = "https://api.symbl.ai/%s/manage/trackers/%s"
+	// trackers
+	ManagementTrackerURI     string = "https://api.symbl.ai/%s/manage/trackers"
+	ManagementtrackerByIdURI string = "https://api.symbl.ai/%s/manage/trackers/%s"
+
+	// entity
+	ManagementEntitiesURI          string = "https://api.symbl.ai/%s/manage/entities"
+	ManagementEntitiesByIdURI      string = "https://api.symbl.ai/%s/manage/entities/%s"
+	ManagementEntitiesBySubTypeURI string = "https://api.symbl.ai/%s/manage/entities?subType=%s"
 )
 
 func GetManagementAPI(URI string, args ...interface{}) string {
