@@ -136,7 +136,7 @@ func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient
 		auth:   &resp,
 	}
 
-	klog.V(2).Infof("NewWithCreds Succeeded\n")
+	klog.V(4).Infof("NewWithCreds Succeeded\n")
 	klog.V(6).Infof("NewWithCreds LEAVE\n")
 	return c, nil
 }
@@ -156,7 +156,7 @@ func (c *RestClient) Do(ctx context.Context, req *http.Request, resBody interfac
 	for i := 1; i <= defaultAttemptsToReauth; i++ {
 		// delay on subsequent calls
 		if i > 1 {
-			klog.V(2).Info("Sleep for retry...\n")
+			klog.V(4).Info("Sleep for retry...\n")
 			time.Sleep(time.Second * time.Duration(defaultDelayBetweenReauth))
 		}
 
@@ -166,7 +166,7 @@ func (c *RestClient) Do(ctx context.Context, req *http.Request, resBody interfac
 		if e, ok := err.(*rest.StatusError); ok {
 			if e.Resp.StatusCode == http.StatusUnauthorized {
 
-				klog.V(2).Info("Received http.StatusUnauthorized\n")
+				klog.V(3).Info("Received http.StatusUnauthorized\n")
 				newClient, reauthErr := NewRestClientWithCreds(ctx, *c.creds)
 				if reauthErr != nil {
 					klog.Errorf("unable to re-authorize to symbl platform\n")
@@ -174,7 +174,7 @@ func (c *RestClient) Do(ctx context.Context, req *http.Request, resBody interfac
 					return reauthErr
 				}
 
-				klog.V(2).Info("Re-authorized with the symbl.ai platform\n")
+				klog.V(4).Info("Re-authorized with the symbl.ai platform\n")
 				c.Client = newClient.Client
 				c.auth = newClient.auth
 			}
@@ -183,7 +183,7 @@ func (c *RestClient) Do(ctx context.Context, req *http.Request, resBody interfac
 		}
 	}
 
-	klog.V(2).Infof("Failed with (%s) %s\n", req.Method, req.URL)
+	klog.Errorf("Failed with (%s) %s\n", req.Method, req.URL)
 	klog.V(6).Infof("symbl.Do LEAVE\n")
 	return err
 }

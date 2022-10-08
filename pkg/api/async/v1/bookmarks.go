@@ -49,9 +49,9 @@ func (c *Client) GetBookmarks(ctx context.Context, conversationId string) (*inte
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetBookmarks LEAVE\n")
-			return nil, e
+			return nil, err
 		}
 	}
 
@@ -96,9 +96,9 @@ func (c *Client) GetBookmarkById(ctx context.Context, conversationId, bookmarkId
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetBookmarkById LEAVE\n")
-			return nil, e
+			return nil, err
 		}
 	}
 
@@ -168,7 +168,7 @@ func (c *Client) CreateBookmarkByMessageRefs(ctx context.Context, conversationId
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 			return nil, err
 		}
@@ -228,7 +228,7 @@ func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationI
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 			return nil, err
 		}
@@ -296,9 +296,9 @@ func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationI
 
 // 	if e, ok := err.(*symbl.StatusError); ok {
 // 		if e.Resp.StatusCode != http.StatusOK {
-// 			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+// 			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 // 			klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
-// 			return nil, e
+// 			return nil, err
 // 		}
 // 	}
 
@@ -343,9 +343,9 @@ func (c *Client) DeleteBookmark(ctx context.Context, conversationId, bookmarkId 
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.DeleteBookmark LEAVE\n")
-			return e
+			return err
 		}
 	}
 
