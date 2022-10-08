@@ -43,9 +43,9 @@ func (m *Management) GetEntites(ctx context.Context) (*interfaces.EntitiesRespon
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.GetEntites LEAVE\n")
-			return nil, e
+			return nil, err
 		}
 	}
 
@@ -80,9 +80,9 @@ func (m *Management) GetEntitById(ctx context.Context, entityId string) (*interf
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.GetEntitById LEAVE\n")
-			return nil, e
+			return nil, err
 		}
 	}
 
@@ -139,7 +139,7 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Entity
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.CreateEntity LEAVE\n")
 			return nil, err
 		}
@@ -197,9 +197,9 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Entity
 
 // 	if e, ok := err.(*symbl.StatusError); ok {
 // 		if e.Resp.StatusCode != http.StatusOK {
-// 			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+// 			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 // 			klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
-// 			return nil, e
+// 			return nil, err
 // 		}
 // 	}
 
@@ -239,7 +239,7 @@ func (m *Management) DeleteEntity(ctx context.Context, entityId string) error {
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.DeleteEntity LEAVE\n")
 			return e
 		}
@@ -281,9 +281,9 @@ func (m *Management) DeleteEntityBySubType(ctx context.Context, subType string) 
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.DeleteEntityBySubType LEAVE\n")
-			return e
+			return err
 		}
 	}
 

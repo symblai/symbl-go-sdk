@@ -37,7 +37,7 @@ func (c *Client) PostFile(ctx context.Context, filePath string) (*JobConversatio
 		ctx = context.Background()
 	}
 
-	klog.V(2).Infof("filePath: %s\n", filePath)
+	klog.V(3).Infof("filePath: %s\n", filePath)
 
 	// send the file!
 	var jobConvo JobConversation
@@ -49,12 +49,12 @@ func (c *Client) PostFile(ctx context.Context, filePath string) (*JobConversatio
 		return nil, e
 	}
 
-	klog.V(6).Infof("------------------------\n")
-	klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	klog.V(6).Infof("jobConvo:\n%v\n", jobConvo)
-	klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
+	// klog.V(6).Infof("jobConvo:\n%v\n", jobConvo)
+	// klog.V(6).Infof("------------------------\n")
 
-	klog.V(2).Infof("async.PostFile Succeeded\n")
+	klog.V(3).Infof("async.PostFile Succeeded\n")
 	klog.V(6).Infof("async.PostFile LEAVE\n")
 	return &jobConvo, nil
 }
@@ -67,7 +67,7 @@ func (c *Client) PostURL(ctx context.Context, url string) (*JobConversation, err
 		ctx = context.Background()
 	}
 
-	klog.V(2).Infof("url: %s\n", url)
+	klog.V(3).Infof("url: %s\n", url)
 
 	// send the file!
 	var jobConvo JobConversation
@@ -79,12 +79,12 @@ func (c *Client) PostURL(ctx context.Context, url string) (*JobConversation, err
 		return nil, e
 	}
 
-	klog.V(6).Infof("------------------------\n")
-	klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	klog.V(6).Infof("jobConvo:\n%v\n", jobConvo)
-	klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
+	// klog.V(6).Infof("jobConvo:\n%v\n", jobConvo)
+	// klog.V(6).Infof("------------------------\n")
 
-	klog.V(2).Infof("async.PostURL Succeeded\n")
+	klog.V(3).Infof("async.PostURL Succeeded\n")
 	klog.V(6).Infof("async.PostURL LEAVE\n")
 	return &jobConvo, nil
 }
@@ -111,10 +111,10 @@ func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool
 		return false, err
 	}
 
-	klog.V(6).Infof("------------------------\n")
-	klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	klog.V(6).Infof("req:\n%v\n", req)
-	klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
+	// klog.V(6).Infof("req:\n%v\n", req)
+	// klog.V(6).Infof("------------------------\n")
 
 	// check the status
 	var jobStatus JobStatus
@@ -123,20 +123,20 @@ func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.WaitForJobCompleteOnce LEAVE\n")
-			return false, e
+			return false, err
 		}
 	}
 
-	klog.V(6).Infof("------------------------\n")
-	klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	klog.V(6).Infof("jobStatus:\n%v\n", jobStatus)
-	klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("------------------------\n")
+	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
+	// klog.V(6).Infof("jobStatus:\n%v\n", jobStatus)
+	// klog.V(6).Infof("------------------------\n")
 
 	complete := (jobStatus.Status == JobStatusComplete)
 
-	klog.V(2).Infof("%s: %t", URI, complete)
+	klog.V(3).Infof("%s: %t", URI, complete)
 	klog.V(6).Infof("async.WaitForJobCompleteOnce LEAVE\n")
 	return complete, nil
 }
@@ -189,7 +189,7 @@ func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts interface
 			return false, err
 		}
 		if completed {
-			klog.V(2).Info("WaitForJobCompleteOnce completed!\n")
+			klog.V(3).Info("WaitForJobCompleteOnce completed!\n")
 			klog.V(6).Infof("async.WaitForJobComplete LEAVE\n")
 			return true, nil
 		}

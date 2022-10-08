@@ -59,7 +59,7 @@ func NewStreamClient(ctx context.Context, config *StreamingConfig, callback inte
 	// create rest client
 	restClient, err := NewRestClient(ctx)
 	if err != nil {
-		klog.V(2).Infof("NewRestClient failed. Err: %v\n", err)
+		klog.Errorf("NewRestClient failed. Err: %v\n", err)
 		klog.V(6).Infof("NewStreamClient LEAVE\n")
 		return nil, err
 	}
@@ -86,7 +86,7 @@ func NewStreamClient(ctx context.Context, config *StreamingConfig, callback inte
 	}
 	wsClient, err := stream.NewWebSocketClient(creds, symblStreaming)
 	if err != nil {
-		klog.V(2).Infof("stream.NewWebSocketClient failed. Err: %v\n", err)
+		klog.Errorf("stream.NewWebSocketClient failed. Err: %v\n", err)
 		klog.V(6).Infof("NewStreamClient LEAVE\n")
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func NewStreamClient(ctx context.Context, config *StreamingConfig, callback inte
 	// establish connection
 	wsConnection := wsClient.Connect()
 	if wsConnection == nil {
-		klog.V(2).Infof("stream.NewWebSocketClient failed. Err: %v\n", err)
+		klog.Errorf("stream.NewWebSocketClient failed. Err: %v\n", err)
 		klog.V(6).Infof("NewStreamClient LEAVE\n")
 		return nil, ErrWebSocketInitializationFailed
 	}
@@ -102,7 +102,7 @@ func NewStreamClient(ctx context.Context, config *StreamingConfig, callback inte
 	// write Symbl config to Platform
 	err = wsClient.WriteJSON(config)
 	if err != nil {
-		klog.V(2).Infof("wsClient.WriteJSON failed. Err: %v\n", err)
+		klog.Errorf("wsClient.WriteJSON failed. Err: %v\n", err)
 		klog.V(6).Infof("NewStreamClient LEAVE\n")
 		return nil, err
 	}
@@ -114,7 +114,7 @@ func NewStreamClient(ctx context.Context, config *StreamingConfig, callback inte
 		symblStreaming,
 	}
 
-	klog.V(2).Infof("NewStreamClientWithCreds Succeeded\n")
+	klog.V(4).Infof("NewStreamClientWithCreds Succeeded\n")
 	klog.V(6).Infof("NewStreamClient LEAVE\n")
 	return streamClient, nil
 }

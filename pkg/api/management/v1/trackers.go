@@ -43,9 +43,9 @@ func (m *Management) GetTrackers(ctx context.Context) (*interfaces.TrackersRespo
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.GetTrackers LEAVE\n")
-			return nil, e
+			return nil, err
 		}
 	}
 
@@ -99,7 +99,7 @@ func (m *Management) CreateTracker(ctx context.Context, request interfaces.Track
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.CreateTracker LEAVE\n")
 			return nil, err
 		}
@@ -157,9 +157,9 @@ func (m *Management) CreateTracker(ctx context.Context, request interfaces.Track
 
 // 	if e, ok := err.(*symbl.StatusError); ok {
 // 		if e.Resp.StatusCode != http.StatusOK {
-// 			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+// 			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 // 			klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
-// 			return nil, e
+// 			return nil, err
 // 		}
 // 	}
 
@@ -199,9 +199,9 @@ func (m *Management) DeleteTracker(ctx context.Context, trackerId string) error 
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(2).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.DeleteTracker LEAVE\n")
-			return e
+			return err
 		}
 	}
 

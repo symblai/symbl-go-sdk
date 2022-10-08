@@ -27,12 +27,10 @@ import (
 	"bytes"
 	"context"
 	"encoding/binary"
-	"flag"
 	"fmt"
 	"os"
 
 	"github.com/davecgh/go-spew/spew"
-	klog "k8s.io/klog/v2"
 
 	async "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1"
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
@@ -61,93 +59,91 @@ import (
 */
 
 func main() {
-	klog.InitFlags(nil)
-	flag.Set("v", "6")
-	flag.Parse()
+	symbl.InitLogging(2)
 
 	/*
 		Bookmark manipulation
 	*/
-	conversationId := "6558697145237504"
+	// conversationId := "6558697145237504"
 
-	ctx := context.Background()
+	// ctx := context.Background()
 
-	restClient, err := symbl.NewRestClient(ctx)
-	if err == nil {
-		fmt.Println("Succeeded!")
-	} else {
-		fmt.Printf("New failed. Err: %v\n", err)
-		os.Exit(1)
-	}
+	// restClient, err := symbl.NewRestClient(ctx)
+	// if err == nil {
+	// 	fmt.Println("Succeeded!")
+	// } else {
+	// 	fmt.Printf("New failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
 
-	asyncClient := async.New(restClient)
+	// asyncClient := async.New(restClient)
 
-	// list
-	bookmarkResult, err := asyncClient.GetBookmarks(ctx, conversationId)
-	if err != nil {
-		fmt.Printf("GetBookmarks failed. Err: %v\n", err)
-		os.Exit(1)
-	}
-	fmt.Printf("\n")
-	spew.Dump(bookmarkResult)
-	fmt.Printf("\n")
+	// // list
+	// bookmarkResult, err := asyncClient.GetBookmarks(ctx, conversationId)
+	// if err != nil {
+	// 	fmt.Printf("GetBookmarks failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Printf("\n")
+	// spew.Dump(bookmarkResult)
+	// fmt.Printf("\n")
 
-	// create
-	createBookmark := interfaces.BookmarkByMessageRefsRequest{
-		Label:       "TODO",
-		Description: "TODO",
-		User: interfaces.User{
-			Name:   "David",
-			UserID: "TODO",
-			Email:  "david.vonthenen@symbl.ai",
-		},
-		// BeginTimeOffset: 22,
-		// Duration:        33,
-		MessageRefs: []interfaces.MessageRef{
-			interfaces.MessageRef{
-				ID: "4510581827043328",
-			},
-		},
-	}
-	createResponse, err := asyncClient.CreateBookmarkByMessageRefs(ctx, conversationId, createBookmark)
-	if err != nil {
-		fmt.Printf("CreateEntity failed. Err: %v\n", err)
-		os.Exit(1)
-	}
-	fmt.Printf("\n")
-	spew.Dump(createResponse)
-	fmt.Printf("\n")
+	// // create
+	// createBookmark := interfaces.BookmarkByMessageRefsRequest{
+	// 	Label:       "TODO",
+	// 	Description: "TODO",
+	// 	User: interfaces.User{
+	// 		Name:   "David",
+	// 		UserID: "TODO",
+	// 		Email:  "david.vonthenen@symbl.ai",
+	// 	},
+	// 	// BeginTimeOffset: 22,
+	// 	// Duration:        33,
+	// 	MessageRefs: []interfaces.MessageRef{
+	// 		interfaces.MessageRef{
+	// 			ID: "4510581827043328",
+	// 		},
+	// 	},
+	// }
+	// createResponse, err := asyncClient.CreateBookmarkByMessageRefs(ctx, conversationId, createBookmark)
+	// if err != nil {
+	// 	fmt.Printf("CreateEntity failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Printf("\n")
+	// spew.Dump(createResponse)
+	// fmt.Printf("\n")
 
-	// list again
-	bookmarkResult, err = asyncClient.GetBookmarks(ctx, conversationId)
-	if err != nil {
-		fmt.Printf("GetBookmarks failed. Err: %v\n", err)
-		os.Exit(1)
-	}
-	fmt.Printf("\n")
-	spew.Dump(bookmarkResult)
-	fmt.Printf("\n")
+	// // list again
+	// bookmarkResult, err = asyncClient.GetBookmarks(ctx, conversationId)
+	// if err != nil {
+	// 	fmt.Printf("GetBookmarks failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Printf("\n")
+	// spew.Dump(bookmarkResult)
+	// fmt.Printf("\n")
 
-	// delete entities
-	for _, bookmark := range bookmarkResult.Bookmarks {
-		err = asyncClient.DeleteBookmark(ctx, conversationId, bookmark.ID)
-		if err != nil {
-			fmt.Printf("DeleteEntity failed. Err: %v\n", err)
-			os.Exit(1)
-		}
-	}
+	// // delete entities
+	// for _, bookmark := range bookmarkResult.Bookmarks {
+	// 	err = asyncClient.DeleteBookmark(ctx, conversationId, bookmark.ID)
+	// 	if err != nil {
+	// 		fmt.Printf("DeleteEntity failed. Err: %v\n", err)
+	// 		os.Exit(1)
+	// 	}
+	// }
 
-	// list again, again
-	bookmarkResult, err = asyncClient.GetBookmarks(ctx, conversationId)
-	if err != nil {
-		fmt.Printf("GetBookmarks failed. Err: %v\n", err)
-		os.Exit(1)
-	}
-	fmt.Printf("\n")
-	spew.Dump(bookmarkResult)
-	fmt.Printf("\n")
+	// // list again, again
+	// bookmarkResult, err = asyncClient.GetBookmarks(ctx, conversationId)
+	// if err != nil {
+	// 	fmt.Printf("GetBookmarks failed. Err: %v\n", err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Printf("\n")
+	// spew.Dump(bookmarkResult)
+	// fmt.Printf("\n")
 
-	klog.Info("Succeeded")
+	// fmt.Printf("Succeeded")
 
 	/*
 		Entity manipulation
@@ -219,7 +215,7 @@ func main() {
 	// spew.Dump(entitiesResult)
 	// fmt.Printf("\n")
 
-	// klog.Info("Succeeded")
+	// fmt.Printf("Succeeded")
 
 	/*
 		Tracker manipulation
@@ -291,7 +287,7 @@ func main() {
 	// spew.Dump(trackersResult)
 	// fmt.Printf("\n")
 
-	// klog.Info("Succeeded")
+	// fmt.Printf("Succeeded")
 
 	/*
 		------------------------------------
@@ -336,52 +332,53 @@ func main() {
 
 	// spew.Dump(topicsResult)
 
-	// klog.Info("Succeeded")
+	// fmt.Printf("Succeeded")
 
 	/*
 		------------------------------------
 		async (url)
 		------------------------------------
 	*/
-	// ctx := context.Background()
+	ctx := context.Background()
 
-	// restClient, err := symbl.NewRestClient(ctx)
-	// if err == nil {
-	// 	fmt.Println("Succeeded!")
-	// } else {
-	// 	fmt.Printf("New failed. Err: %v\n", err)
-	// 	os.Exit(1)
-	// }
+	restClient, err := symbl.NewRestClient(ctx)
+	if err == nil {
+		fmt.Println("Succeeded!\n\n")
+	} else {
+		fmt.Printf("New failed. Err: %v\n", err)
+		os.Exit(1)
+	}
 
-	// asyncClient := async.New(restClient)
+	asyncClient := async.New(restClient)
 
-	// jobConvo, err := asyncClient.PostURL(ctx, "https://symbltestdata.s3.us-east-2.amazonaws.com/newPhonecall.mp3")
-	// if err == nil {
-	// 	fmt.Printf("JobID: %s, ConversationID: %s\n", jobConvo.JobID, jobConvo.ConversationID)
-	// } else {
-	// 	fmt.Printf("PostFile failed. Err: %v\n", err)
-	// 	os.Exit(1)
-	// }
+	jobConvo, err := asyncClient.PostURL(ctx, "https://symbltestdata.s3.us-east-2.amazonaws.com/newPhonecall.mp3")
+	if err == nil {
+		fmt.Printf("JobID: %s, ConversationID: %s\n\n", jobConvo.JobID, jobConvo.ConversationID)
+	} else {
+		fmt.Printf("PostFile failed. Err: %v\n", err)
+		os.Exit(1)
+	}
 
-	// completed, err := asyncClient.WaitForJobComplete(ctx, interfaces.WaitForJobStatusOpts{JobId: jobConvo.JobID})
-	// if err != nil {
-	// 	fmt.Printf("WaitForJobComplete failed. Err: %v\n", err)
-	// 	os.Exit(1)
-	// }
-	// if !completed {
-	// 	fmt.Printf("WaitForJobComplete failed to complete. Use larger timeout\n")
-	// 	os.Exit(1)
-	// }
+	completed, err := asyncClient.WaitForJobComplete(ctx, interfaces.WaitForJobStatusOpts{JobId: jobConvo.JobID})
+	if err != nil {
+		fmt.Printf("WaitForJobComplete failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+	if !completed {
+		fmt.Printf("WaitForJobComplete failed to complete. Use larger timeout\n")
+		os.Exit(1)
+	}
 
-	// topicsResult, err := asyncClient.GetTopics(ctx, jobConvo.ConversationID)
-	// if err != nil {
-	// 	fmt.Printf("Topics failed. Err: %v\n", err)
-	// 	os.Exit(1)
-	// }
+	topicsResult, err := asyncClient.GetTopics(ctx, jobConvo.ConversationID)
+	if err != nil {
+		fmt.Printf("Topics failed. Err: %v\n", err)
+		os.Exit(1)
+	}
 
-	// spew.Dump(topicsResult)
+	fmt.Printf("\n\n")
+	spew.Dump(topicsResult)
 
-	// klog.Info("Succeeded")
+	fmt.Printf("Succeeded")
 
 	/*
 		// TODO implement an unhandled message that can be passed along to the user
@@ -471,7 +468,7 @@ func main() {
 	// 	os.Exit(1)
 	// }
 
-	// klog.Info("Succeeded")
+	// fmt.Printf("Succeeded")
 }
 
 func int16ToLittleEndianByte(f []int16) []byte {

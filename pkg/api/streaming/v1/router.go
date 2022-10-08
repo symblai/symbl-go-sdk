@@ -71,17 +71,17 @@ func (smr *SymblMessageRouter) Message(byMsg []byte) error {
 	switch smt.Message.Type {
 	// internal messages
 	case MessageTypeInitListening:
-		klog.V(2).Infof("Symbl Platform Initialized Listening\n")
+		klog.V(3).Infof("Symbl Platform Initialized Listening\n")
 	case MessageTypeInitConversation:
 		return smr.InitializedConversation(byMsg)
 	case MessageTypeInitRecognition:
-		klog.V(2).Infof("Symbl Platform Initialized Recognition\n")
+		klog.V(3).Infof("Symbl Platform Initialized Recognition\n")
 	case MessageTypeSessionModified:
-		klog.V(2).Infof("Symbl Platform Session Modified\n")
+		klog.V(3).Infof("Symbl Platform Session Modified\n")
 	case MessageTypeTeardownConversation:
-		klog.V(2).Infof("Symbl Platform Conversation Complete\n")
+		klog.V(3).Infof("Symbl Platform Conversation Complete\n")
 	case MessageTypeTeardownRecognition:
-		klog.V(2).Infof("Symbl Platform Recognition Stopped\n")
+		klog.V(3).Infof("Symbl Platform Recognition Stopped\n")
 	case MessageTypeError:
 		return smr.HandleError(byMsg)
 		// pass insights to the user
@@ -93,7 +93,7 @@ func (smr *SymblMessageRouter) Message(byMsg []byte) error {
 		return smr.InsightResponseMessage(byMsg)
 		// default handler
 	default:
-		klog.V(2).Infof("Unhandled Message Type: %s\n", smt.Message.Type)
+		klog.V(3).Infof("Unhandled Message Type: %s\n", smt.Message.Type)
 		return smr.UnhandledMessage(byMsg)
 	}
 
@@ -115,7 +115,7 @@ func (smr *SymblMessageRouter) InitializedConversation(byMsg []byte) error {
 
 	smr.ConversationID = symblInit.Message.Data.ConversationID
 
-	klog.V(2).Infof("Setting Symbl ConversationID %s\n", smr.ConversationID)
+	klog.V(3).Infof("Setting Symbl ConversationID %s\n", smr.ConversationID)
 	klog.V(6).Infof("InitializedConversation LEAVE\n")
 	return nil
 }
@@ -158,15 +158,15 @@ func (smr *SymblMessageRouter) RecognitionResultMessage(byMsg []byte) error {
 	if smr.callback != nil {
 		err := smr.callback.RecognitionResultMessage(&rr)
 		if err != nil {
-			klog.V(2).Infof("callback.RecognitionResultMessage failed. Err: %v\n", err)
+			klog.Errorf("callback.RecognitionResultMessage failed. Err: %v\n", err)
 		} else {
-			klog.V(2).Infof("callback.RecognitionResultMessage succeeded\n")
+			klog.V(3).Infof("callback.RecognitionResultMessage succeeded\n")
 		}
 		klog.V(6).Infof("RecognitionResultMessage LEAVE\n")
 		return err
 	}
 
-	klog.V(2).Infof("User callback is undefined\n")
+	klog.Errorf("User callback is undefined\n")
 	klog.V(6).Infof("RecognitionResultMessage LEAVE\n")
 	return ErrUserCallbackNotDefined
 }
@@ -185,15 +185,15 @@ func (smr *SymblMessageRouter) MessageResponseMessage(byMsg []byte) error {
 	if smr.callback != nil {
 		err := smr.callback.MessageResponseMessage(&mr)
 		if err != nil {
-			klog.V(2).Infof("callback.MessageResponseMessage failed. Err: %v\n", err)
+			klog.Errorf("callback.MessageResponseMessage failed. Err: %v\n", err)
 		} else {
-			klog.V(2).Infof("callback.MessageResponseMessage succeeded\n")
+			klog.V(3).Infof("callback.MessageResponseMessage succeeded\n")
 		}
 		klog.V(6).Infof("MessageResponseMessage LEAVE\n")
 		return err
 	}
 
-	klog.V(2).Infof("User callback is undefined\n")
+	klog.Errorf("User callback is undefined\n")
 	klog.V(6).Infof("MessageResponseMessage LEAVE\n")
 	return ErrUserCallbackNotDefined
 }
@@ -212,15 +212,15 @@ func (smr *SymblMessageRouter) InsightResponseMessage(byMsg []byte) error {
 	if smr.callback != nil {
 		err := smr.callback.InsightResponseMessage(&ir)
 		if err != nil {
-			klog.V(2).Infof("callback.InsightResponseMessage failed. Err: %v\n", err)
+			klog.Errorf("callback.InsightResponseMessage failed. Err: %v\n", err)
 		} else {
-			klog.V(2).Infof("callback.InsightResponseMessage succeeded\n")
+			klog.V(3).Infof("callback.InsightResponseMessage succeeded\n")
 		}
 		klog.V(6).Infof("InsightResponseMessage LEAVE\n")
 		return err
 	}
 
-	klog.V(2).Infof("User callback is undefined\n")
+	klog.Errorf("User callback is undefined\n")
 	klog.V(6).Infof("InsightResponseMessage LEAVE\n")
 	return ErrUserCallbackNotDefined
 }
@@ -231,15 +231,15 @@ func (smr *SymblMessageRouter) UnhandledMessage(byMsg []byte) error {
 	if smr.callback != nil {
 		err := smr.callback.UnhandledMessage(byMsg)
 		if err != nil {
-			klog.V(2).Infof("callback.UnhandledMessage failed. Err: %v\n", err)
+			klog.Errorf("callback.UnhandledMessage failed. Err: %v\n", err)
 		} else {
-			klog.V(2).Infof("callback.UnhandledMessage succeeded\n")
+			klog.V(3).Infof("callback.UnhandledMessage succeeded\n")
 		}
 		klog.V(6).Infof("UnhandledMessage LEAVE\n")
 		return err
 	}
 
-	klog.V(2).Infof("User callback is undefined\n")
+	klog.Errorf("User callback is undefined\n")
 	klog.V(6).Infof("UnhandledMessage LEAVE\n")
 	return ErrUserCallbackNotDefined
 }
