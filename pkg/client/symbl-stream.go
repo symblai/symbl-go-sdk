@@ -114,7 +114,7 @@ func NewStreamClient(ctx context.Context, config *StreamingConfig, callback inte
 		symblStreaming,
 	}
 
-	klog.V(3).Infof("NewStreamClientWithCreds Succeeded\n"))
+	klog.V(3).Infof("NewStreamClientWithCreds Succeeded\n")
 	klog.V(6).Infof("NewStreamClient LEAVE\n")
 	return streamClient, nil
 }

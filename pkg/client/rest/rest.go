@@ -250,7 +250,7 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 				return err
 			}
 			klog.V(6).Infof("rest.DoFile LEAVE\n")
-			return fmt.V(1).Infof("%s: %s", res.Status, bytes.TrimSpace(detail))
+			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
 		default:
 			return &StatusError{res}
 		}
@@ -291,7 +291,7 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 	// klog.V(6).Infof("resBody:\n%v\n", resBody)
 	// klog.V(6).Infof("------------------------\n")
 
-	klog.V(3).Infof("rest.DoFile Succeeded\n"))
+	klog.V(3).Infof("rest.DoFile Succeeded\n")
 	klog.V(6).Infof("rest.DoFile LEAVE\n")
 	return nil
 }
@@ -387,7 +387,7 @@ func (c *Client) DoURL(ctx context.Context, url string, resBody interface{}) err
 				return err
 			}
 			klog.V(6).Infof("rest.DoURL LEAVE\n")
-			return fmt.V(1).Infof("%s: %s", res.Status, bytes.TrimSpace(detail))
+			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
 		default:
 			return &StatusError{res}
 		}
@@ -428,7 +428,7 @@ func (c *Client) DoURL(ctx context.Context, url string, resBody interface{}) err
 	// klog.V(6).Infof("resBody:\n%v\n", resBody)
 	// klog.V(6).Infof("------------------------\n")
 
-	klog.V(3).Infof("rest.DoURL Succeeded\n")))
+	klog.V(3).Infof("rest.DoURL Succeeded\n")
 	klog.V(6).Infof("rest.DoURL LEAVE\n")
 	return nil
 }
@@ -475,7 +475,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 				return err
 			}
 			klog.V(6).Infof("rest.Do LEAVE\n")
-			return fmt.V(1).Infof("%s: %s", res.Status, bytes.TrimSpace(detail))
+			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
 		default:
 			return &StatusError{res}
 		}
@@ -516,7 +516,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 	// klog.V(6).Infof("resBody:\n%v\n", resBody)
 	// klog.V(6).Infof("------------------------\n")
 
-	klog.V(3).Infof("rest.Do Succeeded\n"))
+	klog.V(3).Infof("rest.Do Succeeded\n")
 	klog.V(6).Infof("rest.Do LEAVE\n")
 	return nil
 }
