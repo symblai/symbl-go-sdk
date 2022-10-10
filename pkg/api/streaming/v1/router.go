@@ -70,7 +70,7 @@ func (smr *SymblMessageRouter) Message(byMsg []byte) error {
 		return smr.UnhandledMessage(byMsg)
 	}
 
-	klog.V(3).Infof("SymblMessageRouter Succeeded\n"))
+	klog.V(3).Infof("SymblMessageRouter Succeeded\n")
 	klog.V(6).Infof("SymblMessageRouter LEAVE\n")
 	return nil
 }
@@ -110,7 +110,7 @@ func (smr *SymblMessageRouter) handlePlatformMessage(byMsg []byte) error {
 		return ErrInvalidMessageType
 	}
 
-	klog.V(3).Infof("handlePlatformMessage Succeeded\n"))
+	klog.V(3).Infof("handlePlatformMessage Succeeded\n")
 	klog.V(6).Infof("handlePlatformMessage LEAVE\n")
 	return nil
 }
@@ -173,7 +173,7 @@ func (smr *SymblMessageRouter) RecognitionResultMessage(byMsg []byte) error {
 		if err != nil {
 			klog.V(1).Infof("callback.RecognitionResultMessage failed. Err: %v\n", err)
 		} else {
-			klog.V(3).Infof("callback.RecognitionResultMessage succeeded\n"))
+			klog.V(3).Infof("callback.RecognitionResultMessage succeeded\n")
 		}
 		klog.V(6).Infof("RecognitionResultMessage LEAVE\n")
 		return err
@@ -200,7 +200,7 @@ func (smr *SymblMessageRouter) MessageResponseMessage(byMsg []byte) error {
 		if err != nil {
 			klog.V(1).Infof("callback.MessageResponseMessage failed. Err: %v\n", err)
 		} else {
-			klog.V(3).Infof("callback.MessageResponseMessage succeeded\n"))
+			klog.V(3).Infof("callback.MessageResponseMessage succeeded\n")
 		}
 		klog.V(6).Infof("MessageResponseMessage LEAVE\n")
 		return err
@@ -227,7 +227,7 @@ func (smr *SymblMessageRouter) InsightResponseMessage(byMsg []byte) error {
 		if err != nil {
 			klog.V(1).Infof("callback.InsightResponseMessage failed. Err: %v\n", err)
 		} else {
-			klog.V(3).Infof("callback.InsightResponseMessage succeeded\n"))
+			klog.V(3).Infof("callback.InsightResponseMessage succeeded\n")
 		}
 		klog.V(6).Infof("InsightResponseMessage LEAVE\n")
 		return err

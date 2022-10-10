@@ -136,7 +136,7 @@ func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient
 		auth:   &resp,
 	}
 
-	klog.V(3).Infof("NewWithCreds Succeeded\n"))
+	klog.V(3).Infof("NewWithCreds Succeeded\n")
 	klog.V(6).Infof("NewWithCreds LEAVE\n")
 	return c, nil
 }

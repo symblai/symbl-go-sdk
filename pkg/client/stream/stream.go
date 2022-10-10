@@ -71,7 +71,7 @@ func NewWebSocketClient(creds Credentials, callback WebSocketMessageCallback) (*
 	go conn.listenWrite()
 	go conn.ping()
 
-	klog.V(3).Infof("NewWebSocketClient Succeeded\n")))
+	klog.V(3).Infof("NewWebSocketClient Succeeded\n")
 	klog.V(6).Infof("NewWebSocketClient LEAVE\n")
 	return &conn, nil
 }
@@ -176,7 +176,7 @@ func (conn *WebSocketClient) WriteBinary(byData []byte) error {
 		case conn.sendBuf <- data:
 			return nil
 		case <-ctx.Done():
-			return fmt.V(1).Infof("context canceled")
+			return fmt.Errorf("context canceled")
 		}
 	}
 }
@@ -207,7 +207,7 @@ func (conn *WebSocketClient) WriteJSON(payload interface{}) error {
 		case conn.sendBuf <- data:
 			return nil
 		case <-ctx.Done():
-			return fmt.V(1).Infof("context canceled")
+			return fmt.Errorf("context canceled")
 		}
 	}
 }
