@@ -59,7 +59,9 @@ import (
 */
 
 func main() {
-	symbl.InitLogging(2)
+	symbl.Init(symbl.SybmlInit{
+		LogLevel: symbl.LogLevelStandard,
+	})
 
 	/*
 		Bookmark manipulation
