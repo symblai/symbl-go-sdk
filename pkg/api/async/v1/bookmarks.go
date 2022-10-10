@@ -26,7 +26,7 @@ func (c *Client) GetBookmarks(ctx context.Context, conversationId string) (*inte
 		ctx = context.Background()
 	}
 	if conversationId == "" {
-		klog.Errorf("conversationId is empty\n")
+		klog.V(1).Infof("conversationId is empty\n")
 		klog.V(6).Infof("async.GetBookmarks LEAVE\n")
 		return nil, ErrInvalidInput
 	}
@@ -37,7 +37,7 @@ func (c *Client) GetBookmarks(ctx context.Context, conversationId string) (*inte
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.GetBookmarks LEAVE\n")
 		return nil, err
 	}
@@ -49,13 +49,13 @@ func (c *Client) GetBookmarks(ctx context.Context, conversationId string) (*inte
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetBookmarks LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Bookmarks succeeded\n")
+	klog.V(3).Infof("GET Bookmarks succeeded\n"))
 	klog.V(6).Infof("async.GetBookmarks LEAVE\n")
 	return &result, nil
 }
@@ -68,12 +68,12 @@ func (c *Client) GetBookmarkById(ctx context.Context, conversationId, bookmarkId
 		ctx = context.Background()
 	}
 	if conversationId == "" {
-		klog.Errorf("conversationId is empty\n")
+		klog.V(1).Infof("conversationId is empty\n")
 		klog.V(6).Infof("async.GetBookmarkById LEAVE\n")
 		return nil, ErrInvalidInput
 	}
 	if bookmarkId == "" {
-		klog.Errorf("bookmarkId is empty\n")
+		klog.V(1).Infof("bookmarkId is empty\n")
 		klog.V(6).Infof("async.GetBookmarkById LEAVE\n")
 		return nil, ErrInvalidInput
 	}
@@ -84,7 +84,7 @@ func (c *Client) GetBookmarkById(ctx context.Context, conversationId, bookmarkId
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.GetBookmarkById LEAVE\n")
 		return nil, err
 	}
@@ -96,13 +96,13 @@ func (c *Client) GetBookmarkById(ctx context.Context, conversationId, bookmarkId
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetBookmarkById LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET BookmarkById succeeded\n")
+	klog.V(3).Infof("GET BookmarkById succeeded\n"))
 	klog.V(6).Infof("async.GetBookmarkById LEAVE\n")
 	return &result, nil
 }
@@ -131,13 +131,13 @@ func (c *Client) CreateBookmarkByMessageRefs(ctx context.Context, conversationId
 	err := v.Struct(request)
 	if err != nil {
 		for _, e := range err.(validator.ValidationErrors) {
-			klog.Errorf("CreateBookmark validation failed. Err: %v\n", e)
+			klog.V(1).Infof("CreateBookmark validation failed. Err: %v\n", e)
 		}
 		klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 		return nil, err
 	}
 	if conversationId == "" {
-		klog.Errorf("conversationId is empty\n")
+		klog.V(1).Infof("conversationId is empty\n")
 		klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 		return nil, ErrInvalidInput
 	}
@@ -149,14 +149,14 @@ func (c *Client) CreateBookmarkByMessageRefs(ctx context.Context, conversationId
 	// let's auth
 	jsonStr, err := json.Marshal(request)
 	if err != nil {
-		klog.Errorf("json.Marshal failed. Err: %v\n", err)
+		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
 		klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 		return nil, err
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "POST", URI, bytes.NewBuffer(jsonStr))
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 		return nil, err
 	}
@@ -168,13 +168,13 @@ func (c *Client) CreateBookmarkByMessageRefs(ctx context.Context, conversationId
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Create Bookmark succeeded\n")
+	klog.V(3).Infof("GET Create Bookmark succeeded\n"))
 	klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 	return &result, nil
 }
@@ -191,13 +191,13 @@ func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationI
 	err := v.Struct(request)
 	if err != nil {
 		for _, e := range err.(validator.ValidationErrors) {
-			klog.Errorf("CreateBookmark validation failed. Err: %v\n", e)
+			klog.V(1).Infof("CreateBookmark validation failed. Err: %v\n", e)
 		}
 		klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 		return nil, err
 	}
 	if conversationId == "" {
-		klog.Errorf("conversationId is empty\n")
+		klog.V(1).Infof("conversationId is empty\n")
 		klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 		return nil, ErrInvalidInput
 	}
@@ -209,14 +209,14 @@ func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationI
 	// let's auth
 	jsonStr, err := json.Marshal(request)
 	if err != nil {
-		klog.Errorf("json.Marshal failed. Err: %v\n", err)
+		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
 		klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 		return nil, err
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "POST", URI, bytes.NewBuffer(jsonStr))
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 		return nil, err
 	}
@@ -228,13 +228,13 @@ func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationI
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Create Bookmark succeeded\n")
+	klog.V(3).Infof("GET Create Bookmark succeeded\n"))
 	klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 	return &result, nil
 }
@@ -262,18 +262,18 @@ func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationI
 // 	err := v.Struct(request)
 // 	if err != nil {
 // 		for _, e := range err.(validator.ValidationErrors) {
-// 			klog.Errorf("UpdateBookmark validation failed. Err: %v\n", e)
+// 			klog.V(1).Infof("UpdateBookmark validation failed. Err: %v\n", e)
 // 		}
 // 		klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
 // 		return nil, err
 // 	}
 // 	if conversationId == "" {
-// 		klog.Errorf("conversationId is empty\n")
+// 		klog.V(1).Infof("conversationId is empty\n")
 // 		klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
 // 		return nil, ErrInvalidInput
 // 	}
 // 	if bookmarkId == "" {
-// 		klog.Errorf("bookmarkId is empty\n")
+// 		klog.V(1).Infof("bookmarkId is empty\n")
 // 		klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
 // 		return nil, ErrInvalidInput
 // 	}
@@ -284,7 +284,7 @@ func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationI
 
 // 	req, err := http.NewRequestWithContext(ctx, "PUT", URI, nil)
 // 	if err != nil {
-// 		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+// 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 // 		klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
 // 		return nil, err
 // 	}
@@ -296,13 +296,13 @@ func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationI
 
 // 	if e, ok := err.(*symbl.StatusError); ok {
 // 		if e.Resp.StatusCode != http.StatusOK {
-// 			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+// 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 // 			klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
 // 			return nil, err
 // 		}
 // 	}
 
-// 	klog.V(4).Infof("GET Update Bookmark succeeded\n")
+// 	klog.V(3).Infof("GET Update Bookmark succeeded\n")))
 // 	klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
 // 	return &result, nil
 // }
@@ -317,12 +317,12 @@ func (c *Client) DeleteBookmark(ctx context.Context, conversationId, bookmarkId 
 
 	// validate input
 	if conversationId == "" {
-		klog.Errorf("conversationId is empty\n")
+		klog.V(1).Infof("conversationId is empty\n")
 		klog.V(6).Infof("async.DeleteBookmark LEAVE\n")
 		return ErrInvalidInput
 	}
 	if bookmarkId == "" {
-		klog.Errorf("bookmarkId is empty\n")
+		klog.V(1).Infof("bookmarkId is empty\n")
 		klog.V(6).Infof("async.DeleteBookmark LEAVE\n")
 		return ErrInvalidInput
 	}
@@ -333,7 +333,7 @@ func (c *Client) DeleteBookmark(ctx context.Context, conversationId, bookmarkId 
 
 	req, err := http.NewRequestWithContext(ctx, "DELETE", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.DeleteBookmark LEAVE\n")
 		return err
 	}
@@ -343,13 +343,13 @@ func (c *Client) DeleteBookmark(ctx context.Context, conversationId, bookmarkId 
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.DeleteBookmark LEAVE\n")
 			return err
 		}
 	}
 
-	klog.V(4).Infof("GET Delete Bookmark succeeded\n")
+	klog.V(3).Infof("GET Delete Bookmark succeeded\n"))
 	klog.V(6).Infof("async.DeleteBookmark LEAVE\n")
 	return nil
 }

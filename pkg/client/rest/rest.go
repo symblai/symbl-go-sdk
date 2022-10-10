@@ -54,13 +54,13 @@ func (c *Client) WithHeader(
 // 	// checks
 // 	fileInfo, err := os.Stat(filePath)
 // 	if err != nil || errors.Is(err, os.ErrNotExist) {
-// 		klog.Errorf("File %s does not exist. Err : %v\n", filePath, err)
+// 		klog.V(1).Infof("File %s does not exist. Err : %v\n", filePath, err)
 // 		klog.V(6).Infof("rest.DoMultiPartFile LEAVE\n")
 // 		return err
 // 	}
 
 // 	if fileInfo.IsDir() && fileInfo.Size() > 0 {
-// 		klog.Errorf("%sis a directory not a file\n", filePath)
+// 		klog.V(1).Infof("%sis a directory not a file\n", filePath)
 // 		klog.V(6).Infof("rest.DoMultiPartFile LEAVE\n")
 // 		return ErrInvalidInput
 // 	}
@@ -93,7 +93,7 @@ func (c *Client) WithHeader(
 
 // 	req, err := http.NewRequestWithContext(ctx, "POST", URI, r)
 // 	if err != nil {
-// 		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+// 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 // 		klog.V(6).Infof("rest.DoMultiPartFile LEAVE\n")
 // 		return err
 // 	}
@@ -130,7 +130,7 @@ func (c *Client) WithHeader(
 // 				return err
 // 			}
 // 			klog.V(6).Infof("rest.DoFile LEAVE\n")
-// 			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
+// 			return fmt.V(1).Infof("%s: %s", res.Status, bytes.TrimSpace(detail))
 // 		default:
 // 			return &StatusError{res}
 // 		}
@@ -160,11 +160,11 @@ func (c *Client) WithHeader(
 // 	})
 
 // 	if err != nil {
-// 		klog.Errorf("err = c.Client.Do failed. Err: %v\n", err)
+// 		klog.V(1).Infof("err = c.Client.Do failed. Err: %v\n", err)
 // 		return err
 // 	}
 
-// 	klog.V(4).Infof("rest.DoMultiPartFile Succeeded\n")
+// 	klog.V(3).Infof("rest.DoMultiPartFile Succeeded\n"))
 // 	klog.V(6).Infof("rest.DoMultiPartFile LEAVE\n")
 // 	return nil
 // }
@@ -175,13 +175,13 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 	// checks
 	fileInfo, err := os.Stat(filePath)
 	if err != nil || errors.Is(err, os.ErrNotExist) {
-		klog.Errorf("File %s does not exist. Err : %v\n", filePath, err)
+		klog.V(1).Infof("File %s does not exist. Err : %v\n", filePath, err)
 		klog.V(6).Infof("rest.DoFile LEAVE\n")
 		return err
 	}
 
 	if fileInfo.IsDir() && fileInfo.Size() > 0 {
-		klog.Errorf("%s is a directory not a file\n", filePath)
+		klog.V(1).Infof("%s is a directory not a file\n", filePath)
 		klog.V(6).Infof("rest.DoFile LEAVE\n")
 		return ErrInvalidInput
 	}
@@ -192,7 +192,7 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 
 	file, err := os.Open(filePath)
 	if err != nil {
-		klog.Errorf("os.Open failed. Err: %v\n", err)
+		klog.V(1).Infof("os.Open failed. Err: %v\n", err)
 		klog.V(6).Infof("rest.DoFile LEAVE\n")
 		return err
 	}
@@ -203,7 +203,7 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 
 	req, err := http.NewRequestWithContext(ctx, "POST", URI, file)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("rest.DoFile LEAVE\n")
 		return err
 	}
@@ -250,7 +250,7 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 				return err
 			}
 			klog.V(6).Infof("rest.DoFile LEAVE\n")
-			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
+			return fmt.V(1).Infof("%s: %s", res.Status, bytes.TrimSpace(detail))
 		default:
 			return &StatusError{res}
 		}
@@ -280,7 +280,7 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 	})
 
 	if err != nil {
-		klog.Errorf("err = c.Client.Do failed. Err: %v\n", err)
+		klog.V(1).Infof("err = c.Client.Do failed. Err: %v\n", err)
 		klog.V(6).Infof("rest.DoFile LEAVE\n")
 		return err
 	}
@@ -291,7 +291,7 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 	// klog.V(6).Infof("resBody:\n%v\n", resBody)
 	// klog.V(6).Infof("------------------------\n")
 
-	klog.V(3).Infof("rest.DoFile Succeeded\n")
+	klog.V(3).Infof("rest.DoFile Succeeded\n"))
 	klog.V(6).Infof("rest.DoFile LEAVE\n")
 	return nil
 }
@@ -307,7 +307,7 @@ func (c *Client) DoURL(ctx context.Context, url string, resBody interface{}) err
 	// checks
 	validURL := IsUrl(url)
 	if !validURL {
-		klog.Errorf("Invalid URL: %s\n", url)
+		klog.V(1).Infof("Invalid URL: %s\n", url)
 		klog.V(6).Infof("rest.DoURL LEAVE\n")
 		return ErrInvalidInput
 	}
@@ -328,14 +328,14 @@ func (c *Client) DoURL(ctx context.Context, url string, resBody interface{}) err
 	var buf bytes.Buffer
 	err := json.NewEncoder(&buf).Encode(urlRequest)
 	if err != nil {
-		klog.Errorf("json.NewEncoder().Encode() failed. Err: %v\n", err)
+		klog.V(1).Infof("json.NewEncoder().Encode() failed. Err: %v\n", err)
 		klog.V(6).Infof("rest.DoURL LEAVE\n")
 		return err
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "POST", URI, &buf)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("rest.DoURL LEAVE\n")
 		return err
 	}
@@ -387,7 +387,7 @@ func (c *Client) DoURL(ctx context.Context, url string, resBody interface{}) err
 				return err
 			}
 			klog.V(6).Infof("rest.DoURL LEAVE\n")
-			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
+			return fmt.V(1).Infof("%s: %s", res.Status, bytes.TrimSpace(detail))
 		default:
 			return &StatusError{res}
 		}
@@ -417,7 +417,7 @@ func (c *Client) DoURL(ctx context.Context, url string, resBody interface{}) err
 	})
 
 	if err != nil {
-		klog.Errorf("err = c.Client.Do failed. Err: %v\n", err)
+		klog.V(1).Infof("err = c.Client.Do failed. Err: %v\n", err)
 		klog.V(6).Infof("rest.DoURL LEAVE\n")
 		return err
 	}
@@ -428,7 +428,7 @@ func (c *Client) DoURL(ctx context.Context, url string, resBody interface{}) err
 	// klog.V(6).Infof("resBody:\n%v\n", resBody)
 	// klog.V(6).Infof("------------------------\n")
 
-	klog.V(3).Infof("rest.DoURL Succeeded\n")
+	klog.V(3).Infof("rest.DoURL Succeeded\n")))
 	klog.V(6).Infof("rest.DoURL LEAVE\n")
 	return nil
 }
@@ -475,7 +475,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 				return err
 			}
 			klog.V(6).Infof("rest.Do LEAVE\n")
-			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
+			return fmt.V(1).Infof("%s: %s", res.Status, bytes.TrimSpace(detail))
 		default:
 			return &StatusError{res}
 		}
@@ -505,7 +505,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 	})
 
 	if err != nil {
-		klog.Errorf("err = c.Client.Do failed. Err: %v\n", err)
+		klog.V(1).Infof("err = c.Client.Do failed. Err: %v\n", err)
 		klog.V(6).Infof("rest.Do LEAVE\n")
 		return err
 	}
@@ -516,7 +516,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 	// klog.V(6).Infof("resBody:\n%v\n", resBody)
 	// klog.V(6).Infof("------------------------\n")
 
-	klog.V(3).Infof("rest.Do Succeeded\n")
+	klog.V(3).Infof("rest.Do Succeeded\n"))
 	klog.V(6).Infof("rest.Do LEAVE\n")
 	return nil
 }

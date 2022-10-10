@@ -59,7 +59,7 @@ func NewStreamClient(ctx context.Context, config *StreamingConfig, callback inte
 	// create rest client
 	restClient, err := NewRestClient(ctx)
 	if err != nil {
-		klog.Errorf("NewRestClient failed. Err: %v\n", err)
+		klog.V(1).Infof("NewRestClient failed. Err: %v\n", err)
 		klog.V(6).Infof("NewStreamClient LEAVE\n")
 		return nil, err
 	}
@@ -86,7 +86,7 @@ func NewStreamClient(ctx context.Context, config *StreamingConfig, callback inte
 	}
 	wsClient, err := stream.NewWebSocketClient(creds, symblStreaming)
 	if err != nil {
-		klog.Errorf("stream.NewWebSocketClient failed. Err: %v\n", err)
+		klog.V(1).Infof("stream.NewWebSocketClient failed. Err: %v\n", err)
 		klog.V(6).Infof("NewStreamClient LEAVE\n")
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func NewStreamClient(ctx context.Context, config *StreamingConfig, callback inte
 	// establish connection
 	wsConnection := wsClient.Connect()
 	if wsConnection == nil {
-		klog.Errorf("stream.NewWebSocketClient failed. Err: %v\n", err)
+		klog.V(1).Infof("stream.NewWebSocketClient failed. Err: %v\n", err)
 		klog.V(6).Infof("NewStreamClient LEAVE\n")
 		return nil, ErrWebSocketInitializationFailed
 	}
@@ -102,7 +102,7 @@ func NewStreamClient(ctx context.Context, config *StreamingConfig, callback inte
 	// write Symbl config to Platform
 	err = wsClient.WriteJSON(config)
 	if err != nil {
-		klog.Errorf("wsClient.WriteJSON failed. Err: %v\n", err)
+		klog.V(1).Infof("wsClient.WriteJSON failed. Err: %v\n", err)
 		klog.V(6).Infof("NewStreamClient LEAVE\n")
 		return nil, err
 	}
@@ -114,7 +114,7 @@ func NewStreamClient(ctx context.Context, config *StreamingConfig, callback inte
 		symblStreaming,
 	}
 
-	klog.V(4).Infof("NewStreamClientWithCreds Succeeded\n")
+	klog.V(3).Infof("NewStreamClientWithCreds Succeeded\n"))
 	klog.V(6).Infof("NewStreamClient LEAVE\n")
 	return streamClient, nil
 }
@@ -127,7 +127,7 @@ func (sc *StreamClient) Stop() {
 
 	err := sc.WriteJSON(stopMsg)
 	if err != nil {
-		klog.Errorf("wsClient.WriteJSON failed. Err: %v\n", err)
+		klog.V(1).Infof("wsClient.WriteJSON failed. Err: %v\n", err)
 	}
 
 	// stop websocket

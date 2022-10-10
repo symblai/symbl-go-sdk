@@ -50,7 +50,7 @@ func NewWebSocketClient(creds Credentials, callback WebSocketMessageCallback) (*
 	err := v.Struct(creds)
 	if err != nil {
 		for _, e := range err.(validator.ValidationErrors) {
-			klog.Errorf("NewWebSocketClient validation failed. Err: %v\n", e)
+			klog.V(1).Infof("NewWebSocketClient validation failed. Err: %v\n", e)
 		}
 		klog.V(6).Infof("NewWebSocketClient LEAVE\n")
 		return nil, err
@@ -71,7 +71,7 @@ func NewWebSocketClient(creds Credentials, callback WebSocketMessageCallback) (*
 	go conn.listenWrite()
 	go conn.ping()
 
-	klog.V(3).Infof("NewWebSocketClient Succeeded\n")
+	klog.V(3).Infof("NewWebSocketClient Succeeded\n")))
 	klog.V(6).Infof("NewWebSocketClient LEAVE\n")
 	return &conn, nil
 }
@@ -103,7 +103,7 @@ func (conn *WebSocketClient) Connect() *websocket.Conn {
 		default:
 			ws, _, err := dialer.Dial(conn.configStr, myHeader)
 			if err != nil {
-				klog.Errorf("Cannot connect to websocket: %s\n", conn.configStr)
+				klog.V(1).Infof("Cannot connect to websocket: %s\n", conn.configStr)
 				continue
 			}
 
@@ -127,13 +127,13 @@ func (conn *WebSocketClient) listen() {
 			for {
 				ws := conn.Connect()
 				if ws == nil {
-					klog.Errorf("WebSocketClient::listen Connect is not valid\n")
+					klog.V(1).Infof("WebSocketClient::listen Connect is not valid\n")
 					klog.V(6).Infof("WebSocketClient::listen LEAVE\n")
 					return
 				}
 				msgType, bytMsg, err := ws.ReadMessage()
 				if err != nil {
-					klog.Errorf("Cannot read websocket message. Err: %v\n", err)
+					klog.V(1).Infof("Cannot read websocket message. Err: %v\n", err)
 					conn.closeWs()
 					break
 				}
@@ -164,7 +164,7 @@ func (conn *WebSocketClient) WriteBinary(byData []byte) error {
 	}
 	data, err := json.Marshal(ed)
 	if err != nil {
-		klog.Errorf("WebSocketClient::Write json.Marshal failed. Err: %v\n", err)
+		klog.V(1).Infof("WebSocketClient::Write json.Marshal failed. Err: %v\n", err)
 		return err
 	}
 
@@ -176,7 +176,7 @@ func (conn *WebSocketClient) WriteBinary(byData []byte) error {
 		case conn.sendBuf <- data:
 			return nil
 		case <-ctx.Done():
-			return fmt.Errorf("context canceled")
+			return fmt.V(1).Infof("context canceled")
 		}
 	}
 }
@@ -185,7 +185,7 @@ func (conn *WebSocketClient) WriteBinary(byData []byte) error {
 func (conn *WebSocketClient) WriteJSON(payload interface{}) error {
 	dataStruct, err := json.Marshal(payload)
 	if err != nil {
-		klog.Errorf("WebSocketClient::Write json.Marshal failed. Err: %v\n", err)
+		klog.V(1).Infof("WebSocketClient::Write json.Marshal failed. Err: %v\n", err)
 		return err
 	}
 
@@ -195,7 +195,7 @@ func (conn *WebSocketClient) WriteJSON(payload interface{}) error {
 	}
 	data, err := json.Marshal(ed)
 	if err != nil {
-		klog.Errorf("WebSocketClient::Write json.Marshal failed. Err: %v\n", err)
+		klog.V(1).Infof("WebSocketClient::Write json.Marshal failed. Err: %v\n", err)
 		return err
 	}
 
@@ -207,7 +207,7 @@ func (conn *WebSocketClient) WriteJSON(payload interface{}) error {
 		case conn.sendBuf <- data:
 			return nil
 		case <-ctx.Done():
-			return fmt.Errorf("context canceled")
+			return fmt.V(1).Infof("context canceled")
 		}
 	}
 }
@@ -216,14 +216,14 @@ func (conn *WebSocketClient) listenWrite() {
 	for data := range conn.sendBuf {
 		ws := conn.Connect()
 		if ws == nil {
-			klog.Errorf("WebSocketClient::listenWrite Connect is not valid\n")
+			klog.V(1).Infof("WebSocketClient::listenWrite Connect is not valid\n")
 			continue
 		}
 
 		var em EncapsulatedMessage
 		err := json.Unmarshal([]byte(data), &em)
 		if err != nil {
-			klog.Errorf("WebSocketClient::listenWrite json.Unmarshal failed. Err: %v\n", err)
+			klog.V(1).Infof("WebSocketClient::listenWrite json.Unmarshal failed. Err: %v\n", err)
 			continue
 		}
 
@@ -239,7 +239,7 @@ func (conn *WebSocketClient) listenWrite() {
 			em.Type,
 			em.Data,
 		); err != nil {
-			klog.Errorf("WebSocketClient::listenWrite Write failed. Err: %v\n", err)
+			klog.V(1).Infof("WebSocketClient::listenWrite Write failed. Err: %v\n", err)
 		}
 	}
 }

@@ -31,7 +31,7 @@ func (m *Management) GetTrackers(ctx context.Context) (*interfaces.TrackersRespo
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("mgmt.GetTrackers LEAVE\n")
 		return nil, err
 	}
@@ -43,13 +43,13 @@ func (m *Management) GetTrackers(ctx context.Context) (*interfaces.TrackersRespo
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.GetTrackers LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Management Trackers succeeded\n")
+	klog.V(3).Infof("GET Management Trackers succeeded\n"))
 	klog.V(6).Infof("mgmt.GetTrackers LEAVE\n")
 	return &result, nil
 }
@@ -67,7 +67,7 @@ func (m *Management) CreateTracker(ctx context.Context, request interfaces.Track
 	err := v.Struct(request)
 	if err != nil {
 		for _, e := range err.(validator.ValidationErrors) {
-			klog.Errorf("CreateTracker validation failed. Err: %v\n", e)
+			klog.V(1).Infof("CreateTracker validation failed. Err: %v\n", e)
 		}
 		klog.V(6).Infof("mgmt.CreateTracker LEAVE\n")
 		return nil, err
@@ -80,14 +80,14 @@ func (m *Management) CreateTracker(ctx context.Context, request interfaces.Track
 	// let's auth
 	jsonStr, err := json.Marshal(request)
 	if err != nil {
-		klog.Errorf("json.Marshal failed. Err: %v\n", err)
+		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
 		klog.V(6).Infof("mgmt.CreateTracker LEAVE\n")
 		return nil, err
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "POST", URI, bytes.NewBuffer(jsonStr))
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("mgmt.CreateTracker LEAVE\n")
 		return nil, err
 	}
@@ -99,13 +99,13 @@ func (m *Management) CreateTracker(ctx context.Context, request interfaces.Track
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.CreateTracker LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Create Trackers succeeded\n")
+	klog.V(3).Infof("GET Create Trackers succeeded\n"))
 	klog.V(6).Infof("mgmt.CreateTracker LEAVE\n")
 	return &result, nil
 }
@@ -133,7 +133,7 @@ func (m *Management) CreateTracker(ctx context.Context, request interfaces.Track
 // 	err := v.Struct(request)
 // 	if err != nil {
 // 		for _, e := range err.(validator.ValidationErrors) {
-// 			klog.Errorf("UpdateTracker validation failed. Err: %v\n", e)
+// 			klog.V(1).Infof("UpdateTracker validation failed. Err: %v\n", e)
 // 		}
 // 		klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
 // 		return nil, err
@@ -145,7 +145,7 @@ func (m *Management) CreateTracker(ctx context.Context, request interfaces.Track
 
 // 	req, err := http.NewRequestWithContext(ctx, "PATCH", URI, nil)
 // 	if err != nil {
-// 		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+// 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 // 		klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
 // 		return nil, err
 // 	}
@@ -157,13 +157,13 @@ func (m *Management) CreateTracker(ctx context.Context, request interfaces.Track
 
 // 	if e, ok := err.(*symbl.StatusError); ok {
 // 		if e.Resp.StatusCode != http.StatusOK {
-// 			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+// 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 // 			klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
 // 			return nil, err
 // 		}
 // 	}
 
-// 	klog.V(4).Infof("GET Update Trackers succeeded\n")
+// 	klog.V(3).Infof("GET Update Trackers succeeded\n"))
 // 	klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
 // 	return &result, nil
 // }
@@ -178,7 +178,7 @@ func (m *Management) DeleteTracker(ctx context.Context, trackerId string) error 
 
 	// validate input
 	if trackerId == "" {
-		klog.Errorf("trackerId is empty\n")
+		klog.V(1).Infof("trackerId is empty\n")
 		klog.V(6).Infof("mgmt.DeleteTracker LEAVE\n")
 		return ErrInvalidInput
 	}
@@ -189,7 +189,7 @@ func (m *Management) DeleteTracker(ctx context.Context, trackerId string) error 
 
 	req, err := http.NewRequestWithContext(ctx, "DELETE", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("mgmt.DeleteTracker LEAVE\n")
 		return err
 	}
@@ -199,13 +199,13 @@ func (m *Management) DeleteTracker(ctx context.Context, trackerId string) error 
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.DeleteTracker LEAVE\n")
 			return err
 		}
 	}
 
-	klog.V(4).Infof("GET Delete Trackers succeeded\n")
+	klog.V(3).Infof("GET Delete Trackers succeeded\n"))
 	klog.V(6).Infof("mgmt.DeleteTracker LEAVE\n")
 	return nil
 }
