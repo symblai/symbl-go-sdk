@@ -20,37 +20,37 @@ func NewDefaultMessageRouter() *DefaultMessageRouter {
 func (dmr *DefaultMessageRouter) RecognitionResultMessage(rr *interfaces.RecognitionResult) error {
 	data, err := json.Marshal(rr)
 	if err != nil {
-		klog.Errorf("RecognitionResult json.Marshal failed. Err: %v\n", err)
+		klog.V(1).Infof("RecognitionResult json.Marshal failed. Err: %v\n", err)
 		return err
 	}
 
-	klog.Infof("RecognitionResult Object DUMP:\n%v\n", string(data))
+	klog.Infof("\n\nRecognitionResult Object DUMP:\n%v\n\n", string(data))
 	return nil
 }
 
 func (dmr *DefaultMessageRouter) MessageResponseMessage(mr *interfaces.MessageResponse) error {
 	data, err := json.Marshal(mr)
 	if err != nil {
-		klog.Errorf("MessageResponse json.Marshal failed. Err: %v\n", err)
+		klog.V(1).Infof("MessageResponse json.Marshal failed. Err: %v\n", err)
 		return err
 	}
 
-	klog.Infof("MessageResponse Object DUMP:\n%v\n", string(data))
+	klog.Infof("\n\nMessageResponse Object DUMP:\n%v\n\n", string(data))
 	return nil
 }
 
 func (dmr *DefaultMessageRouter) InsightResponseMessage(ir *interfaces.InsightResponse) error {
 	data, err := json.Marshal(ir)
 	if err != nil {
-		klog.Errorf("InsightResponseMessage json.Marshal failed. Err: %v\n", err)
+		klog.V(1).Infof("InsightResponseMessage json.Marshal failed. Err: %v\n", err)
 		return err
 	}
 
-	klog.Infof("InsightResponseMessage Object DUMP:\n%v\n", string(data))
+	klog.Infof("\n\nInsightResponseMessage Object DUMP:\n%v\n\n", string(data))
 	return nil
 }
 
 func (dmr *DefaultMessageRouter) UnhandledMessage(byMsg []byte) error {
-	klog.Infof("UnhandledMessage Object DUMP:\n%v\n", string(byMsg))
+	klog.Infof("\n\nUnhandledMessage Object DUMP:\n%v\n\n", string(byMsg))
 	return nil
 }

@@ -74,7 +74,7 @@ func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient
 	err := v.Struct(creds)
 	if err != nil {
 		for _, e := range err.(validator.ValidationErrors) {
-			klog.Errorf("NewWithCreds validation failed. Err: %v\n", e)
+			klog.V(1).Infof("NewWithCreds validation failed. Err: %v\n", e)
 		}
 		klog.V(6).Infof("NewWithCreds LEAVE\n")
 		return nil, err
@@ -87,7 +87,7 @@ func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient
 	// let's auth
 	jsonStr, err := json.Marshal(creds)
 	if err != nil {
-		klog.Errorf("json.Marshal failed. Err: %v\n", err)
+		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
 		klog.V(6).Infof("NewWithCreds LEAVE\n")
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient
 
 	req, err := http.NewRequestWithContext(ctx, "POST", AuthURI, bytes.NewBuffer(jsonStr))
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("NewWithCreds LEAVE\n")
 		return nil, err
 	}
@@ -110,12 +110,12 @@ func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient
 	restClient := rest.New()
 	err = restClient.Do(ctx, req, &resp)
 	if err != nil {
-		klog.Errorf("restClient.Do failed. Err: %v\n", err)
+		klog.V(1).Infof("restClient.Do failed. Err: %v\n", err)
 		return nil, err
 	}
 
 	if resp.AccessToken == "" {
-		klog.Errorf("Symbl auth token is empty\n")
+		klog.V(1).Infof("Symbl auth token is empty\n")
 		klog.V(6).Infof("NewWithCreds LEAVE\n")
 		return nil, ErrAuthFailure
 	}
@@ -136,7 +136,7 @@ func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient
 		auth:   &resp,
 	}
 
-	klog.V(4).Infof("NewWithCreds Succeeded\n")
+	klog.V(3).Infof("NewWithCreds Succeeded\n"))
 	klog.V(6).Infof("NewWithCreds LEAVE\n")
 	return c, nil
 }
@@ -169,7 +169,7 @@ func (c *RestClient) Do(ctx context.Context, req *http.Request, resBody interfac
 				klog.V(3).Info("Received http.StatusUnauthorized\n")
 				newClient, reauthErr := NewRestClientWithCreds(ctx, *c.creds)
 				if reauthErr != nil {
-					klog.Errorf("unable to re-authorize to symbl platform\n")
+					klog.V(1).Infof("unable to re-authorize to symbl platform\n")
 					klog.V(6).Infof("symbl.Do LEAVE\n")
 					return reauthErr
 				}
@@ -183,7 +183,7 @@ func (c *RestClient) Do(ctx context.Context, req *http.Request, resBody interfac
 		}
 	}
 
-	klog.Errorf("Failed with (%s) %s\n", req.Method, req.URL)
+	klog.V(1).Infof("Failed with (%s) %s\n", req.Method, req.URL)
 	klog.V(6).Infof("symbl.Do LEAVE\n")
 	return err
 }

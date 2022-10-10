@@ -31,7 +31,7 @@ func (m *Management) GetEntites(ctx context.Context) (*interfaces.EntitiesRespon
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("mgmt.GetEntites LEAVE\n")
 		return nil, err
 	}
@@ -43,13 +43,13 @@ func (m *Management) GetEntites(ctx context.Context) (*interfaces.EntitiesRespon
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.GetEntites LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Management Entities succeeded\n")
+	klog.V(3).Infof("GET Management Entities succeeded\n"))
 	klog.V(6).Infof("mgmt.GetEntites LEAVE\n")
 	return &result, nil
 }
@@ -68,7 +68,7 @@ func (m *Management) GetEntitById(ctx context.Context, entityId string) (*interf
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("mgmt.GetEntitById LEAVE\n")
 		return nil, err
 	}
@@ -80,13 +80,13 @@ func (m *Management) GetEntitById(ctx context.Context, entityId string) (*interf
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.GetEntitById LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Management Entity succeeded\n")
+	klog.V(3).Infof("GET Management Entity succeeded\n"))
 	klog.V(6).Infof("mgmt.GetEntitById LEAVE\n")
 	return &result, nil
 }
@@ -107,7 +107,7 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Entity
 	err := v.Struct(request)
 	if err != nil {
 		for _, e := range err.(validator.ValidationErrors) {
-			klog.Errorf("CreateEntity validation failed. Err: %v\n", e)
+			klog.V(1).Infof("CreateEntity validation failed. Err: %v\n", e)
 		}
 		klog.V(6).Infof("mgmt.CreateEntity LEAVE\n")
 		return nil, err
@@ -120,14 +120,14 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Entity
 	// let's auth
 	jsonStr, err := json.Marshal(request)
 	if err != nil {
-		klog.Errorf("json.Marshal failed. Err: %v\n", err)
+		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
 		klog.V(6).Infof("mgmt.CreateEntity LEAVE\n")
 		return nil, err
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "POST", URI, bytes.NewBuffer(jsonStr))
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("mgmt.CreateEntity LEAVE\n")
 		return nil, err
 	}
@@ -139,13 +139,13 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Entity
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.CreateEntity LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Create Entity succeeded\n")
+	klog.V(3).Infof("GET Create Entity succeeded\n"))
 	klog.V(6).Infof("mgmt.CreateEntity LEAVE\n")
 	return &result, nil
 }
@@ -173,7 +173,7 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Entity
 // 	err := v.Struct(request)
 // 	if err != nil {
 // 		for _, e := range err.(validator.ValidationErrors) {
-// 			klog.Errorf("UpdateEntity validation failed. Err: %v\n", e)
+// 			klog.V(1).Infof("UpdateEntity validation failed. Err: %v\n", e)
 // 		}
 // 		klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
 // 		return nil, err
@@ -185,7 +185,7 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Entity
 
 // 	req, err := http.NewRequestWithContext(ctx, "PUT", URI, nil)
 // 	if err != nil {
-// 		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+// 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 // 		klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
 // 		return nil, err
 // 	}
@@ -197,13 +197,13 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Entity
 
 // 	if e, ok := err.(*symbl.StatusError); ok {
 // 		if e.Resp.StatusCode != http.StatusOK {
-// 			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+// 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 // 			klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
 // 			return nil, err
 // 		}
 // 	}
 
-// 	klog.V(4).Infof("GET Update Entity succeeded\n")
+// 	klog.V(3).Infof("GET Update Entity succeeded\n"))
 // 	klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
 // 	return &result, nil
 // }
@@ -218,7 +218,7 @@ func (m *Management) DeleteEntity(ctx context.Context, entityId string) error {
 
 	// validate input
 	if entityId == "" {
-		klog.Errorf("entityId is empty\n")
+		klog.V(1).Infof("entityId is empty\n")
 		klog.V(6).Infof("mgmt.DeleteEntity LEAVE\n")
 		return ErrInvalidInput
 	}
@@ -229,7 +229,7 @@ func (m *Management) DeleteEntity(ctx context.Context, entityId string) error {
 
 	req, err := http.NewRequestWithContext(ctx, "DELETE", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("mgmt.DeleteEntity LEAVE\n")
 		return err
 	}
@@ -239,13 +239,13 @@ func (m *Management) DeleteEntity(ctx context.Context, entityId string) error {
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.DeleteEntity LEAVE\n")
 			return e
 		}
 	}
 
-	klog.V(4).Infof("GET Delete Entity succeeded\n")
+	klog.V(3).Infof("GET Delete Entity succeeded\n"))
 	klog.V(6).Infof("mgmt.DeleteEntity LEAVE\n")
 	return nil
 }
@@ -260,7 +260,7 @@ func (m *Management) DeleteEntityBySubType(ctx context.Context, subType string) 
 
 	// validate input
 	if subType == "" {
-		klog.Errorf("subType is empty\n")
+		klog.V(1).Infof("subType is empty\n")
 		klog.V(6).Infof("mgmt.DeleteEntityBySubType LEAVE\n")
 		return ErrInvalidInput
 	}
@@ -271,7 +271,7 @@ func (m *Management) DeleteEntityBySubType(ctx context.Context, subType string) 
 
 	req, err := http.NewRequestWithContext(ctx, "DELETE", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("mgmt.DeleteEntityBySubType LEAVE\n")
 		return err
 	}
@@ -281,13 +281,13 @@ func (m *Management) DeleteEntityBySubType(ctx context.Context, subType string) 
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.DeleteEntityBySubType LEAVE\n")
 			return err
 		}
 	}
 
-	klog.V(4).Infof("GET Delete EntityBySubType succeeded\n")
+	klog.V(3).Infof("GET Delete EntityBySubType succeeded\n")))
 	klog.V(6).Infof("mgmt.DeleteEntityBySubType LEAVE\n")
 	return nil
 }

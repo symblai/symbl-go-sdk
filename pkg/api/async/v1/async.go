@@ -44,7 +44,7 @@ func (c *Client) PostFile(ctx context.Context, filePath string) (*JobConversatio
 
 	err := c.DoFile(ctx, filePath, &jobConvo)
 	if e, ok := err.(*symbl.StatusError); ok {
-		klog.Errorf("DoFile failed. HTTP Code: %v\n", e.Resp.StatusCode)
+		klog.V(1).Infof("DoFile failed. HTTP Code: %v\n", e.Resp.StatusCode)
 		klog.V(6).Infof("async.PostFile LEAVE\n")
 		return nil, e
 	}
@@ -54,7 +54,7 @@ func (c *Client) PostFile(ctx context.Context, filePath string) (*JobConversatio
 	// klog.V(6).Infof("jobConvo:\n%v\n", jobConvo)
 	// klog.V(6).Infof("------------------------\n")
 
-	klog.V(3).Infof("async.PostFile Succeeded\n")
+	klog.V(3).Infof("async.PostFile Succeeded\n"))))
 	klog.V(6).Infof("async.PostFile LEAVE\n")
 	return &jobConvo, nil
 }
@@ -74,7 +74,7 @@ func (c *Client) PostURL(ctx context.Context, url string) (*JobConversation, err
 
 	err := c.DoURL(ctx, url, &jobConvo)
 	if e, ok := err.(*symbl.StatusError); ok {
-		klog.Errorf("DoURL failed. HTTP Code: %v\n", e.Resp.StatusCode)
+		klog.V(1).Infof("DoURL failed. HTTP Code: %v\n", e.Resp.StatusCode)
 		klog.V(6).Infof("async.PostURL LEAVE\n")
 		return nil, e
 	}
@@ -84,7 +84,7 @@ func (c *Client) PostURL(ctx context.Context, url string) (*JobConversation, err
 	// klog.V(6).Infof("jobConvo:\n%v\n", jobConvo)
 	// klog.V(6).Infof("------------------------\n")
 
-	klog.V(3).Infof("async.PostURL Succeeded\n")
+	klog.V(3).Infof("async.PostURL Succeeded\n")))
 	klog.V(6).Infof("async.PostURL LEAVE\n")
 	return &jobConvo, nil
 }
@@ -106,7 +106,7 @@ func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.WaitForJobCompleteOnce ENTER\n")
 		return false, err
 	}
@@ -123,7 +123,7 @@ func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.WaitForJobCompleteOnce LEAVE\n")
 			return false, err
 		}
@@ -149,14 +149,14 @@ func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts interface
 	err := v.Struct(jobStatusOpts)
 	if err != nil {
 		for _, e := range err.(validator.ValidationErrors) {
-			klog.Errorf("WaitForJobComplete validation failed: %v\n", e)
+			klog.V(1).Infof("WaitForJobComplete validation failed: %v\n", e)
 		}
 		klog.V(6).Infof("async.WaitForJobComplete LEAVE\n")
 		return false, err
 	}
 
 	if jobStatusOpts.WaitInSeconds < 0 {
-		klog.Errorf("Invalid wait interval. Input: %d\n", jobStatusOpts.WaitInSeconds)
+		klog.V(1).Infof("Invalid wait interval. Input: %d\n", jobStatusOpts.WaitInSeconds)
 		klog.V(6).Infof("async.WaitForJobComplete LEAVE\n")
 		return false, ErrInvalidWaitTime
 	}
@@ -184,7 +184,7 @@ func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts interface
 		// check for completion
 		completed, err := c.WaitForJobCompleteOnce(ctx, jobStatusOpts.JobId)
 		if err != nil {
-			klog.Errorf("WaitForJobCompleteOnce failed. Err: %v\n", err)
+			klog.V(1).Infof("WaitForJobCompleteOnce failed. Err: %v\n", err)
 			klog.V(6).Infof("async.WaitForJobComplete LEAVE\n")
 			return false, err
 		}
@@ -195,7 +195,7 @@ func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts interface
 		}
 	}
 
-	klog.Errorf("job status timed out\n")
+	klog.V(1).Infof("job status timed out\n")
 	klog.V(6).Infof("async.WaitForJobComplete LEAVE\n")
 	return false, ErrJobStatusTimeout
 }

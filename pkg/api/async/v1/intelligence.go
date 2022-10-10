@@ -23,7 +23,7 @@ func (c *Client) GetTopics(ctx context.Context, conversationId string) (*interfa
 		ctx = context.Background()
 	}
 	if conversationId == "" {
-		klog.Errorf("conversationId is empty\n")
+		klog.V(1).Infof("conversationId is empty\n")
 		klog.V(6).Infof("async.GetTopics LEAVE\n")
 		return nil, ErrInvalidInput
 	}
@@ -34,7 +34,7 @@ func (c *Client) GetTopics(ctx context.Context, conversationId string) (*interfa
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.GetTopics LEAVE\n")
 		return nil, err
 	}
@@ -46,13 +46,13 @@ func (c *Client) GetTopics(ctx context.Context, conversationId string) (*interfa
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetTopics LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Topics succeeded\n")
+	klog.V(3).Infof("GET Topics succeeded\n"))
 	klog.V(6).Infof("async.GetTopics LEAVE\n")
 	return &result, nil
 }
@@ -65,7 +65,7 @@ func (c *Client) GetQuestions(ctx context.Context, conversationId string) (*inte
 		ctx = context.Background()
 	}
 	if conversationId == "" {
-		klog.Errorf("conversationId is empty\n")
+		klog.V(1).Infof("conversationId is empty\n")
 		klog.V(6).Infof("async.GetQuestions LEAVE\n")
 		return nil, ErrInvalidInput
 	}
@@ -76,7 +76,7 @@ func (c *Client) GetQuestions(ctx context.Context, conversationId string) (*inte
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.GetQuestions LEAVE\n")
 		return nil, err
 	}
@@ -88,13 +88,13 @@ func (c *Client) GetQuestions(ctx context.Context, conversationId string) (*inte
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetQuestions LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Questions succeeded\n")
+	klog.V(3).Infof("GET Questions succeeded\n"))
 	klog.V(6).Infof("async.GetQuestions LEAVE\n")
 	return &result, nil
 }
@@ -107,7 +107,7 @@ func (c *Client) GetFollowUps(ctx context.Context, conversationId string) (*inte
 		ctx = context.Background()
 	}
 	if conversationId == "" {
-		klog.Errorf("conversationId is empty\n")
+		klog.V(1).Infof("conversationId is empty\n")
 		klog.V(6).Infof("async.GetFollowUps LEAVE\n")
 		return nil, ErrInvalidInput
 	}
@@ -118,7 +118,7 @@ func (c *Client) GetFollowUps(ctx context.Context, conversationId string) (*inte
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.GetFollowUps LEAVE\n")
 		return nil, err
 	}
@@ -130,13 +130,13 @@ func (c *Client) GetFollowUps(ctx context.Context, conversationId string) (*inte
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetFollowUps LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Follow Ups succeeded\n")
+	klog.V(3).Infof("GET Follow Ups succeeded\n"))
 	klog.V(6).Infof("async.GetFollowUps LEAVE\n")
 	return &result, nil
 }
@@ -149,7 +149,7 @@ func (c *Client) GetEntities(ctx context.Context, conversationId string) (*inter
 		ctx = context.Background()
 	}
 	if conversationId == "" {
-		klog.Errorf("conversationId is empty\n")
+		klog.V(1).Infof("conversationId is empty\n")
 		klog.V(6).Infof("async.GetEntities LEAVE\n")
 		return nil, ErrInvalidInput
 	}
@@ -160,7 +160,7 @@ func (c *Client) GetEntities(ctx context.Context, conversationId string) (*inter
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.GetEntities LEAVE\n")
 		return nil, err
 	}
@@ -172,13 +172,13 @@ func (c *Client) GetEntities(ctx context.Context, conversationId string) (*inter
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetEntities LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Entities succeeded\n")
+	klog.V(3).Infof("GET Entities succeeded\n"))
 	klog.V(6).Infof("async.GetEntities LEAVE\n")
 	return &result, nil
 }
@@ -191,7 +191,7 @@ func (c *Client) GetActionItems(ctx context.Context, conversationId string) (*in
 		ctx = context.Background()
 	}
 	if conversationId == "" {
-		klog.Errorf("conversationId is empty\n")
+		klog.V(1).Infof("conversationId is empty\n")
 		klog.V(6).Infof("async.GetActionItems LEAVE\n")
 		return nil, ErrInvalidInput
 	}
@@ -202,7 +202,7 @@ func (c *Client) GetActionItems(ctx context.Context, conversationId string) (*in
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.GetActionItems LEAVE\n")
 		return nil, err
 	}
@@ -214,13 +214,13 @@ func (c *Client) GetActionItems(ctx context.Context, conversationId string) (*in
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetActionItems LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Action Items succeeded\n")
+	klog.V(3).Infof("GET Action Items succeeded\n"))
 	klog.V(6).Infof("async.GetActionItems LEAVE\n")
 	return &result, nil
 }
@@ -233,7 +233,7 @@ func (c *Client) GetMessages(ctx context.Context, conversationId string) (*inter
 		ctx = context.Background()
 	}
 	if conversationId == "" {
-		klog.Errorf("conversationId is empty\n")
+		klog.V(1).Infof("conversationId is empty\n")
 		klog.V(6).Infof("async.GetMessages LEAVE\n")
 		return nil, ErrInvalidInput
 	}
@@ -244,7 +244,7 @@ func (c *Client) GetMessages(ctx context.Context, conversationId string) (*inter
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.GetMessages LEAVE\n")
 		return nil, err
 	}
@@ -256,13 +256,13 @@ func (c *Client) GetMessages(ctx context.Context, conversationId string) (*inter
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetMessages LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Messages succeeded\n")
+	klog.V(3).Infof("GET Messages succeeded\n"))
 	klog.V(6).Infof("async.GetMessages LEAVE\n")
 	return &result, nil
 }
@@ -275,7 +275,7 @@ func (c *Client) GetSummary(ctx context.Context, conversationId string) (*interf
 		ctx = context.Background()
 	}
 	if conversationId == "" {
-		klog.Errorf("conversationId is empty\n")
+		klog.V(1).Infof("conversationId is empty\n")
 		klog.V(6).Infof("async.GetSummary LEAVE\n")
 		return nil, ErrInvalidInput
 	}
@@ -286,7 +286,7 @@ func (c *Client) GetSummary(ctx context.Context, conversationId string) (*interf
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.GetSummary LEAVE\n")
 		return nil, err
 	}
@@ -298,13 +298,13 @@ func (c *Client) GetSummary(ctx context.Context, conversationId string) (*interf
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetSummary LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Summary succeeded\n")
+	klog.V(3).Infof("GET Summary succeeded\n"))
 	klog.V(6).Infof("async.GetSummary LEAVE\n")
 	return &result, nil
 }
@@ -317,7 +317,7 @@ func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*inte
 		ctx = context.Background()
 	}
 	if conversationId == "" {
-		klog.Errorf("conversationId is empty\n")
+		klog.V(1).Infof("conversationId is empty\n")
 		klog.V(6).Infof("async.GetAnalytics LEAVE\n")
 		return nil, ErrInvalidInput
 	}
@@ -328,7 +328,7 @@ func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*inte
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.GetAnalytics LEAVE\n")
 		return nil, err
 	}
@@ -340,13 +340,13 @@ func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*inte
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetAnalytics LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Analytics succeeded\n")
+	klog.V(3).Infof("GET Analytics succeeded\n")))
 	klog.V(6).Infof("async.GetAnalytics LEAVE\n")
 	return &result, nil
 }
@@ -359,7 +359,7 @@ func (c *Client) GetTracker(ctx context.Context, conversationId string) (*interf
 		ctx = context.Background()
 	}
 	if conversationId == "" {
-		klog.Errorf("conversationId is empty\n")
+		klog.V(1).Infof("conversationId is empty\n")
 		klog.V(6).Infof("async.GetTracker LEAVE\n")
 		return nil, ErrInvalidInput
 	}
@@ -370,7 +370,7 @@ func (c *Client) GetTracker(ctx context.Context, conversationId string) (*interf
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
 	if err != nil {
-		klog.Errorf("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("async.GetTracker LEAVE\n")
 		return nil, err
 	}
@@ -382,13 +382,13 @@ func (c *Client) GetTracker(ctx context.Context, conversationId string) (*interf
 
 	if e, ok := err.(*symbl.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
-			klog.Errorf("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetTracker LEAVE\n")
 			return nil, err
 		}
 	}
 
-	klog.V(4).Infof("GET Tracker succeeded\n")
+	klog.V(3).Infof("GET Tracker succeeded\n")))
 	klog.V(6).Infof("async.GetTracker LEAVE\n")
 	return &result, nil
 }
