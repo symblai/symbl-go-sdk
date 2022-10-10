@@ -19,7 +19,9 @@ import (
 )
 
 func main() {
-	symbl.InitLogging(6)
+	symbl.Init(symbl.SybmlInit{
+		LogLevel: symbl.LogLevelTrace,
+	})
 
 	/*
 		------------------------------------
