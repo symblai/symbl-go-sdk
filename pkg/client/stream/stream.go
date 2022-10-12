@@ -212,6 +212,16 @@ func (conn *WebSocketClient) WriteJSON(payload interface{}) error {
 	}
 }
 
+func (conn *WebSocketClient) Write(p []byte) (int, error) {
+	byteLen := len(p)
+	err := conn.WriteBinary(p)
+	if err != nil {
+		klog.V(1).Infof("WebSocketClient::WriteBinary failed. Err: %v\n", err)
+		return 0, err
+	}
+	return byteLen, nil
+}
+
 func (conn *WebSocketClient) listenWrite() {
 	for data := range conn.sendBuf {
 		ws := conn.Connect()

@@ -3,37 +3,29 @@
 
 package main
 
+// streaming
 import (
-	"bytes"
 	"context"
-	"encoding/binary"
 	"fmt"
 	"os"
 	"os/signal"
 	"time"
 
-	"github.com/gordonklaus/portaudio"
-	klog "k8s.io/klog/v2"
-
+	microphone "github.com/dvonthenen/symbl-go-sdk/pkg/audio/microphone"
 	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
 )
 
 func main() {
 	symbl.Init(symbl.SybmlInit{
-		LogLevel: symbl.LogLevelTrace,
+		LogLevel: symbl.LogLevelStandard,
 	})
 
-	/*
-		------------------------------------
-		streaming
-		------------------------------------
-	*/
-	// websocket stuff
 	ctx := context.Background()
 
+	// create a new client
 	client, err := symbl.NewStreamClientWithDefaults(ctx)
 	if err == nil {
-		fmt.Println("Succeeded!")
+		fmt.Println("Login Succeeded!")
 	} else {
 		fmt.Printf("New failed. Err: %v\n", err)
 		os.Exit(1)
@@ -46,60 +38,35 @@ func main() {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, os.Kill)
 
-	portaudio.Initialize()
-	defer portaudio.Terminate()
-
-	in := make([]int16, 1024)
-	stream, err := portaudio.OpenDefaultStream(1, 0, 16000, len(in), in)
+	mic, err := microphone.Initialize(microphone.AudioConfig{
+		InputChannels: 1,
+		SamplingRate:  16000,
+	})
 	if err != nil {
-		fmt.Println("OpenDefaultStream failed. Err: %v\n", err)
-		os.Exit(1)
-	}
-	defer stream.Close()
-
-	err = stream.Start()
-	if err != nil {
-		fmt.Printf("Mic failed to start. Err: %v\n", err)
+		fmt.Printf("Initialize failed. Err: %v\n", err)
 		os.Exit(1)
 	}
 
-	for {
-		err = stream.Read()
-		if err != nil {
-			klog.Errorf("stream.Read failed. Err: %v\n", err)
-			os.Exit(1)
-		}
-
-		// doesnt work with example code
-		err = client.WriteBinary(int16ToLittleEndianByte(in))
-		if err != nil {
-			klog.Errorf("client.WriteBinary failed. Err: %v\n", err)
-			os.Exit(1)
-		}
-
-		select {
-		case <-sig:
-			return
-		default:
-		}
+	// start the mic
+	err = mic.Start()
+	if err != nil {
+		fmt.Printf("mic.Start failed. Err: %v\n", err)
+		os.Exit(1)
 	}
 
+	// this is a blocking call
+	mic.Stream(client)
+
+	// close stream
+	err = mic.Stop()
+	if err != nil {
+		fmt.Printf("mic.Stop failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+	microphone.Teardown()
+
+	// close client
 	client.Stop()
 
-	err = stream.Stop()
-	if err != nil {
-		klog.Errorf("stream.Stop failed. Err: %v\n", err)
-		os.Exit(1)
-	}
-
-	fmt.Printf("Succeeded")
-}
-
-func int16ToLittleEndianByte(f []int16) []byte {
-	var buf bytes.Buffer
-	err := binary.Write(&buf, binary.LittleEndian, f)
-	if err != nil {
-		fmt.Println("binary.Write failed:", err)
-	}
-	return buf.Bytes()
+	fmt.Printf("Succeeded!\n\n")
 }
