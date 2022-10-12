@@ -122,3 +122,37 @@ type InsightResponse struct {
 	} `json:"insights"`
 	SequenceNumber int `json:"sequenceNumber"`
 }
+
+type TopicResponse struct {
+	Type   string `json:"type"`
+	Topics []struct {
+		ID                string `json:"id"`
+		MessageReferences []struct {
+			ID string `json:"id"`
+		} `json:"messageReferences"`
+		Phrases   string `json:"phrases"`
+		RootWords []struct {
+			Text string `json:"text"`
+		} `json:"rootWords"`
+		Score        float64 `json:"score"`
+		Type         string  `json:"type"`
+		MessageIndex int     `json:"messageIndex"`
+	} `json:"topics"`
+}
+
+type TrackerResponse struct {
+	Type    string `json:"type"`
+	Tracker []struct {
+		ID                string `json:"id"`
+		MessageReferences []struct {
+			ID       string `json:"id"`
+			Relation string `json:"relation"`
+		} `json:"messageReferences"`
+		Phrases   string `json:"phrases"`
+		RootWords []struct {
+			Text string `json:"text"`
+		} `json:"rootWords"`
+		Score float64 `json:"score"`
+		Type  string  `json:"type"`
+	} `json:"trackers"`
+}

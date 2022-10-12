@@ -7,5 +7,7 @@ type InsightCallback interface {
 	RecognitionResultMessage(rr *RecognitionResult) error
 	MessageResponseMessage(mr *MessageResponse) error
 	InsightResponseMessage(ir *InsightResponse) error
+	TopicResponseMessage(tr *TopicResponse) error
+	TrackerResponseMessage(tr *TrackerResponse) error
 	UnhandledMessage(byMsg []byte) error
 }

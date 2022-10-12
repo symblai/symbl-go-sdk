@@ -122,7 +122,6 @@ func (c *Client) WithHeader(
 // 		case http.StatusNoContent:
 // 		case http.StatusBadRequest:
 // 			klog.V(4).Infof("HTTP Error Code: %d\n", res.StatusCode)
-// 			// TODO: structured error types
 // 			detail, err := io.ReadAll(res.Body)
 // 			if err != nil {
 // 				klog.V(4).Infof("io.ReadAll failed. Err: %e\n", err)
@@ -229,12 +228,6 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 		}
 	}
 
-	// TODO Delete...
-	// klog.V(6).Infof("------------------------\n")
-	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	// klog.V(6).Infof("req:\n%v\n", req)
-	// klog.V(6).Infof("------------------------\n")
-
 	err = c.Client.Do(ctx, req, func(res *http.Response) error {
 		switch res.StatusCode {
 		case http.StatusOK:
@@ -242,7 +235,6 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 		case http.StatusNoContent:
 		case http.StatusBadRequest:
 			klog.V(4).Infof("HTTP Error Code: %d\n", res.StatusCode)
-			// TODO: structured error types
 			detail, err := io.ReadAll(res.Body)
 			if err != nil {
 				klog.V(4).Infof("io.ReadAll failed. Err: %e\n", err)
@@ -284,12 +276,6 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 		klog.V(6).Infof("rest.DoFile LEAVE\n")
 		return err
 	}
-
-	// TODO Delete...
-	// klog.V(6).Infof("------------------------\n")
-	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	// klog.V(6).Infof("resBody:\n%v\n", resBody)
-	// klog.V(6).Infof("------------------------\n")
 
 	klog.V(3).Infof("rest.DoFile Succeeded\n")
 	klog.V(6).Infof("rest.DoFile LEAVE\n")
@@ -366,12 +352,6 @@ func (c *Client) DoURL(ctx context.Context, url string, resBody interface{}) err
 		}
 	}
 
-	// TODO Delete...
-	// klog.V(6).Infof("------------------------\n")
-	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	// klog.V(6).Infof("req:\n%v\n", req)
-	// klog.V(6).Infof("------------------------\n")
-
 	err = c.Client.Do(ctx, req, func(res *http.Response) error {
 		switch res.StatusCode {
 		case http.StatusOK:
@@ -379,7 +359,6 @@ func (c *Client) DoURL(ctx context.Context, url string, resBody interface{}) err
 		case http.StatusNoContent:
 		case http.StatusBadRequest:
 			klog.V(4).Infof("HTTP Error Code: %d\n", res.StatusCode)
-			// TODO: structured error types
 			detail, err := io.ReadAll(res.Body)
 			if err != nil {
 				klog.V(4).Infof("io.ReadAll failed. Err: %e\n", err)
@@ -422,12 +401,6 @@ func (c *Client) DoURL(ctx context.Context, url string, resBody interface{}) err
 		return err
 	}
 
-	// TODO Delete...
-	// klog.V(6).Infof("------------------------\n")
-	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	// klog.V(6).Infof("resBody:\n%v\n", resBody)
-	// klog.V(6).Infof("------------------------\n")
-
 	klog.V(3).Infof("rest.DoURL Succeeded\n")
 	klog.V(6).Infof("rest.DoURL LEAVE\n")
 	return nil
@@ -454,12 +427,6 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 		req.Header.Set("Authorization", "Bearer "+c.auth.AccessToken)
 	}
 
-	// TODO Delete...
-	// klog.V(6).Infof("------------------------\n")
-	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	// klog.V(6).Infof("req:\n%v\n", req)
-	// klog.V(6).Infof("------------------------\n")
-
 	err := c.Client.Do(ctx, req, func(res *http.Response) error {
 		switch res.StatusCode {
 		case http.StatusOK:
@@ -467,7 +434,6 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 		case http.StatusNoContent:
 		case http.StatusBadRequest:
 			klog.V(4).Infof("HTTP Error Code: %d\n", res.StatusCode)
-			// TODO: structured error types
 			detail, err := io.ReadAll(res.Body)
 			if err != nil {
 				klog.V(4).Infof("io.ReadAll failed. Err: %e\n", err)
@@ -509,12 +475,6 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 		klog.V(6).Infof("rest.Do LEAVE\n")
 		return err
 	}
-
-	// TODO Delete...
-	// klog.V(6).Infof("------------------------\n")
-	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	// klog.V(6).Infof("resBody:\n%v\n", resBody)
-	// klog.V(6).Infof("------------------------\n")
 
 	klog.V(3).Infof("rest.Do Succeeded\n")
 	klog.V(6).Infof("rest.Do LEAVE\n")

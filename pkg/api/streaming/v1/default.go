@@ -50,6 +50,27 @@ func (dmr *DefaultMessageRouter) InsightResponseMessage(ir *interfaces.InsightRe
 	return nil
 }
 
+func (dmr *DefaultMessageRouter) TopicResponseMessage(tr *interfaces.TopicResponse) error {
+	data, err := json.Marshal(tr)
+	if err != nil {
+		klog.V(1).Infof("TopicResponseMessage json.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nTopicResponseMessage Object DUMP:\n%v\n\n", string(data))
+	return nil
+}
+func (dmr *DefaultMessageRouter) TrackerResponseMessage(tr *interfaces.TrackerResponse) error {
+	data, err := json.Marshal(tr)
+	if err != nil {
+		klog.V(1).Infof("TrackerResponseMessage json.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nTrackerResponseMessage Object DUMP:\n%v\n\n", string(data))
+	return nil
+}
+
 func (dmr *DefaultMessageRouter) UnhandledMessage(byMsg []byte) error {
 	klog.Infof("\n\nUnhandledMessage Object DUMP:\n%v\n\n", string(byMsg))
 	return nil
