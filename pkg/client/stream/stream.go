@@ -138,14 +138,6 @@ func (conn *WebSocketClient) listen() {
 					break
 				}
 
-				// TODO delete
-				// klog.V(6).Infof("\n\n\n")
-				// klog.V(6).Infof("IMPORTANT: Never print in production\n")
-				// klog.V(6).Infof("WebSocketClient::listen msgType: %d\n", msgType)
-				// klog.V(6).Infof("WebSocketClient::listen bytMsg: %v\n", bytMsg)
-				// klog.V(6).Infof("WebSocketClient::listen bytMsg: %s\n", string(bytMsg))
-				// klog.V(6).Infof("\n\n\n")
-
 				if conn.callback != nil {
 					conn.callback.Message(bytMsg)
 				} else {
@@ -236,14 +228,6 @@ func (conn *WebSocketClient) listenWrite() {
 			klog.V(1).Infof("WebSocketClient::listenWrite json.Unmarshal failed. Err: %v\n", err)
 			continue
 		}
-
-		// TODO delete
-		// klog.V(6).Infof("\n\n\n")
-		// klog.V(6).Infof("IMPORTANT: Never print in production\n")
-		// klog.V(6).Infof("WebSocketClient::listenWrite Type: %d\n", em.Type)
-		// klog.V(6).Infof("WebSocketClient::listenWrite Data: %v\n", em.Data)
-		// klog.V(6).Infof("WebSocketClient::listenWrite Data: %s\n", string(em.Data))
-		// klog.V(6).Infof("\n\n\n")
 
 		if err := ws.WriteMessage(
 			em.Type,

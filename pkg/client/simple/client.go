@@ -17,8 +17,7 @@ const (
 	ClientName = "symbl.ai"
 )
 
-// defaultUserAgent is the default user agent string, e.g.
-// "govmomi (go1.18.3;linux;amd64)"
+// defaultUserAgent is the default user agent string
 var defaultUserAgent = fmt.Sprintf(
 	"%s (%s)",
 	ClientName,

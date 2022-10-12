@@ -4,11 +4,6 @@
 package async
 
 /*
-	Input parameters for API calls
-*/
-// TODO
-
-/*
 	Output structs for API calls
 */
 // JobStatus captures the API for getting status
