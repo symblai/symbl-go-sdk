@@ -1,12 +1,12 @@
-# Symbl Go SDK
+# Symbl.ai Go SDK
 
-The Symbl Go SDK provides a convenient method in which to consume the Symbl APIs from applications written in Go. A prescribed or opinionated set of interfaces, classes, and functions allow users to quickly bootstrap themselves to using the Symbl platform and unlock the context behind conversations. 
+The Symbl.ai Go SDK provides a convenient method to work with our APIs, from applications written in Go. A prescribed or opinionated set of interfaces, classes, and functions help you quickly bootstrap to using the Symbl.ai platform and unlock conversation intelligence. 
 
-We are working diligently to support every aspect of the Symbl API. Currently, we support the following:
+We are working diligently to support every aspect of Symbl.ai APIs. Currently, we support the following:
 - [Streaming API][streaming_api-docs]:
-  - WebSocket Enabled
-  - Easy to implement Real-Time language understanding
-  - For local voice capture, provides an easy-to-understand library to enable Microphone audio as an input source
+  - WebSocket enabled
+  - Easy to implement real-time language understanding
+  - For local voice capture, provides an easy-to-understand library to enable microphone audio as an input source
 - [Asynchronous APIs][async_api-docs]:
   - Transcription/Messages
   - Dynamic Topics
@@ -22,7 +22,7 @@ We are working diligently to support every aspect of the Symbl API. Currently, w
   - Bookmarks: Get, Create, Delete
   - Trackers: Get, Create, Delete
 
-> **_IMPORTANT:_** I would consider this project in a **beta-ish** status. Since this is the first release, we currently reserve the right to make breaking API changes at this time. 
+> **_IMPORTANT:_** This project is in pre-release status. Since this is the first release, we reserve the right to make breaking API changes at this time. 
 
 ## Documentation
 
@@ -45,7 +45,7 @@ To install Go, visit the [installation guide](https://go.dev/doc/install) which 
 
 ### Configuration
 
-The SDK needs to be initialized with your account's credentials `APP_ID` and `APP_SECRET`, which are available in your [Symbl Platform][api-keys]. If you don't have a Symbl Platform account, you can [sign up here][symbl_signup] for free.
+The SDK needs to be initialized with your account's credentials `APP_ID` and `APP_SECRET`, which are available in your [Symbl.ai Platform][api-keys]. If you don't have a Symbl.ai Platform account, you can [sign up here][symbl_signup] for free.
 
 You must add your `APP_ID` and `APP_SECRET` to your list of environment variables. We use environment variables because they are easy to configure, support PaaS-style deployments, and work well in containerized environments like Docker and Kubernetes.
 
