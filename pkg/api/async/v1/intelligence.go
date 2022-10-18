@@ -52,7 +52,7 @@ func (c *Client) GetTopics(ctx context.Context, conversationId string) (*interfa
 		}
 	}
 
-	klog.V(3).Infof("GET Topics succeeded\n"))
+	klog.V(3).Infof("GET Topics succeeded\n")
 	klog.V(6).Infof("async.GetTopics LEAVE\n")
 	return &result, nil
 }
@@ -94,7 +94,7 @@ func (c *Client) GetQuestions(ctx context.Context, conversationId string) (*inte
 		}
 	}
 
-	klog.V(3).Infof("GET Questions succeeded\n"))
+	klog.V(3).Infof("GET Questions succeeded\n")
 	klog.V(6).Infof("async.GetQuestions LEAVE\n")
 	return &result, nil
 }
@@ -136,7 +136,7 @@ func (c *Client) GetFollowUps(ctx context.Context, conversationId string) (*inte
 		}
 	}
 
-	klog.V(3).Infof("GET Follow Ups succeeded\n"))
+	klog.V(3).Infof("GET Follow Ups succeeded\n")
 	klog.V(6).Infof("async.GetFollowUps LEAVE\n")
 	return &result, nil
 }
@@ -178,7 +178,7 @@ func (c *Client) GetEntities(ctx context.Context, conversationId string) (*inter
 		}
 	}
 
-	klog.V(3).Infof("GET Entities succeeded\n"))
+	klog.V(3).Infof("GET Entities succeeded\n")
 	klog.V(6).Infof("async.GetEntities LEAVE\n")
 	return &result, nil
 }
@@ -220,7 +220,7 @@ func (c *Client) GetActionItems(ctx context.Context, conversationId string) (*in
 		}
 	}
 
-	klog.V(3).Infof("GET Action Items succeeded\n"))
+	klog.V(3).Infof("GET Action Items succeeded\n")
 	klog.V(6).Infof("async.GetActionItems LEAVE\n")
 	return &result, nil
 }
@@ -262,7 +262,7 @@ func (c *Client) GetMessages(ctx context.Context, conversationId string) (*inter
 		}
 	}
 
-	klog.V(3).Infof("GET Messages succeeded\n"))
+	klog.V(3).Infof("GET Messages succeeded\n")
 	klog.V(6).Infof("async.GetMessages LEAVE\n")
 	return &result, nil
 }
@@ -304,7 +304,7 @@ func (c *Client) GetSummary(ctx context.Context, conversationId string) (*interf
 		}
 	}
 
-	klog.V(3).Infof("GET Summary succeeded\n"))
+	klog.V(3).Infof("GET Summary succeeded\n")
 	klog.V(6).Infof("async.GetSummary LEAVE\n")
 	return &result, nil
 }
@@ -346,7 +346,7 @@ func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*inte
 		}
 	}
 
-	klog.V(3).Infof("GET Analytics succeeded\n")))
+	klog.V(3).Infof("GET Analytics succeeded\n")
 	klog.V(6).Infof("async.GetAnalytics LEAVE\n")
 	return &result, nil
 }
@@ -388,7 +388,7 @@ func (c *Client) GetTracker(ctx context.Context, conversationId string) (*interf
 		}
 	}
 
-	klog.V(3).Infof("GET Tracker succeeded\n")))
+	klog.V(3).Infof("GET Tracker succeeded\n")
 	klog.V(6).Infof("async.GetTracker LEAVE\n")
 	return &result, nil
 }

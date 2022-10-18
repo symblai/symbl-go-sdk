@@ -54,7 +54,7 @@ func (c *Client) PostFile(ctx context.Context, filePath string) (*JobConversatio
 	// klog.V(6).Infof("jobConvo:\n%v\n", jobConvo)
 	// klog.V(6).Infof("------------------------\n")
 
-	klog.V(3).Infof("async.PostFile Succeeded\n"))))
+	klog.V(3).Infof("async.PostFile Succeeded\n")
 	klog.V(6).Infof("async.PostFile LEAVE\n")
 	return &jobConvo, nil
 }
@@ -84,7 +84,7 @@ func (c *Client) PostURL(ctx context.Context, url string) (*JobConversation, err
 	// klog.V(6).Infof("jobConvo:\n%v\n", jobConvo)
 	// klog.V(6).Infof("------------------------\n")
 
-	klog.V(3).Infof("async.PostURL Succeeded\n")))
+	klog.V(3).Infof("async.PostURL Succeeded\n")
 	klog.V(6).Infof("async.PostURL LEAVE\n")
 	return &jobConvo, nil
 }

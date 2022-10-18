@@ -55,7 +55,7 @@ func (c *Client) GetBookmarks(ctx context.Context, conversationId string) (*inte
 		}
 	}
 
-	klog.V(3).Infof("GET Bookmarks succeeded\n"))
+	klog.V(3).Infof("GET Bookmarks succeeded\n")
 	klog.V(6).Infof("async.GetBookmarks LEAVE\n")
 	return &result, nil
 }
@@ -102,7 +102,7 @@ func (c *Client) GetBookmarkById(ctx context.Context, conversationId, bookmarkId
 		}
 	}
 
-	klog.V(3).Infof("GET BookmarkById succeeded\n"))
+	klog.V(3).Infof("GET BookmarkById succeeded\n")
 	klog.V(6).Infof("async.GetBookmarkById LEAVE\n")
 	return &result, nil
 }
@@ -174,7 +174,7 @@ func (c *Client) CreateBookmarkByMessageRefs(ctx context.Context, conversationId
 		}
 	}
 
-	klog.V(3).Infof("GET Create Bookmark succeeded\n"))
+	klog.V(3).Infof("GET Create Bookmark succeeded\n")
 	klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 	return &result, nil
 }
@@ -234,7 +234,7 @@ func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationI
 		}
 	}
 
-	klog.V(3).Infof("GET Create Bookmark succeeded\n"))
+	klog.V(3).Infof("GET Create Bookmark succeeded\n")
 	klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 	return &result, nil
 }
@@ -349,7 +349,7 @@ func (c *Client) DeleteBookmark(ctx context.Context, conversationId, bookmarkId 
 		}
 	}
 
-	klog.V(3).Infof("GET Delete Bookmark succeeded\n"))
+	klog.V(3).Infof("GET Delete Bookmark succeeded\n")
 	klog.V(6).Infof("async.DeleteBookmark LEAVE\n")
 	return nil
 }
