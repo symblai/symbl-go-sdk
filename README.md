@@ -22,6 +22,8 @@ We are working diligently to support every aspect of the Symbl API. Currently, w
   - Bookmarks: Get, Create, Delete
   - Trackers: Get, Create, Delete
 
+> **_IMPORTANT:_** I would consider this project in a **beta-ish** status. Since this is the first release, we currently reserve the right to make breaking API changes at this time. 
+
 ## Documentation
 
 See the [API docs][symbl-docs].
