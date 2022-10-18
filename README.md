@@ -3,7 +3,7 @@
 The Symbl Go SDK provides a convenient method in which to consume the Symbl APIs from applications written in Go. A prescribed or opinionated set of interfaces, classes, and functions allow users to quickly bootstrap themselves to using the Symbl platform and unlock the context behind conversations. 
 
 We are working diligently to support every aspect of the Symbl API. Currently, we support the following:
- - [Streaming API][streaming_api-docs]:
+- [Streaming API][streaming_api-docs]:
   - WebSocket Enabled
   - Easy to implement Real-Time language understanding
   - For local voice capture, provides an easy-to-understand library to enable Microphone audio as an input source
