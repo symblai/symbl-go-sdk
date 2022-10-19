@@ -29,7 +29,7 @@ type StreamClient struct {
 	symblStreaming stream.WebSocketMessageCallback
 }
 
-func getDefaultConfig() *StreamingConfig {
+func GetDefaultConfig() *StreamingConfig {
 	config := &StreamingConfig{}
 
 	config.Type = streaming.TypeRequestStart
@@ -63,10 +63,6 @@ func NewStreamClient(ctx context.Context, config *StreamingConfig, callback inte
 		klog.V(6).Infof("NewStreamClient LEAVE\n")
 		return nil, err
 	}
-
-	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	// klog.V(6).Infof("AppId: %s\n", restClient.creds.AppId)
-	// klog.V(6).Infof("AppSecret: %s\n", restClient.creds.AppSecret)
 
 	// generate unique id... not even sure why this is needed, but hey
 	id := uuid.New()
