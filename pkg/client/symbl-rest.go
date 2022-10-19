@@ -92,11 +92,6 @@ func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient
 		return nil, err
 	}
 
-	// klog.V(6).Infof("------------------------\n")
-	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	// klog.V(6).Infof("creds:\n%v\n", creds)
-	// klog.V(6).Infof("------------------------\n")
-
 	req, err := http.NewRequestWithContext(ctx, "POST", AuthURI, bytes.NewBuffer(jsonStr))
 	if err != nil {
 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
@@ -119,11 +114,6 @@ func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient
 		klog.V(6).Infof("NewWithCreds LEAVE\n")
 		return nil, ErrAuthFailure
 	}
-
-	// klog.V(6).Infof("------------------------\n")
-	// klog.V(6).Infof("IMPORTANT: Never print in production\n")
-	// klog.V(6).Infof("resp:\n%v\n", resp)
-	// klog.V(6).Infof("------------------------\n")
 
 	restClient.SetAuthorization(&rest.AccessToken{
 		AccessToken: resp.AccessToken,
