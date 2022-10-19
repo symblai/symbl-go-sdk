@@ -46,7 +46,7 @@ func GetDefaultConfig() *StreamingConfig {
 
 // NewStreamClientWithDefaults same as NewStreamClient just using defaults
 func NewStreamClientWithDefaults(ctx context.Context) (*StreamClient, error) {
-	config := getDefaultConfig()
+	config := GetDefaultConfig()
 	callback := streaming.NewDefaultMessageRouter()
 	return NewStreamClient(ctx, config, callback)
 }
