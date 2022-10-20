@@ -178,7 +178,7 @@ func (c *Client) CreateBookmarkByMessageRefs(ctx context.Context, conversationId
 	klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 	return &result, nil
 }
-func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationId string, request interfaces.BookmarkBtTimeDurationsRequest) (*interfaces.Bookmark, error) {
+func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationId string, request interfaces.BookmarkByTimeDurationsRequest) (*interfaces.Bookmark, error) {
 	klog.V(6).Infof("async.CreateBookmark ENTER\n")
 
 	// checks

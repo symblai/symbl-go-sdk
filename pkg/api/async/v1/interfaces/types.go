@@ -28,6 +28,170 @@ type Bookmark struct {
 	MessageRefs     []MessageRef `json:"messageRefs" validate:"required"`
 }
 
+type Topic struct {
+	Text       string   `json:"text"`
+	Type       string   `json:"type"`
+	Score      float64  `json:"score"`
+	MessageIds []string `json:"messageIds"`
+	Sentiment  struct {
+		Polarity struct {
+			Score float64 `json:"score"`
+		} `json:"polarity"`
+		Suggested string `json:"suggested"`
+	} `json:"sentiment"`
+	ParentRefs []struct {
+		Type string `json:"type"`
+		Text string `json:"text"`
+	} `json:"parentRefs"`
+}
+
+type Question struct {
+	ID         string   `json:"id"`
+	Text       string   `json:"text"`
+	Type       string   `json:"type"`
+	Score      float64  `json:"score"`
+	MessageIds []string `json:"messageIds"`
+	From       struct {
+		ID   string `json:"id"`
+		Name string `json:"name"`
+	} `json:"from"`
+}
+
+type FollowUp struct {
+	ID         string        `json:"id"`
+	Text       string        `json:"text"`
+	Type       string        `json:"type"`
+	Score      int           `json:"score"`
+	MessageIds []string      `json:"messageIds"`
+	Entities   []interface{} `json:"entities"`
+	Phrases    []interface{} `json:"phrases"`
+	From       struct {
+		ID   string `json:"id"`
+		Name string `json:"name"`
+	} `json:"from"`
+	Definitive bool `json:"definitive"`
+	Assignee   struct {
+		ID   string `json:"id"`
+		Name string `json:"name"`
+	} `json:"assignee"`
+}
+
+type Entity struct {
+	Type     string `json:"type"`
+	SubType  string `json:"subType"`
+	Category string `json:"category"`
+	Matches  []struct {
+		DetectedValue string `json:"detectedValue"`
+		MessageRefs   []struct {
+			ID        string    `json:"id"`
+			StartTime time.Time `json:"startTime"`
+			EndTime   time.Time `json:"endTime"`
+			Text      string    `json:"text"`
+			Offset    int       `json:"offset"`
+		} `json:"messageRefs"`
+	} `json:"matches"`
+}
+
+type ActionItem struct {
+	ID         string   `json:"id"`
+	Text       string   `json:"text"`
+	Type       string   `json:"type"`
+	Score      float64  `json:"score"`
+	MessageIds []string `json:"messageIds"`
+	Entities   []struct {
+		Type   string `json:"type"`
+		Text   string `json:"text"`
+		Offset int    `json:"offset"`
+		End    string `json:"end"`
+	} `json:"entities"`
+	Phrases []interface{} `json:"phrases"`
+	From    struct {
+		ID   string `json:"id"`
+		Name string `json:"name"`
+	} `json:"from"`
+	Definitive bool `json:"definitive"`
+	Assignee   struct {
+		ID   string `json:"id"`
+		Name string `json:"name"`
+	} `json:"assignee"`
+	DueBy time.Time `json:"dueBy,omitempty"`
+}
+
+type Message struct {
+	ID   string `json:"id"`
+	Text string `json:"text"`
+	From struct {
+		ID   string `json:"id"`
+		Name string `json:"name"`
+	} `json:"from"`
+	StartTime      time.Time     `json:"startTime"`
+	EndTime        time.Time     `json:"endTime"`
+	TimeOffset     float64       `json:"timeOffset"`
+	Duration       float64       `json:"duration"`
+	ConversationID string        `json:"conversationId"`
+	Phrases        []interface{} `json:"phrases"`
+	Sentiment      struct {
+		Polarity struct {
+			Score float64 `json:"score"`
+		} `json:"polarity"`
+		Suggested string `json:"suggested"`
+	} `json:"sentiment"`
+	Words []struct {
+		Word       string    `json:"word"`
+		StartTime  time.Time `json:"startTime"`
+		EndTime    time.Time `json:"endTime"`
+		SpeakerTag int       `json:"speakerTag"`
+		Score      float64   `json:"score"`
+		TimeOffset float64   `json:"timeOffset"`
+		Duration   float64   `json:"duration"`
+	} `json:"words"`
+}
+
+type Summary struct {
+	ID          string `json:"id"`
+	Text        string `json:"text"`
+	MessageRefs []struct {
+		ID string `json:"id"`
+	} `json:"messageRefs"`
+	StartTime time.Time `json:"startTime"`
+	EndTime   time.Time `json:"endTime"`
+}
+
+type Metric struct {
+	Type    string  `json:"type"`
+	Percent float64 `json:"percent"`
+	Seconds float64 `json:"seconds"`
+}
+
+type Member struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+	Pace struct {
+		Wpm int `json:"wpm"`
+	} `json:"pace"`
+	TalkTime struct {
+		Percentage float64 `json:"percentage"`
+		Seconds    float64 `json:"seconds"`
+	} `json:"talkTime"`
+	ListenTime struct {
+		Percentage float64 `json:"percentage"`
+		Seconds    float64 `json:"seconds"`
+	} `json:"listenTime"`
+	Overlap struct {
+	} `json:"overlap"`
+}
+
+type Match struct {
+	Type        string `json:"type"`
+	Value       string `json:"value"`
+	MessageRefs []struct {
+		ID     string `json:"id"`
+		Text   string `json:"text"`
+		Offset int    `json:"offset"`
+	} `json:"messageRefs"`
+	InsightRefs []interface{} `json:"insightRefs"`
+}
+
 /*
 	Input parameters for Async API calls
 */
@@ -48,7 +212,7 @@ type BookmarkByMessageRefsRequest struct {
 }
 
 // BookmarkByMessageRefsRequest for creating bookmarks
-type BookmarkBtTimeDurationsRequest struct {
+type BookmarkByTimeDurationsRequest struct {
 	Label           string `json:"label" validate:"required"`
 	Description     string `json:"description" validate:"required"`
 	User            User   `json:"user" validate:"required"`
@@ -61,191 +225,44 @@ type BookmarkBtTimeDurationsRequest struct {
 	Output parameters for Async API calls
 */
 type TopicResult struct {
-	Topics []struct {
-		Text       string   `json:"text"`
-		Type       string   `json:"type"`
-		Score      float64  `json:"score"`
-		MessageIds []string `json:"messageIds"`
-		Sentiment  struct {
-			Polarity struct {
-				Score float64 `json:"score"`
-			} `json:"polarity"`
-			Suggested string `json:"suggested"`
-		} `json:"sentiment"`
-		ParentRefs []struct {
-			Type string `json:"type"`
-			Text string `json:"text"`
-		} `json:"parentRefs"`
-	} `json:"topics"`
+	Topics []Topic `json:"topics"`
 }
 
 type QuestionResult struct {
-	Questions []struct {
-		ID         string   `json:"id"`
-		Text       string   `json:"text"`
-		Type       string   `json:"type"`
-		Score      float64  `json:"score"`
-		MessageIds []string `json:"messageIds"`
-		From       struct {
-			ID   string `json:"id"`
-			Name string `json:"name"`
-		} `json:"from"`
-	} `json:"questions"`
+	Questions []Question `json:"questions"`
 }
 
 type FollowUpResult struct {
-	FollowUps []struct {
-		ID         string        `json:"id"`
-		Text       string        `json:"text"`
-		Type       string        `json:"type"`
-		Score      int           `json:"score"`
-		MessageIds []string      `json:"messageIds"`
-		Entities   []interface{} `json:"entities"`
-		Phrases    []interface{} `json:"phrases"`
-		From       struct {
-			ID   string `json:"id"`
-			Name string `json:"name"`
-		} `json:"from"`
-		Definitive bool `json:"definitive"`
-		Assignee   struct {
-			ID   string `json:"id"`
-			Name string `json:"name"`
-		} `json:"assignee"`
-	} `json:"followUps"`
+	FollowUps []FollowUp `json:"followUps"`
 }
 
 type EntityResult struct {
-	Entities []struct {
-		Type     string `json:"type"`
-		SubType  string `json:"subType"`
-		Category string `json:"category"`
-		Matches  []struct {
-			DetectedValue string `json:"detectedValue"`
-			MessageRefs   []struct {
-				ID        string    `json:"id"`
-				StartTime time.Time `json:"startTime"`
-				EndTime   time.Time `json:"endTime"`
-				Text      string    `json:"text"`
-				Offset    int       `json:"offset"`
-			} `json:"messageRefs"`
-		} `json:"matches"`
-	} `json:"entities"`
+	Entities []Entity `json:"entities"`
 }
 
 type ActionItemResult struct {
-	ActionItems []struct {
-		ID         string   `json:"id"`
-		Text       string   `json:"text"`
-		Type       string   `json:"type"`
-		Score      float64  `json:"score"`
-		MessageIds []string `json:"messageIds"`
-		Entities   []struct {
-			Type   string `json:"type"`
-			Text   string `json:"text"`
-			Offset int    `json:"offset"`
-			End    string `json:"end"`
-		} `json:"entities"`
-		Phrases []interface{} `json:"phrases"`
-		From    struct {
-			ID   string `json:"id"`
-			Name string `json:"name"`
-		} `json:"from"`
-		Definitive bool `json:"definitive"`
-		Assignee   struct {
-			ID   string `json:"id"`
-			Name string `json:"name"`
-		} `json:"assignee"`
-		DueBy time.Time `json:"dueBy,omitempty"`
-	} `json:"actionItems"`
+	ActionItems []ActionItem `json:"actionItems"`
 }
 
 type MessageResult struct {
-	Messages []struct {
-		ID   string `json:"id"`
-		Text string `json:"text"`
-		From struct {
-			ID   string `json:"id"`
-			Name string `json:"name"`
-		} `json:"from"`
-		StartTime      time.Time     `json:"startTime"`
-		EndTime        time.Time     `json:"endTime"`
-		TimeOffset     float64       `json:"timeOffset"`
-		Duration       float64       `json:"duration"`
-		ConversationID string        `json:"conversationId"`
-		Phrases        []interface{} `json:"phrases"`
-		Sentiment      struct {
-			Polarity struct {
-				Score float64 `json:"score"`
-			} `json:"polarity"`
-			Suggested string `json:"suggested"`
-		} `json:"sentiment"`
-		Words []struct {
-			Word       string    `json:"word"`
-			StartTime  time.Time `json:"startTime"`
-			EndTime    time.Time `json:"endTime"`
-			SpeakerTag int       `json:"speakerTag"`
-			Score      float64   `json:"score"`
-			TimeOffset float64   `json:"timeOffset"`
-			Duration   float64   `json:"duration"`
-		} `json:"words"`
-	} `json:"messages"`
+	Messages []Message `json:"messages"`
 }
 
 type SummaryResult struct {
-	Summary []struct {
-		ID          string `json:"id"`
-		Text        string `json:"text"`
-		MessageRefs []struct {
-			ID string `json:"id"`
-		} `json:"messageRefs"`
-		StartTime time.Time `json:"startTime"`
-		EndTime   time.Time `json:"endTime"`
-	} `json:"summary"`
+	Summaries []Summary `json:"summary"`
 }
 
 type AnalyticsResult struct {
-	Metrics []struct {
-		Type    string  `json:"type"`
-		Percent float64 `json:"percent"`
-		Seconds float64 `json:"seconds"`
-	} `json:"metrics"`
-	Members []struct {
-		ID   string `json:"id"`
-		Name string `json:"name"`
-		Pace struct {
-			Wpm int `json:"wpm"`
-		} `json:"pace"`
-		TalkTime struct {
-			Percentage float64 `json:"percentage"`
-			Seconds    float64 `json:"seconds"`
-		} `json:"talkTime"`
-		ListenTime struct {
-			Percentage float64 `json:"percentage"`
-			Seconds    float64 `json:"seconds"`
-		} `json:"listenTime"`
-		Overlap struct {
-		} `json:"overlap"`
-	} `json:"members"`
+	Metrics []Metric `json:"metrics"`
+	Members []Member `json:"members"`
 }
 
 type TrackerResult []struct {
-	ID      string `json:"id"`
-	Name    string `json:"name"`
-	Matches []struct {
-		Type        string `json:"type"`
-		Value       string `json:"value"`
-		MessageRefs []struct {
-			ID     string `json:"id"`
-			Text   string `json:"text"`
-			Offset int    `json:"offset"`
-		} `json:"messageRefs"`
-		InsightRefs []interface{} `json:"insightRefs"`
-	} `json:"matches"`
+	ID      string  `json:"id"`
+	Name    string  `json:"name"`
+	Matches []Match `json:"matches"`
 }
 
-/*
-	Output for Bookmark APIs
-*/
 type BookmarksResult struct {
 	Bookmarks []Bookmark `json:"bookmarks"`
 }

@@ -6,7 +6,6 @@ package microphone
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
 	"io"
 	"os"
 	"os/signal"
@@ -19,6 +18,7 @@ func Initialize(cfg AudioConfig) (*Microphone, error) {
 	m := &Microphone{
 		sig:    make(chan os.Signal, 1),
 		intBuf: make([]int16, 1024),
+		muted:  false,
 	}
 	signal.Notify(m.sig, os.Interrupt, os.Kill)
 
@@ -67,7 +67,7 @@ func (m *Microphone) Stream(w io.Writer) error {
 			return err
 		}
 
-		byteCount, err := w.Write(int16ToLittleEndianByte(m.intBuf))
+		byteCount, err := w.Write(m.int16ToLittleEndianByte(m.intBuf))
 		if err != nil {
 			klog.V(1).Infof("w.Write failed. Err: %v\n", err)
 			return err
@@ -84,6 +84,18 @@ func (m *Microphone) Stream(w io.Writer) error {
 	return nil
 }
 
+func (m *Microphone) Mute() {
+	m.mute.Lock()
+	m.muted = true
+	m.mute.Unlock()
+}
+
+func (m *Microphone) Unmute() {
+	m.mute.Lock()
+	m.muted = false
+	m.mute.Unlock()
+}
+
 func (m *Microphone) Stop() error {
 	err := m.stream.Stop()
 	if err != nil {
@@ -97,11 +109,21 @@ func Teardown() {
 	portaudio.Terminate()
 }
 
-func int16ToLittleEndianByte(f []int16) []byte {
+func (m *Microphone) int16ToLittleEndianByte(f []int16) []byte {
+	m.mute.Lock()
+	isMuted := m.muted
+	m.mute.Unlock()
+
+	if isMuted {
+		klog.V(5).Infof("Mic is MUTED!\n")
+		f = make([]int16, len(f))
+	}
+
 	var buf bytes.Buffer
 	err := binary.Write(&buf, binary.LittleEndian, f)
 	if err != nil {
-		fmt.Println("binary.Write failed:", err)
+		klog.V(1).Infof("binary.Write failed. Err %v\n", err)
 	}
+
 	return buf.Bytes()
 }
