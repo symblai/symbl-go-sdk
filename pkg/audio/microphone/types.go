@@ -5,6 +5,7 @@ package microphone
 
 import (
 	"os"
+	"sync"
 
 	"github.com/gordonklaus/portaudio"
 )
@@ -21,4 +22,7 @@ type Microphone struct {
 
 	intBuf []int16
 	sig    chan os.Signal
+
+	mute  sync.Mutex
+	muted bool
 }

@@ -18,5 +18,3 @@ require (
 	github.com/leodido/go-urn v1.2.1 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
-
-// replace github.com/gorilla/websocket => ../../gorilla/websocket

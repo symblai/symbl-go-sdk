@@ -10,3 +10,9 @@ const (
 	MessageTypeTopicResponse     string = "topic_response"
 	MessageTypeTrackerResponse   string = "tracker_response"
 )
+
+const (
+	InsightTypeQuestion   string = "question"
+	InsightTypeFollowUp   string = "follow_up"
+	InsightTypeActionItem string = "action_item"
+)
