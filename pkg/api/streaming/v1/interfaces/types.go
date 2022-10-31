@@ -10,163 +10,163 @@ import "time"
 */
 
 type MessageRecognition struct {
-	Type    string `json:"type"`
-	IsFinal bool   `json:"isFinal"`
+	Type    string `json:"type,omitempty"`
+	IsFinal bool   `json:"isFinal,omitempty"`
 	Payload struct {
 		Raw struct {
 			Alternatives []struct {
 				Words []struct {
-					Word      string `json:"word"`
+					Word      string `json:"word,omitempty"`
 					StartTime struct {
-						Seconds string `json:"seconds"`
-						Nanos   string `json:"nanos"`
-					} `json:"startTime"`
+						Seconds string `json:"seconds,omitempty"`
+						Nanos   string `json:"nanos,omitempty"`
+					} `json:"startTime,omitempty"`
 					EndTime struct {
-						Seconds string `json:"seconds"`
-						Nanos   string `json:"nanos"`
-					} `json:"endTime"`
-				} `json:"words"`
-				Transcript string  `json:"transcript"`
-				Confidence float64 `json:"confidence"`
-			} `json:"alternatives"`
-		} `json:"raw"`
-	} `json:"payload"`
+						Seconds string `json:"seconds,omitempty"`
+						Nanos   string `json:"nanos,omitempty"`
+					} `json:"endTime,omitempty"`
+				} `json:"words,omitempty"`
+				Transcript string  `json:"transcript,omitempty"`
+				Confidence float64 `json:"confidence,omitempty"`
+			} `json:"alternatives,omitempty"`
+		} `json:"raw,omitempty"`
+	} `json:"payload,omitempty"`
 	Punctuated struct {
-		Transcript string `json:"transcript"`
-	} `json:"punctuated"`
+		Transcript string `json:"transcript,omitempty"`
+	} `json:"punctuated,omitempty"`
 	User struct {
-		UserID string `json:"userId"`
-		Name   string `json:"name"`
-		ID     string `json:"id"`
-	} `json:"user"`
+		UserID string `json:"userId,omitempty"`
+		Name   string `json:"name,omitempty"`
+		ID     string `json:"id,omitempty"`
+	} `json:"user,omitempty"`
 }
 
 type Message struct {
 	From struct {
-		ID     string `json:"id"`
-		Name   string `json:"name"`
-		UserID string `json:"userId"`
-	} `json:"from"`
+		ID     string `json:"id,omitempty"`
+		Name   string `json:"name,omitempty"`
+		UserID string `json:"userId,omitempty"`
+	} `json:"from,omitempty"`
 	Payload struct {
-		Content     string `json:"content"`
-		ContentType string `json:"contentType"`
-	} `json:"payload"`
-	ID      string `json:"id"`
+		Content     string `json:"content,omitempty"`
+		ContentType string `json:"contentType,omitempty"`
+	} `json:"payload,omitempty"`
+	ID      string `json:"id,omitempty"`
 	Channel struct {
-		ID string `json:"id"`
-	} `json:"channel"`
+		ID string `json:"id,omitempty"`
+	} `json:"channel,omitempty"`
 	Metadata struct {
-		DisablePunctuation bool      `json:"disablePunctuation"`
-		TimezoneOffset     int       `json:"timezoneOffset"`
-		OriginalContent    string    `json:"originalContent"`
-		Words              time.Time `json:"words"`
-		OriginalMessageID  string    `json:"originalMessageId"`
-	} `json:"metadata"`
-	Dismissed bool `json:"dismissed"`
+		DisablePunctuation bool      `json:"disablePunctuation,omitempty"`
+		TimezoneOffset     int       `json:"timezoneOffset,omitempty"`
+		OriginalContent    string    `json:"originalContent,omitempty"`
+		Words              time.Time `json:"words,omitempty"`
+		OriginalMessageID  string    `json:"originalMessageId,omitempty"`
+	} `json:"metadata,omitempty"`
+	Dismissed bool `json:"dismissed,omitempty"`
 	Duration  struct {
-		StartTime  time.Time `json:"startTime"`
-		EndTime    time.Time `json:"endTime"`
-		TimeOffset float64   `json:"timeOffset"`
-		Duration   float64   `json:"duration"`
-	} `json:"duration"`
+		StartTime  time.Time `json:"startTime,omitempty"`
+		EndTime    time.Time `json:"endTime,omitempty"`
+		TimeOffset float64   `json:"timeOffset,omitempty"`
+		Duration   float64   `json:"duration,omitempty"`
+	} `json:"duration,omitempty"`
 }
 
 type Insight struct {
-	ID         string  `json:"id"`
-	Confidence float64 `json:"confidence"`
+	ID         string  `json:"id,omitempty"`
+	Confidence float64 `json:"confidence,omitempty"`
 	Hints      []struct {
-		Key   string `json:"key"`
-		Value string `json:"value"`
-	} `json:"hints"`
-	Type     string `json:"type"`
+		Key   string `json:"key,omitempty"`
+		Value string `json:"value,omitempty"`
+	} `json:"hints,omitempty"`
+	Type     string `json:"type,omitempty"`
 	Assignee struct {
-		ID     string `json:"id"`
-		Name   string `json:"name"`
-		UserID string `json:"userId"`
-	} `json:"assignee"`
+		ID     string `json:"id,omitempty"`
+		Name   string `json:"name,omitempty"`
+		UserID string `json:"userId,omitempty"`
+	} `json:"assignee,omitempty"`
 	Tags []struct {
-		Type        string `json:"type"`
-		Text        string `json:"text"`
-		BeginOffset int    `json:"beginOffset"`
+		Type        string `json:"type,omitempty"`
+		Text        string `json:"text,omitempty"`
+		BeginOffset int    `json:"beginOffset,omitempty"`
 		Value       struct {
 			Value struct {
-				Name   string `json:"name"`
-				Alias  string `json:"alias"`
-				UserID string `json:"userId"`
-			} `json:"value"`
-		} `json:"value"`
-	} `json:"tags"`
-	Dismissed bool `json:"dismissed"`
+				Name   string `json:"name,omitempty"`
+				Alias  string `json:"alias,omitempty"`
+				UserID string `json:"userId,omitempty"`
+			} `json:"value,omitempty"`
+		} `json:"value,omitempty"`
+	} `json:"tags,omitempty"`
+	Dismissed bool `json:"dismissed,omitempty"`
 	Payload   struct {
-		Content     string `json:"content"`
-		ContentType string `json:"contentType"`
-	} `json:"payload"`
+		Content     string `json:"content,omitempty"`
+		ContentType string `json:"contentType,omitempty"`
+	} `json:"payload,omitempty"`
 	From struct {
-		ID     string `json:"id"`
-		Name   string `json:"name"`
-		UserID string `json:"userId"`
-	} `json:"from"`
-	Entities         interface{} `json:"entities"` // TODO needs to be defined. Need an example.
+		ID     string `json:"id,omitempty"`
+		Name   string `json:"name,omitempty"`
+		UserID string `json:"userId,omitempty"`
+	} `json:"from,omitempty"`
+	Entities         interface{} `json:"entities,omitempty"` // TODO needs to be defined. Need an example
 	MessageReference struct {
-		ID string `json:"id"`
-	} `json:"messageReference"`
+		ID string `json:"id,omitempty"`
+	} `json:"messageReference,omitempty"`
 }
 
 type Topic struct {
-	ID                string `json:"id"`
+	ID                string `json:"id,omitempty"`
 	MessageReferences []struct {
-		ID string `json:"id"`
-	} `json:"messageReferences"`
-	Phrases   string `json:"phrases"`
+		ID string `json:"id,omitempty"`
+	} `json:"messageReferences,omitempty"`
+	Phrases   string `json:"phrases,omitempty"`
 	RootWords []struct {
-		Text string `json:"text"`
-	} `json:"rootWords"`
-	Score        float64 `json:"score"`
-	Type         string  `json:"type"`
-	MessageIndex int     `json:"messageIndex"`
+		Text string `json:"text,omitempty"`
+	} `json:"rootWords,omitempty"`
+	Score        float64 `json:"score,omitempty"`
+	Type         string  `json:"type,omitempty"`
+	MessageIndex int     `json:"messageIndex,omitempty"`
 }
 
 type Tracker struct {
-	ID                string `json:"id"`
+	ID                string `json:"id,omitempty"`
 	MessageReferences []struct {
-		ID       string `json:"id"`
-		Relation string `json:"relation"`
-	} `json:"messageReferences"`
-	Phrases   string `json:"phrases"`
+		ID       string `json:"id,omitempty"`
+		Relation string `json:"relation,omitempty"`
+	} `json:"messageReferences,omitempty"`
+	Phrases   string `json:"phrases,omitempty"`
 	RootWords []struct {
-		Text string `json:"text"`
-	} `json:"rootWords"`
-	Score float64 `json:"score"`
-	Type  string  `json:"type"`
+		Text string `json:"text,omitempty"`
+	} `json:"rootWords,omitempty"`
+	Score float64 `json:"score,omitempty"`
+	Type  string  `json:"type,omitempty"`
 }
 
 /*
 	Conversation Insights
 */
 type RecognitionResult struct {
-	Type       string             `json:"type"`
-	Message    MessageRecognition `json:"message"`
-	TimeOffset int                `json:"timeOffset"`
+	Type       string             `json:"type,omitempty"`
+	Message    MessageRecognition `json:"message,omitempty"`
+	TimeOffset int                `json:"timeOffset,omitempty"`
 }
 
 type MessageResponse struct {
-	Type           string    `json:"type"`
-	Messages       []Message `json:"messages"`
-	SequenceNumber int       `json:"sequenceNumber"`
+	Type           string    `json:"type,omitempty"`
+	Messages       []Message `json:"messages,omitempty"`
+	SequenceNumber int       `json:"sequenceNumber,omitempty"`
 }
 
 type InsightResponse struct {
-	Type           string    `json:"type"`
-	Insights       []Insight `json:"insights"`
-	SequenceNumber int       `json:"sequenceNumber"`
+	Type           string    `json:"type,omitempty"`
+	Insights       []Insight `json:"insights,omitempty"`
+	SequenceNumber int       `json:"sequenceNumber,omitempty"`
 }
 
 type TopicResponse struct {
-	Type   string  `json:"type"`
-	Topics []Topic `json:"topics"`
+	Type   string  `json:"type,omitempty"`
+	Topics []Topic `json:"topics,omitempty"`
 }
 
 type TrackerResponse struct {
-	Type     string    `json:"type"`
-	Trackers []Tracker `json:"trackers"`
+	Type     string    `json:"type,omitempty"`
+	Trackers []Tracker `json:"trackers,omitempty"`
 }

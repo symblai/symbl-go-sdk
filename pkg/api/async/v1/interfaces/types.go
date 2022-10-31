@@ -9,190 +9,190 @@ import "time"
 	Shared definitions
 */
 type User struct {
-	Name   string `json:"name" validate:"required"`
-	UserID string `json:"userId" validate:"required"`
-	Email  string `json:"email" validate:"required"`
+	Name   string `json:"name,omitempty" validate:"required"`
+	UserID string `json:"userId,omitempty" validate:"required"`
+	Email  string `json:"email,omitempty" validate:"required"`
 }
 
 type Metric struct {
-	Type    string  `json:"type"`
-	Percent float64 `json:"percent"`
-	Seconds float64 `json:"seconds"`
+	Type    string  `json:"type,omitempty"`
+	Percent float64 `json:"percent,omitempty"`
+	Seconds float64 `json:"seconds,omitempty"`
 }
 
 type Sentiment struct {
 	Polarity struct {
-		Score float64 `json:"score"`
-	} `json:"polarity"`
-	Suggested string `json:"suggested"`
+		Score float64 `json:"score,omitempty"`
+	} `json:"polarity,omitempty"`
+	Suggested string `json:"suggested,omitempty"`
 }
 
 type MessageRef struct {
-	ID        string    `json:"id"`
-	StartTime time.Time `json:"startTime"`
-	EndTime   time.Time `json:"endTime"`
-	Text      string    `json:"text"`
-	Offset    int       `json:"offset"`
+	ID        string    `json:"id,omitempty"`
+	StartTime time.Time `json:"startTime,omitempty"`
+	EndTime   time.Time `json:"endTime,omitempty"`
+	Text      string    `json:"text,omitempty"`
+	Offset    int       `json:"offset,omitempty"`
 }
 
 type ParentRef []struct {
-	Type string `json:"type"`
-	Text string `json:"text"`
+	Type string `json:"type,omitempty"`
+	Text string `json:"text,omitempty"`
 }
 
 type InsightRef []struct {
-	ID   string `json:"id"`
-	Type string `json:"type"`
-	Text string `json:"text"`
+	ID   string `json:"id,omitempty"`
+	Type string `json:"type,omitempty"`
+	Text string `json:"text,omitempty"`
 }
 
 type TrackerMatch struct {
-	Type        string       `json:"type"`
-	Value       string       `json:"value"`
-	MessageRefs []MessageRef `json:"messageRefs"`
-	InsightRefs []InsightRef `json:"insightRefs"`
+	Type        string       `json:"type,omitempty"`
+	Value       string       `json:"value,omitempty"`
+	MessageRefs []MessageRef `json:"messageRefs,omitempty"`
+	InsightRefs []InsightRef `json:"insightRefs,omitempty"`
 }
 
 type EntityMatch struct {
-	DetectedValue string       `json:"detectedValue"`
-	MessageRefs   []MessageRef `json:"messageRefs"`
+	DetectedValue string       `json:"detectedValue,omitempty"`
+	MessageRefs   []MessageRef `json:"messageRefs,omitempty"`
 }
 
 type EntityInsight struct {
-	Type   string `json:"type"`
-	Text   string `json:"text"`
-	Offset int    `json:"offset"`
-	End    string `json:"end"`
+	Type   string `json:"type,omitempty"`
+	Text   string `json:"text,omitempty"`
+	Offset int    `json:"offset,omitempty"`
+	End    string `json:"end,omitempty"`
 }
 
 type Entity struct {
-	Type     string        `json:"type"`
-	SubType  string        `json:"subType"`
-	Category string        `json:"category"`
-	Matches  []EntityMatch `json:"matches"`
+	Type     string        `json:"type,omitempty"`
+	SubType  string        `json:"subType,omitempty"`
+	Category string        `json:"category,omitempty"`
+	Matches  []EntityMatch `json:"matches,omitempty"`
 }
 
 type Bookmark struct {
-	ID              string       `json:"id"`
-	Label           string       `json:"label"  validate:"required"`
-	Description     string       `json:"description"`
-	User            User         `json:"user" validate:"required"`
-	BeginTimeOffset int          `json:"beginTimeOffset" validate:"required"`
-	Duration        int          `json:"duration" validate:"required"`
-	MessageRefs     []MessageRef `json:"messageRefs" validate:"required"`
+	ID              string       `json:"id,omitempty"`
+	Label           string       `json:"label,omitempty"  validate:"required"`
+	Description     string       `json:"description,omitempty"`
+	User            User         `json:"user,omitempty" validate:"required"`
+	BeginTimeOffset int          `json:"beginTimeOffset,omitempty" validate:"required"`
+	Duration        int          `json:"duration,omitempty" validate:"required"`
+	MessageRefs     []MessageRef `json:"messageRefs,omitempty" validate:"required"`
 }
 
 type Topic struct {
-	Text       string      `json:"text"`
-	Type       string      `json:"type"`
-	Score      float64     `json:"score"`
-	MessageIds []string    `json:"messageIds"`
-	Sentiment  Sentiment   `json:"sentiment"`
-	ParentRefs []ParentRef `json:"parentRefs"`
+	Text       string      `json:"text,omitempty"`
+	Type       string      `json:"type,omitempty"`
+	Score      float64     `json:"score,omitempty"`
+	MessageIds []string    `json:"messageIds,omitempty"`
+	Sentiment  Sentiment   `json:"sentiment,omitempty"`
+	ParentRefs []ParentRef `json:"parentRefs,omitempty"`
 }
 
 type Question struct {
-	ID         string   `json:"id"`
-	Text       string   `json:"text"`
-	Type       string   `json:"type"`
-	Score      float64  `json:"score"`
-	MessageIds []string `json:"messageIds"`
+	ID         string   `json:"id,omitempty"`
+	Text       string   `json:"text,omitempty"`
+	Type       string   `json:"type,omitempty"`
+	Score      float64  `json:"score,omitempty"`
+	MessageIds []string `json:"messageIds,omitempty"`
 	From       struct {
-		ID   string `json:"id"`
-		Name string `json:"name"`
-	} `json:"from"`
+		ID   string `json:"id,omitempty"`
+		Name string `json:"name,omitempty"`
+	} `json:"from,omitempty"`
 }
 
 type FollowUp struct {
-	ID         string          `json:"id"`
-	Text       string          `json:"text"`
-	Type       string          `json:"type"`
-	Score      int             `json:"score"`
-	MessageIds []string        `json:"messageIds"`
-	Entities   []EntityInsight `json:"entities"`
-	Phrases    []string        `json:"phrases"` // TODO: I believe this is []string. Need to validate.
+	ID         string          `json:"id,omitempty"`
+	Text       string          `json:"text,omitempty"`
+	Type       string          `json:"type,omitempty"`
+	Score      int             `json:"score,omitempty"`
+	MessageIds []string        `json:"messageIds,omitempty"`
+	Entities   []EntityInsight `json:"entities,omitempty"`
+	Phrases    []string        `json:"phrases,omitempty"` // TODO: I believe this is []string. Need to validate.
 	From       struct {
-		ID   string `json:"id"`
-		Name string `json:"name"`
-	} `json:"from"`
-	Definitive bool `json:"definitive"`
+		ID   string `json:"id,omitempty"`
+		Name string `json:"name,omitempty"`
+	} `json:"from,omitempty"`
+	Definitive bool `json:"definitive,omitempty"`
 	Assignee   struct {
-		ID   string `json:"id"`
-		Name string `json:"name"`
-	} `json:"assignee"`
+		ID   string `json:"id,omitempty"`
+		Name string `json:"name,omitempty"`
+	} `json:"assignee,omitempty"`
 }
 
 type ActionItem struct {
-	ID         string          `json:"id"`
-	Text       string          `json:"text"`
-	Type       string          `json:"type"`
-	Score      float64         `json:"score"`
-	MessageIds []string        `json:"messageIds"`
-	Entities   []EntityInsight `json:"entities"`
-	Phrases    []string        `json:"phrases"` // TODO: I believe this is []string. Need to validate.
+	ID         string          `json:"id,omitempty"`
+	Text       string          `json:"text,omitempty"`
+	Type       string          `json:"type,omitempty"`
+	Score      float64         `json:"score,omitempty"`
+	MessageIds []string        `json:"messageIds,omitempty"`
+	Entities   []EntityInsight `json:"entities,omitempty"`
+	Phrases    []string        `json:"phrases,omitempty"` // TODO: I believe this is []string. Need to validate.
 	From       struct {
-		ID   string `json:"id"`
-		Name string `json:"name"`
-	} `json:"from"`
-	Definitive bool `json:"definitive"`
+		ID   string `json:"id,omitempty"`
+		Name string `json:"name,omitempty"`
+	} `json:"from,omitempty"`
+	Definitive bool `json:"definitive,omitempty"`
 	Assignee   struct {
-		ID   string `json:"id"`
-		Name string `json:"name"`
-	} `json:"assignee"`
-	DueBy time.Time `json:"dueBy,omitempty"`
+		ID   string `json:"id,omitempty"`
+		Name string `json:"name,omitempty"`
+	} `json:"assignee,omitempty"`
+	DueBy time.Time `json:"dueBy,omitempty,omitempty"`
 }
 
 type Message struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
+	ID   string `json:"id,omitempty"`
+	Text string `json:"text,omitempty"`
 	From struct {
-		ID   string `json:"id"`
-		Name string `json:"name"`
-	} `json:"from"`
-	StartTime      time.Time `json:"startTime"`
-	EndTime        time.Time `json:"endTime"`
-	TimeOffset     float64   `json:"timeOffset"`
-	Duration       float64   `json:"duration"`
-	ConversationID string    `json:"conversationId"`
-	Phrases        []string  `json:"phrases"` // TODO: I believe this is []string. Need to validate.
-	Sentiment      Sentiment `json:"sentiment"`
+		ID   string `json:"id,omitempty"`
+		Name string `json:"name,omitempty"`
+	} `json:"from,omitempty"`
+	StartTime      time.Time `json:"startTime,omitempty"`
+	EndTime        time.Time `json:"endTime,omitempty"`
+	TimeOffset     float64   `json:"timeOffset,omitempty"`
+	Duration       float64   `json:"duration,omitempty"`
+	ConversationID string    `json:"conversationId,omitempty"`
+	Phrases        []string  `json:"phrases,omitempty"` // TODO: I believe this is []string. Need to validate.
+	Sentiment      Sentiment `json:"sentiment,omitempty"`
 	Words          []struct {
-		Word       string    `json:"word"`
-		StartTime  time.Time `json:"startTime"`
-		EndTime    time.Time `json:"endTime"`
-		SpeakerTag int       `json:"speakerTag"`
-		Score      float64   `json:"score"`
-		TimeOffset float64   `json:"timeOffset"`
-		Duration   float64   `json:"duration"`
-	} `json:"words"`
+		Word       string    `json:"word,omitempty"`
+		StartTime  time.Time `json:"startTime,omitempty"`
+		EndTime    time.Time `json:"endTime,omitempty"`
+		SpeakerTag int       `json:"speakerTag,omitempty"`
+		Score      float64   `json:"score,omitempty"`
+		TimeOffset float64   `json:"timeOffset,omitempty"`
+		Duration   float64   `json:"duration,omitempty"`
+	} `json:"words,omitempty"`
 }
 
 type Summary struct {
-	ID          string `json:"id"`
-	Text        string `json:"text"`
+	ID          string `json:"id,omitempty"`
+	Text        string `json:"text,omitempty"`
 	MessageRefs []struct {
-		ID string `json:"id"`
-	} `json:"messageRefs"`
-	StartTime time.Time `json:"startTime"`
-	EndTime   time.Time `json:"endTime"`
+		ID string `json:"id,omitempty"`
+	} `json:"messageRefs,omitempty"`
+	StartTime time.Time `json:"startTime,omitempty"`
+	EndTime   time.Time `json:"endTime,omitempty"`
 }
 
 type Member struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID   string `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
 	Pace struct {
-		Wpm int `json:"wpm"`
-	} `json:"pace"`
+		Wpm int `json:"wpm,omitempty"`
+	} `json:"pace,omitempty"`
 	TalkTime struct {
-		Percentage float64 `json:"percentage"`
-		Seconds    float64 `json:"seconds"`
-	} `json:"talkTime"`
+		Percentage float64 `json:"percentage,omitempty"`
+		Seconds    float64 `json:"seconds,omitempty"`
+	} `json:"talkTime,omitempty"`
 	ListenTime struct {
-		Percentage float64 `json:"percentage"`
-		Seconds    float64 `json:"seconds"`
-	} `json:"listenTime"`
+		Percentage float64 `json:"percentage,omitempty"`
+		Seconds    float64 `json:"seconds,omitempty"`
+	} `json:"listenTime,omitempty"`
 	Overlap struct {
-	} `json:"overlap"`
+	} `json:"overlap,omitempty"`
 }
 
 /*

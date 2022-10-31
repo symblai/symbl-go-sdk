@@ -9,18 +9,18 @@ import "time"
 	Shared definitions
 */
 type Tracker struct {
-	ID          string    `json:"id"`
+	ID          string    `json:"id,omitempty"`
 	Name        string    `json:"name" validate:"required"`
-	Description string    `json:"description"`
+	Description string    `json:"description,omitempty"`
 	Categories  []string  `json:"categories" validate:"required"`
 	Languages   []string  `json:"languages" validate:"required"`
 	Vocabulary  []string  `json:"vocabulary" validate:"required"`
-	CreatedOn   time.Time `json:"createdOn"`
-	UpdatedOn   time.Time `json:"updatedOn"`
+	CreatedOn   time.Time `json:"createdOn,omitempty"`
+	UpdatedOn   time.Time `json:"updatedOn,omitempty"`
 }
 
 type Entity struct {
-	ID       string   `json:"id"`
+	ID       string   `json:"id,omitempty"`
 	Type     string   `json:"type" validate:"required"`
 	SubType  string   `json:"subType" validate:"required"`
 	Category string   `json:"category" validate:"required"`
@@ -33,7 +33,7 @@ type Entity struct {
 // TrackerRequest
 type TrackerRequest struct {
 	Name        string   `json:"name" validate:"required"`
-	Description string   `json:"description"`
+	Description string   `json:"description,omitempty"`
 	Categories  []string `json:"categories" validate:"required"`
 	Languages   []string `json:"languages" validate:"required"`
 	Vocabulary  []string `json:"vocabulary" validate:"required"`
