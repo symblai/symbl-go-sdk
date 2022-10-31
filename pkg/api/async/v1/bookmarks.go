@@ -178,6 +178,10 @@ func (c *Client) CreateBookmarkByMessageRefs(ctx context.Context, conversationId
 	klog.V(6).Infof("async.CreateBookmark LEAVE\n")
 	return &result, nil
 }
+
+/*
+	Please see comment for CreateBookmarkByMessageRefs above
+*/
 func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationId string, request interfaces.BookmarkByTimeDurationsRequest) (*interfaces.Bookmark, error) {
 	klog.V(6).Infof("async.CreateBookmark ENTER\n")
 
@@ -247,7 +251,7 @@ func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationI
 		"message":"Either create/update bookmark using 'beginTimeOffset + duration' or 'messageRefs'. None of them provided"
 	}
 
-	Even if we only supply MessageRefs OR beginTimeOffset + duration
+	Even if we only supply MessageRefs OR beginTimeOffset + duration, still currently yields the same error
 */
 // func (c *Client) UpdateBookmark(ctx context.Context, conversationId, bookmarkId string, request interfaces.BookmarkByMessageRefsRequest) (*interfaces.Bookmark, error) {
 // 	klog.V(6).Infof("async.UpdateBookmark ENTER\n")

@@ -49,7 +49,7 @@ func (m *Management) GetTrackers(ctx context.Context) (*interfaces.TrackersRespo
 		}
 	}
 
-	klog.V(3).Infof("GET Management Trackers succeeded\n"))
+	klog.V(3).Infof("GET Management Trackers succeeded\n")
 	klog.V(6).Infof("mgmt.GetTrackers LEAVE\n")
 	return &result, nil
 }
@@ -105,7 +105,7 @@ func (m *Management) CreateTracker(ctx context.Context, request interfaces.Track
 		}
 	}
 
-	klog.V(3).Infof("GET Create Trackers succeeded\n"))
+	klog.V(3).Infof("GET Create Trackers succeeded\n")
 	klog.V(6).Infof("mgmt.CreateTracker LEAVE\n")
 	return &result, nil
 }
@@ -205,7 +205,7 @@ func (m *Management) DeleteTracker(ctx context.Context, trackerId string) error 
 		}
 	}
 
-	klog.V(3).Infof("GET Delete Trackers succeeded\n"))
+	klog.V(3).Infof("GET Delete Trackers succeeded\n")
 	klog.V(6).Infof("mgmt.DeleteTracker LEAVE\n")
 	return nil
 }

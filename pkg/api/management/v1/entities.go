@@ -49,7 +49,7 @@ func (m *Management) GetEntites(ctx context.Context) (*interfaces.EntitiesRespon
 		}
 	}
 
-	klog.V(3).Infof("GET Management Entities succeeded\n"))
+	klog.V(3).Infof("GET Management Entities succeeded\n")
 	klog.V(6).Infof("mgmt.GetEntites LEAVE\n")
 	return &result, nil
 }
@@ -86,13 +86,13 @@ func (m *Management) GetEntitById(ctx context.Context, entityId string) (*interf
 		}
 	}
 
-	klog.V(3).Infof("GET Management Entity succeeded\n"))
+	klog.V(3).Infof("GET Management Entity succeeded\n")
 	klog.V(6).Infof("mgmt.GetEntitById LEAVE\n")
 	return &result, nil
 }
 
 /*
-	TODO: creaate doesn't return Entity object that's populated
+	TODO: create doesn't return Entity object that's populated
 */
 func (m *Management) CreateEntity(ctx context.Context, request interfaces.EntityRequest) (*interfaces.Entity, error) {
 	klog.V(6).Infof("mgmt.CreateEntity ENTER\n")
@@ -145,7 +145,7 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Entity
 		}
 	}
 
-	klog.V(3).Infof("GET Create Entity succeeded\n"))
+	klog.V(3).Infof("GET Create Entity succeeded\n")
 	klog.V(6).Infof("mgmt.CreateEntity LEAVE\n")
 	return &result, nil
 }
@@ -245,7 +245,7 @@ func (m *Management) DeleteEntity(ctx context.Context, entityId string) error {
 		}
 	}
 
-	klog.V(3).Infof("GET Delete Entity succeeded\n"))
+	klog.V(3).Infof("GET Delete Entity succeeded\n")
 	klog.V(6).Infof("mgmt.DeleteEntity LEAVE\n")
 	return nil
 }
@@ -287,7 +287,7 @@ func (m *Management) DeleteEntityBySubType(ctx context.Context, subType string) 
 		}
 	}
 
-	klog.V(3).Infof("GET Delete EntityBySubType succeeded\n")))
+	klog.V(3).Infof("GET Delete EntityBySubType succeeded\n")
 	klog.V(6).Infof("mgmt.DeleteEntityBySubType LEAVE\n")
 	return nil
 }
