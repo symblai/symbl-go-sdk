@@ -4,26 +4,32 @@
 package symbl
 
 type Tracker struct {
-	Name       string   `json:"name"`
-	Vocabulary []string `json:"vocabulary"`
+	Name       string   `json:"name,omitempty"`
+	Vocabulary []string `json:"vocabulary,omitempty"`
+}
+
+type SpeechRecognition struct {
+	Encoding        string `json:"encoding,omitempty"`
+	SampleRateHertz int    `json:"sampleRateHertz,omitempty"`
+}
+
+type Config struct {
+	MeetingTitle        string            `json:"meetingTitle,omitempty"`
+	ConfidenceThreshold float64           `json:"confidenceThreshold,omitempty"`
+	TimezoneOffset      int               `json:"timezoneOffset,omitempty"`
+	SpeechRecognition   SpeechRecognition `json:"speechRecognition,omitempty"`
+}
+
+type Speaker struct {
+	UserID string `json:"userId,omitempty"`
+	Name   string `json:"name,omitempty"`
 }
 
 type StreamingConfig struct {
-	Type             string    `json:"type"`
-	InsightTypes     []string  `json:"insightTypes"`
-	CustomVocabulary []string  `json:"customVocabulary"`
-	Trackers         []Tracker `json:"trackers"`
-	Config           struct {
-		MeetingTitle        string  `json:"meetingTitle"`
-		ConfidenceThreshold float64 `json:"confidenceThreshold"`
-		TimezoneOffset      int     `json:"timezoneOffset"`
-		SpeechRecognition   struct {
-			Encoding        string `json:"encoding"`
-			SampleRateHertz int    `json:"sampleRateHertz"`
-		} `json:"speechRecognition"`
-	} `json:"config"`
-	Speaker struct {
-		UserID string `json:"userId"`
-		Name   string `json:"name"`
-	} `json:"speaker"`
+	Type             string    `json:"type,omitempty"`
+	InsightTypes     []string  `json:"insightTypes,omitempty"`
+	CustomVocabulary []string  `json:"customVocabulary,omitempty"`
+	Trackers         []Tracker `json:"trackers,omitempty"`
+	Config           Config    `json:"config,omitempty"`
+	Speaker          Speaker   `json:"speaker,omitempty"`
 }
