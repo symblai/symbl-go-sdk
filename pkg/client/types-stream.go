@@ -3,10 +3,17 @@
 
 package symbl
 
+type Tracker struct {
+	Name       string   `json:"name"`
+	Vocabulary []string `json:"vocabulary"`
+}
+
 type StreamingConfig struct {
-	Type         string   `json:"type"`
-	InsightTypes []string `json:"insightTypes"`
-	Config       struct {
+	Type             string    `json:"type"`
+	InsightTypes     []string  `json:"insightTypes"`
+	CustomVocabulary []string  `json:"customVocabulary"`
+	Trackers         []Tracker `json:"trackers"`
+	Config           struct {
 		MeetingTitle        string  `json:"meetingTitle"`
 		ConfidenceThreshold float64 `json:"confidenceThreshold"`
 		TimezoneOffset      int     `json:"timezoneOffset"`

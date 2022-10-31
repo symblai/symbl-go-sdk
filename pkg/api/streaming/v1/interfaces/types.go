@@ -8,6 +8,7 @@ import "time"
 /*
 	Shared definitions
 */
+
 type MessageRecognition struct {
 	Type    string `json:"type"`
 	IsFinal bool   `json:"isFinal"`
@@ -105,7 +106,7 @@ type Insight struct {
 		Name   string `json:"name"`
 		UserID string `json:"userId"`
 	} `json:"from"`
-	Entities         interface{} `json:"entities"`
+	Entities         interface{} `json:"entities"` // TODO needs to be defined. Need an example.
 	MessageReference struct {
 		ID string `json:"id"`
 	} `json:"messageReference"`

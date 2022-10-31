@@ -58,8 +58,8 @@ func main() {
 		},
 		// BeginTimeOffset: 22,
 		// Duration:        33,
-		MessageRefs: []interfaces.MessageRef{
-			interfaces.MessageRef{
+		MessageRefs: []interfaces.MessageRefRequest{
+			interfaces.MessageRefRequest{
 				ID: "4510581827043328",
 			},
 		},
