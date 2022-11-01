@@ -1,7 +1,7 @@
 // Copyright 2022 Symbl.ai SDK contributors. All Rights Reserved.
 // SPDX-License-Identifier: MIT
 
-package symbl
+package interfaces
 
 type Tracker struct {
 	Name       string   `json:"name,omitempty"`
