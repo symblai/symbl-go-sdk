@@ -128,16 +128,16 @@ type Topic struct {
 
 type Tracker struct {
 	ID                string `json:"id,omitempty"`
-	MessageReferences []struct {
+	Name    string `json:"name,omitempty"`
+	Matches []struct {
+		Value       string `json:"value,omitempty"`
+		MessageRefs []struct {
 		ID       string `json:"id,omitempty"`
-		Relation string `json:"relation,omitempty"`
-	} `json:"messageReferences,omitempty"`
-	Phrases   string `json:"phrases,omitempty"`
-	RootWords []struct {
 		Text string `json:"text,omitempty"`
-	} `json:"rootWords,omitempty"`
-	Score float64 `json:"score,omitempty"`
-	Type  string  `json:"type,omitempty"`
+			Offset int    `json:"offset,omitempty"`
+		} `json:"messageRefs,omitempty"`
+		InsightRefs []interface{} `json:"insightRefs,omitempty"` // TODO needs to be defined. Need an example
+	} `json:"matches,omitempty"`
 }
 
 /*
