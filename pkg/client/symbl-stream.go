@@ -12,6 +12,7 @@ import (
 	streaming "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1"
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
+	cfginterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 	stream "github.com/dvonthenen/symbl-go-sdk/pkg/client/stream"
 )
 
@@ -29,8 +30,8 @@ type StreamClient struct {
 	symblStreaming stream.WebSocketMessageCallback
 }
 
-func GetDefaultConfig() *StreamingConfig {
-	config := &StreamingConfig{}
+func GetDefaultConfig() *cfginterfaces.StreamingConfig {
+	config := &cfginterfaces.StreamingConfig{}
 
 	config.Type = streaming.TypeRequestStart
 	config.InsightTypes = []string{"topic", "question", "action_item", "follow_up"}
@@ -53,8 +54,16 @@ func NewStreamClientWithDefaults(ctx context.Context) (*StreamClient, error) {
 
 // NewStreamClient creates a new client on the Symbl.ai platform. The client authenticates with the
 // server with APP_ID/APP_SECRET.
-func NewStreamClient(ctx context.Context, config *StreamingConfig, callback interfaces.InsightCallback) (*StreamClient, error) {
+func NewStreamClient(ctx context.Context, config *cfginterfaces.StreamingConfig, callback interfaces.InsightCallback) (*StreamClient, error) {
 	klog.V(6).Infof("NewStreamClient ENTER\n")
+
+	// set streaming type
+	if config == nil {
+		klog.V(1).Infof("Config is null\n")
+		klog.V(6).Infof("NewStreamClient LEAVE\n")
+		return nil, ErrInvalidInput
+	}
+	config.Type = streaming.TypeRequestStart
 
 	// create rest client
 	restClient, err := NewRestClient(ctx)

@@ -1,7 +1,7 @@
 // Copyright 2022 Symbl.ai SDK contributors. All Rights Reserved.
 // SPDX-License-Identifier: MIT
 
-package symbl
+package interfaces
 
 import (
 	"fmt"
@@ -29,8 +29,8 @@ type Credentials struct {
 	AppSecret string `json:"appSecret" validate:"required"`
 }
 
-// authResp represents a Symbl platform bearer access token with expiry information.
-type authResp struct {
+// AuthResp represents a Symbl platform bearer access token with expiry information.
+type AuthResp struct {
 	AccessToken string `json:"accessToken"`
 	ExpiresIn   int    `json:"expiresIn"`
 }

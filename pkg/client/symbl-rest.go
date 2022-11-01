@@ -14,6 +14,7 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 	rest "github.com/dvonthenen/symbl-go-sdk/pkg/client/rest"
 )
 
@@ -28,8 +29,8 @@ const (
 type RestClient struct {
 	*rest.Client
 
-	creds *Credentials
-	auth  *authResp
+	creds *interfaces.Credentials
+	auth  *interfaces.AuthResp
 }
 
 // NewRestClient creates a new client on the Symbl.ai platform. The client authenticates with the
@@ -52,7 +53,7 @@ func NewRestClient(ctx context.Context) (*RestClient, error) {
 		return nil, ErrInvalidInput
 	}
 
-	c := Credentials{
+	c := interfaces.Credentials{
 		AppId:     appId,
 		AppSecret: appSecret,
 	}
@@ -61,7 +62,7 @@ func NewRestClient(ctx context.Context) (*RestClient, error) {
 
 // NewRestClientWithCreds creates a new client on the Symbl.ai platform. The client authenticates with the
 // server with APP_ID/APP_SECRET.
-func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient, error) {
+func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (*RestClient, error) {
 	klog.V(6).Infof("NewWithCreds ENTER\n")
 
 	// checks
@@ -100,7 +101,7 @@ func NewRestClientWithCreds(ctx context.Context, creds Credentials) (*RestClient
 	}
 
 	// do it!
-	var resp authResp
+	var resp interfaces.AuthResp
 
 	restClient := rest.New()
 	err = restClient.Do(ctx, req, &resp)
