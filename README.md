@@ -56,7 +56,16 @@ export APP_SECRET=YOUR-APP-SECRET-HERE
 
 ## Examples
 
-You can find a list of very simple main-style examples to consume this SDK in the [examples folder][examples-folder].
+You can find a list of very simple main-style examples to consume this SDK in the [examples folder][examples-folder]. To run these examples, you need to change directory into an example you wish to run and then execute the `go` file in that directory. For example:
+
+```sh
+$ cd examples/async-file
+go run async-file.go
+```
+
+### For the Streaming API (Real-Time) Example
+
+The Streaming API (Real-Time) example makes use of a [microphone package](https://github.com/dvonthenen/symbl-go-sdk/tree/main/pkg/audio/microphone) contained within the repository. That package makes use of the [PortAudio library](http://www.portaudio.com/) which is a cross-platform open source audio library. If you are on Linux, you can install this library using whatever package manager is available (yum, apt, etc.) on your operating system. If you are on macOS, you can install this library using [brew](https://brew.sh/).
 
 ## Community
 
