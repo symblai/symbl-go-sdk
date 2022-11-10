@@ -24,13 +24,26 @@ const (
 	EntitiesURI    string = "https://api.symbl.ai/%s/conversations/%s/entities?parentRefs=true&sentiment=true"
 	ActionItemsURI string = "https://api.symbl.ai/%s/conversations/%s/action-items?parentRefs=true&sentiment=true"
 	MessagesURI    string = "https://api.symbl.ai/%s/conversations/%s/messages?parentRefs=true&sentiment=true"
-	SummaryURI     string = "https://api.symbl.ai/%s/conversations/%s/summary?parentRefs=true&sentiment=true"
 	AnalyticsURI   string = "https://api.symbl.ai/%s/conversations/%s/analytics?parentRefs=true&sentiment=true"
 	TrackersURI    string = "https://api.symbl.ai/%s/conversations/%s/trackers?parentRefs=true&sentiment=true"
 
 	// bookmarks
 	BookmarksURI     string = "https://api.symbl.ai/%s/conversations/%s/bookmarks"
 	BookmarksByIdURI string = "https://api.symbl.ai/%s/conversations/%s/bookmarks/%s"
+	// BookmarkSummaryURI      string = "https://api.symbl.ai/%s/conversations/%s/bookmarks/%s/summary"
+	// SummariesOfBookmarksURI string = "https://api.symbl.ai/%s/conversations/%s/bookmarks-summary"
+
+	// summary ui
+	SummaryURI string = "https://api.symbl.ai/%s/conversations/%s/experiences"
+
+	// Conversations
+	ConversationsURI string = "https://api.symbl.ai/%s/conversations"
+	ConversationURI  string = "https://api.symbl.ai/%s/conversations/%s"
+
+	// Members
+	MembersURI  string = "https://api.symbl.ai/%s/conversations/%s/members"
+	MemberURI   string = "https://api.symbl.ai/%s/conversations/%s/members/%s"
+	SpeakersURI string = "https://api.symbl.ai/%s/conversations/%s/speakers"
 )
 
 func GetAsyncAPI(URI string, args ...interface{}) string {
