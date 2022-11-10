@@ -10,6 +10,10 @@ import (
 const (
 	JobStatusInProgress string = "in_progress"
 	JobStatusComplete   string = "completed"
+
+	AudioTypeMP3  string = "mp3"
+	AudioTypeMpeg string = "mpeg"
+	AudioTypeWav  string = "wav"
 )
 
 var (
@@ -21,4 +25,7 @@ var (
 
 	// ErrInvalidWaitTime the time to wait agurment is invalid
 	ErrInvalidWaitTime = errors.New("the time to wait agurment is invalid")
+
+	// ErrInvalidURIExtension couldn't find a period to indicate a file extension
+	ErrInvalidURIExtension = errors.New("couldn't find a period to indicate a file extension")
 )

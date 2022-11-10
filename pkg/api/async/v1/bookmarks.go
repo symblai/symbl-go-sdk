@@ -146,7 +146,6 @@ func (c *Client) CreateBookmarkByMessageRefs(ctx context.Context, conversationId
 	URI := version.GetManagementAPI(version.BookmarksURI, conversationId)
 	klog.V(6).Infof("Calling %s\n", URI)
 
-	// let's auth
 	jsonStr, err := json.Marshal(request)
 	if err != nil {
 		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
@@ -210,7 +209,6 @@ func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationI
 	URI := version.GetManagementAPI(version.BookmarksURI, conversationId)
 	klog.V(6).Infof("Calling %s\n", URI)
 
-	// let's auth
 	jsonStr, err := json.Marshal(request)
 	if err != nil {
 		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
@@ -357,3 +355,6 @@ func (c *Client) DeleteBookmark(ctx context.Context, conversationId, bookmarkId 
 	klog.V(6).Infof("async.DeleteBookmark LEAVE\n")
 	return nil
 }
+
+// TODO: https://docs.symbl.ai/reference/get-bookmark-summary
+// TODO: https://docs.symbl.ai/reference/get-bookmarks-summaries

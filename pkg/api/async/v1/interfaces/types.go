@@ -74,7 +74,7 @@ type Entity struct {
 
 type Bookmark struct {
 	ID              string       `json:"id,omitempty"`
-	Label           string       `json:"label,omitempty"  validate:"required"`
+	Label           string       `json:"label,omitempty" validate:"required"`
 	Description     string       `json:"description,omitempty"`
 	User            User         `json:"user,omitempty" validate:"required"`
 	BeginTimeOffset int          `json:"beginTimeOffset,omitempty" validate:"required"`
@@ -178,9 +178,10 @@ type Summary struct {
 }
 
 type Member struct {
-	ID   string `json:"id,omitempty"`
-	Name string `json:"name,omitempty"`
-	Pace struct {
+	ID    string `json:"id,omitempty" validate:"required"`
+	Name  string `json:"name,omitempty" validate:"required"`
+	Email string `json:"email,omitempty" validate:"required"`
+	Pace  struct {
 		Wpm int `json:"wpm,omitempty"`
 	} `json:"pace,omitempty"`
 	TalkTime struct {
@@ -192,7 +193,27 @@ type Member struct {
 		Seconds    float64 `json:"seconds,omitempty"`
 	} `json:"listenTime,omitempty"`
 	Overlap struct {
-	} `json:"overlap,omitempty"`
+	} `json:"overlap,omitempty"` // TODO: need to revisit this
+}
+
+type Conversation struct {
+	ID        string    `json:"id"`
+	Type      string    `json:"type"`
+	Name      string    `json:"name"`
+	StartTime time.Time `json:"startTime"`
+	EndTime   time.Time `json:"endTime"`
+	Members   []Member  `json:"members"`
+	Metadata  struct {
+	} `json:"metadata"` // TODO: need to revisit this
+}
+
+type SpeakerEvent struct {
+	Type   string `json:"type"`
+	User   Member `json:"user"`
+	Offset struct {
+		Seconds int `json:"seconds"`
+		Nanos   int `json:"nanos"`
+	} `json:"offset"`
 }
 
 /*
@@ -227,6 +248,24 @@ type BookmarkByTimeDurationsRequest struct {
 	BeginTimeOffset int    `json:"beginTimeOffset" validate:"required"`
 	Duration        int    `json:"duration" validate:"required"`
 	// MessageRefs []MessageRef `json:"messageRefs"`
+}
+
+type TextSummaryRequest struct {
+	Name string `json:"name"`
+}
+
+type AudioSummaryRequest struct {
+	Name     string `json:"name"`
+	AudioURL string `json:"audioUrl"`
+}
+
+type VideoSummaryRequest struct {
+	Name     string `json:"name"`
+	VideoURL string `json:"videoUrl"`
+}
+
+type UpdateSpeakerRequest struct {
+	SpeakerEvents []SpeakerEvent `json:"speakerEvents"`
 }
 
 /*
@@ -273,4 +312,17 @@ type TrackerResult []struct {
 
 type BookmarksResult struct {
 	Bookmarks []Bookmark `json:"bookmarks"`
+}
+
+type SummaryUIResult struct {
+	Name string `json:"name"`
+	URL  string `json:"url"`
+}
+
+type ConversationsResult struct {
+	Conversations []Conversation `json:"conversations"`
+}
+
+type MembersResult struct {
+	Members []Member `json:"members"`
 }

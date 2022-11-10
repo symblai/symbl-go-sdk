@@ -117,7 +117,6 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Entity
 	URI := version.GetManagementAPI(version.ManagementEntitiesURI)
 	klog.V(6).Infof("Calling %s\n", URI)
 
-	// let's auth
 	jsonStr, err := json.Marshal(request)
 	if err != nil {
 		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
