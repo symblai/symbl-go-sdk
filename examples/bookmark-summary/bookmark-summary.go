@@ -75,15 +75,23 @@ func main() {
 	spew.Dump(createResponse)
 	fmt.Printf("\n")
 
+	// get bookmark summary
+	bookmarkSummary, err := asyncClient.GetSummaryOfBookmark(ctx, conversationId, createResponse.ID)
+	if err != nil {
+		fmt.Printf("CreateEntity failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("\n")
+	spew.Dump(bookmarkSummary)
+	fmt.Printf("\n")
+
 	// list again
 	bookmarkResult, err = asyncClient.GetBookmarks(ctx, conversationId)
 	if err != nil {
 		fmt.Printf("GetBookmarks failed. Err: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("\n")
-	spew.Dump(bookmarkResult)
-	fmt.Printf("\n")
 
 	// delete entities
 	for _, bookmark := range bookmarkResult.Bookmarks {
@@ -93,16 +101,6 @@ func main() {
 			os.Exit(1)
 		}
 	}
-
-	// list again, again
-	bookmarkResult, err = asyncClient.GetBookmarks(ctx, conversationId)
-	if err != nil {
-		fmt.Printf("GetBookmarks failed. Err: %v\n", err)
-		os.Exit(1)
-	}
-	fmt.Printf("\n")
-	spew.Dump(bookmarkResult)
-	fmt.Printf("\n")
 
 	fmt.Printf("Succeeded")
 }

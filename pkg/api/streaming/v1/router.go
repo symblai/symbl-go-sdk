@@ -5,6 +5,7 @@ package streaming
 
 import (
 	"encoding/json"
+	"errors"
 
 	klog "k8s.io/klog/v2"
 
@@ -37,7 +38,7 @@ func (smr *SymblMessageRouter) Message(byMsg []byte) error {
 	var mt MessageType
 	err := json.Unmarshal(byMsg, &mt)
 	if err != nil {
-		klog.V(6).Infof("SymblMessageRouter json.Unmarshal(MessageType) failed. Err: %v\n", err)
+		klog.V(1).Infof("SymblMessageRouter json.Unmarshal(MessageType) failed. Err: %v\n", err)
 		klog.V(6).Infof("SymblMessageRouter LEAVE\n")
 		return err
 	}
@@ -75,7 +76,7 @@ func (smr *SymblMessageRouter) handlePlatformMessage(byMsg []byte) error {
 	var smt SybmlMessageType
 	err := json.Unmarshal(byMsg, &smt)
 	if err != nil {
-		klog.V(6).Infof("json.Unmarshal(SybmlMessageType) failed. Err: %v\n", err)
+		klog.V(1).Infof("json.Unmarshal(SybmlMessageType) failed. Err: %v\n", err)
 		klog.V(6).Infof("handlePlatformMessage LEAVE\n")
 		return err
 	}
@@ -136,22 +137,21 @@ func (smr *SymblMessageRouter) HandleError(byMsg []byte) error {
 	var symbError SymblError
 	err := json.Unmarshal(byMsg, &symbError)
 	if err != nil {
-		klog.V(6).Infof("HandleError json.Unmarshal failed. Err: %v\n", err)
+		klog.V(1).Infof("HandleError json.Unmarshal failed. Err: %v\n", err)
 		klog.V(6).Infof("HandleError LEAVE\n")
 		return err
 	}
 
 	b, err := json.MarshalIndent(symbError, "", "    ")
 	if err != nil {
-		klog.V(6).Infof("HandleError MarshalIndent failed. Err: %v\n", err)
+		klog.V(1).Infof("HandleError MarshalIndent failed. Err: %v\n", err)
 		klog.V(6).Infof("HandleError LEAVE\n")
 		return err
 	}
 
-	// TODO fix this....
-	klog.V(6).Infof("\n\n%s\n\n", string(b))
+	klog.V(1).Infof("\n\nError: %s\n\n", string(b))
 	klog.V(6).Infof("HandleError LEAVE\n")
-	return nil
+	return errors.New(string(b))
 }
 
 func (smr *SymblMessageRouter) RecognitionResultMessage(byMsg []byte) error {
@@ -160,7 +160,7 @@ func (smr *SymblMessageRouter) RecognitionResultMessage(byMsg []byte) error {
 	var rr interfaces.RecognitionResult
 	err := json.Unmarshal(byMsg, &rr)
 	if err != nil {
-		klog.V(6).Infof("RecognitionResultMessage json.Unmarshal failed. Err: %v\n", err)
+		klog.V(1).Infof("RecognitionResultMessage json.Unmarshal failed. Err: %v\n", err)
 		klog.V(6).Infof("RecognitionResultMessage LEAVE\n")
 		return err
 	}
@@ -187,7 +187,7 @@ func (smr *SymblMessageRouter) MessageResponseMessage(byMsg []byte) error {
 	var mr interfaces.MessageResponse
 	err := json.Unmarshal(byMsg, &mr)
 	if err != nil {
-		klog.V(6).Infof("MessageResponseMessage json.Unmarshal failed. Err: %v\n", err)
+		klog.V(1).Infof("MessageResponseMessage json.Unmarshal failed. Err: %v\n", err)
 		klog.V(6).Infof("MessageResponseMessage LEAVE\n")
 		return err
 	}
@@ -214,7 +214,7 @@ func (smr *SymblMessageRouter) InsightResponseMessage(byMsg []byte) error {
 	var ir interfaces.InsightResponse
 	err := json.Unmarshal(byMsg, &ir)
 	if err != nil {
-		klog.V(6).Infof("InsightResponseMessage json.Unmarshal failed. Err: %v\n", err)
+		klog.V(1).Infof("InsightResponseMessage json.Unmarshal failed. Err: %v\n", err)
 		klog.V(6).Infof("InsightResponseMessage LEAVE\n")
 		return err
 	}
@@ -241,7 +241,7 @@ func (smr *SymblMessageRouter) TopicResponseMessage(byMsg []byte) error {
 	var tr interfaces.TopicResponse
 	err := json.Unmarshal(byMsg, &tr)
 	if err != nil {
-		klog.V(6).Infof("TopicResponseMessage json.Unmarshal failed. Err: %v\n", err)
+		klog.V(1).Infof("TopicResponseMessage json.Unmarshal failed. Err: %v\n", err)
 		klog.V(6).Infof("TopicResponseMessage LEAVE\n")
 		return err
 	}
@@ -268,7 +268,7 @@ func (smr *SymblMessageRouter) TrackerResponseMessage(byMsg []byte) error {
 	var tr interfaces.TrackerResponse
 	err := json.Unmarshal(byMsg, &tr)
 	if err != nil {
-		klog.V(6).Infof("TrackerResponseMessage json.Unmarshal failed. Err: %v\n", err)
+		klog.V(1).Infof("TrackerResponseMessage json.Unmarshal failed. Err: %v\n", err)
 		klog.V(6).Infof("TrackerResponseMessage LEAVE\n")
 		return err
 	}

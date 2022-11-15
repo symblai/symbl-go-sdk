@@ -30,7 +30,44 @@ func New(client *symbl.RestClient) *Client {
 }
 
 func (c *Client) PostFile(ctx context.Context, filePath string) (*JobConversation, error) {
-	klog.V(6).Infof("async.PostFile ENTER\n")
+	options := interfaces.AsyncOptions{}
+	return c.PostFileWithOptions(ctx, filePath, options)
+}
+
+func (c *Client) PostURL(ctx context.Context, url string) (*JobConversation, error) {
+	options := interfaces.AsyncOptions{
+		URL: url,
+	}
+	return c.PostURLWithOptions(ctx, options)
+}
+
+func (c *Client) PostURLWithOptions(ctx context.Context, options interfaces.AsyncOptions) (*JobConversation, error) {
+	klog.V(6).Infof("async.PostURLWithOptions ENTER\n")
+
+	// checks
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	klog.V(3).Infof("url: %s\n", options.URL)
+
+	// send the URL!
+	var jobConvo JobConversation
+
+	err := c.DoURLWithOptions(ctx, options, &jobConvo)
+	if e, ok := err.(*symbl.StatusError); ok {
+		klog.V(1).Infof("DoURL failed. HTTP Code: %v\n", e.Resp.StatusCode)
+		klog.V(6).Infof("async.PostURLWithOptions LEAVE\n")
+		return nil, e
+	}
+
+	klog.V(3).Infof("async.PostURLWithOptions Succeeded\n")
+	klog.V(6).Infof("async.PostURLWithOptions LEAVE\n")
+	return &jobConvo, nil
+}
+
+func (c *Client) PostFileWithOptions(ctx context.Context, filePath string, options interfaces.AsyncOptions) (*JobConversation, error) {
+	klog.V(6).Infof("async.PostFileWithOptions ENTER\n")
 
 	// checks
 	if ctx == nil {
@@ -42,40 +79,15 @@ func (c *Client) PostFile(ctx context.Context, filePath string) (*JobConversatio
 	// send the file!
 	var jobConvo JobConversation
 
-	err := c.DoFile(ctx, filePath, &jobConvo)
+	err := c.DoFileWithOptions(ctx, filePath, options, &jobConvo)
 	if e, ok := err.(*symbl.StatusError); ok {
 		klog.V(1).Infof("DoFile failed. HTTP Code: %v\n", e.Resp.StatusCode)
-		klog.V(6).Infof("async.PostFile LEAVE\n")
+		klog.V(6).Infof("async.PostFileWithOptions LEAVE\n")
 		return nil, e
 	}
 
-	klog.V(3).Infof("async.PostFile Succeeded\n")
-	klog.V(6).Infof("async.PostFile LEAVE\n")
-	return &jobConvo, nil
-}
-
-func (c *Client) PostURL(ctx context.Context, url string) (*JobConversation, error) {
-	klog.V(6).Infof("async.PostURL ENTER\n")
-
-	// checks
-	if ctx == nil {
-		ctx = context.Background()
-	}
-
-	klog.V(3).Infof("url: %s\n", url)
-
-	// send the file!
-	var jobConvo JobConversation
-
-	err := c.DoURL(ctx, url, &jobConvo)
-	if e, ok := err.(*symbl.StatusError); ok {
-		klog.V(1).Infof("DoURL failed. HTTP Code: %v\n", e.Resp.StatusCode)
-		klog.V(6).Infof("async.PostURL LEAVE\n")
-		return nil, e
-	}
-
-	klog.V(3).Infof("async.PostURL Succeeded\n")
-	klog.V(6).Infof("async.PostURL LEAVE\n")
+	klog.V(3).Infof("async.PostFileWithOptions Succeeded\n")
+	klog.V(6).Infof("async.PostFileWithOptions LEAVE\n")
 	return &jobConvo, nil
 }
 
