@@ -109,7 +109,8 @@ func (c *Client) GetBookmarkById(ctx context.Context, conversationId, bookmarkId
 }
 
 /*
-	TODO: description is required
+	When exercising the API and description is blank...
+
 	HTTP Code: 400
 	{
 		"message":"\"description\" is not allowed to be empty"
@@ -175,73 +176,70 @@ func (c *Client) CreateBookmark(ctx context.Context, conversationId string, requ
 	return &result, nil
 }
 
-/*
-	??? TODO: This appears broken... This is the error we get back:
+func (c *Client) UpdateBookmark(ctx context.Context, conversationId, bookmarkId string, request interfaces.BookmarkRequest) (*interfaces.Bookmark, error) {
+	klog.V(6).Infof("async.UpdateBookmark ENTER\n")
 
-	HTTP Code: 400
-	{
-		"message":"Either create/update bookmark using 'beginTimeOffset + duration' or 'messageRefs'. None of them provided"
+	// checks
+	if ctx == nil {
+		ctx = context.Background()
 	}
 
-	Even if we only supply MessageRefs OR beginTimeOffset + duration, still currently yields the same error
-*/
-// func (c *Client) UpdateBookmark(ctx context.Context, conversationId, bookmarkId string, request interfaces.BookmarkByMessageRefsRequest) (*interfaces.Bookmark, error) {
-// 	klog.V(6).Infof("async.UpdateBookmark ENTER\n")
+	// validate input
+	v := validator.New()
+	err := v.Struct(request)
+	if err != nil {
+		for _, e := range err.(validator.ValidationErrors) {
+			klog.V(1).Infof("UpdateBookmark validation failed. Err: %v\n", e)
+		}
+		klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
+		return nil, err
+	}
+	if conversationId == "" {
+		klog.V(1).Infof("conversationId is empty\n")
+		klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
+		return nil, ErrInvalidInput
+	}
+	if bookmarkId == "" {
+		klog.V(1).Infof("bookmarkId is empty\n")
+		klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
+		return nil, ErrInvalidInput
+	}
 
-// 	// checks
-// 	if ctx == nil {
-// 		ctx = context.Background()
-// 	}
+	// request
+	URI := version.GetManagementAPI(version.BookmarksByIdURI, conversationId, bookmarkId)
+	klog.V(6).Infof("Calling %s\n", URI)
 
-// 	// validate input
-// 	v := validator.New()
-// 	err := v.Struct(request)
-// 	if err != nil {
-// 		for _, e := range err.(validator.ValidationErrors) {
-// 			klog.V(1).Infof("UpdateBookmark validation failed. Err: %v\n", e)
-// 		}
-// 		klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
-// 		return nil, err
-// 	}
-// 	if conversationId == "" {
-// 		klog.V(1).Infof("conversationId is empty\n")
-// 		klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
-// 		return nil, ErrInvalidInput
-// 	}
-// 	if bookmarkId == "" {
-// 		klog.V(1).Infof("bookmarkId is empty\n")
-// 		klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
-// 		return nil, ErrInvalidInput
-// 	}
+	jsonStr, err := json.Marshal(request)
+	if err != nil {
+		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
+		klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
+		return nil, err
+	}
 
-// 	// request
-// 	URI := version.GetManagementAPI(version.BookmarksByIdURI, conversationId, bookmarkId)
-// 	klog.V(6).Infof("Calling %s\n", URI)
+	req, err := http.NewRequestWithContext(ctx, "PUT", URI, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
+		return nil, err
+	}
 
-// 	req, err := http.NewRequestWithContext(ctx, "PUT", URI, nil)
-// 	if err != nil {
-// 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
-// 		klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
-// 		return nil, err
-// 	}
+	// check the status
+	var result interfaces.Bookmark
 
-// 	// check the status
-// 	var result interfaces.Bookmark
+	err = c.Client.Do(ctx, req, &result)
 
-// 	err = c.Client.Do(ctx, req, &result)
+	if e, ok := err.(*symbl.StatusError); ok {
+		if e.Resp.StatusCode != http.StatusOK {
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
+			return nil, err
+		}
+	}
 
-// 	if e, ok := err.(*symbl.StatusError); ok {
-// 		if e.Resp.StatusCode != http.StatusOK {
-// 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-// 			klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
-// 			return nil, err
-// 		}
-// 	}
-
-// 	klog.V(3).Infof("GET Update Bookmark succeeded\n")))
-// 	klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
-// 	return &result, nil
-// }
+	klog.V(3).Infof("GET Update Bookmark succeeded\n")
+	klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
+	return &result, nil
+}
 
 func (c *Client) DeleteBookmark(ctx context.Context, conversationId, bookmarkId string) error {
 	klog.V(6).Infof("async.DeleteBookmark ENTER\n")

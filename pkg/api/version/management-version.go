@@ -18,6 +18,11 @@ const (
 	ManagementEntitiesURI          string = "https://api.symbl.ai/%s/manage/entities"
 	ManagementEntitiesByIdURI      string = "https://api.symbl.ai/%s/manage/entities/%s"
 	ManagementEntitiesBySubTypeURI string = "https://api.symbl.ai/%s/manage/entities?subType=%s"
+
+	// conversation groups
+	ManagementConversationGroupURI     string = "https://api.symbl.ai/%s/manage/group"
+	ManagementConversationGroupsURI    string = "https://api.symbl.ai/%s/manage/groups"
+	ManagementConversationGroupByIdURI string = "https://api.symbl.ai/%s/manage/group/%s"
 )
 
 func GetManagementAPI(URI string, args ...interface{}) string {

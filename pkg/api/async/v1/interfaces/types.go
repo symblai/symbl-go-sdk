@@ -72,10 +72,18 @@ type Entity struct {
 	Matches  []EntityMatch `json:"matches,omitempty"`
 }
 
+/*
+	When exercising the API and description is blank...
+
+	HTTP Code: 400
+	{
+		"message":"\"description\" is not allowed to be empty"
+	}
+*/
 type Bookmark struct {
 	ID              string       `json:"id,omitempty"`
 	Label           string       `json:"label,omitempty" validate:"required"`
-	Description     string       `json:"description,omitempty"`
+	Description     string       `json:"description,omitempty" validate:"required"` // please see note above
 	User            User         `json:"user,omitempty" validate:"required"`
 	BeginTimeOffset int          `json:"beginTimeOffset,omitempty" validate:"required"`
 	Duration        int          `json:"duration,omitempty" validate:"required"`
@@ -256,12 +264,12 @@ type WaitForJobStatusOpts struct {
 	WaitInSeconds int
 }
 
-// MessageRefRequest for BookmarkByMessageRefsRequest
+// MessageRefRequest for BookmarkRequest
 type MessageRefRequest struct {
-	ID string `json:"id" validate:"required"`
+	ID string `json:"id,omitempty"`
 }
 
-// BookmarkByMessageRefsRequest for creating bookmarks
+// BookmarkRequest for creating bookmarks
 type BookmarkRequest struct {
 	Label           string              `json:"label,omitempty" validate:"required"`
 	Description     string              `json:"description,omitempty" validate:"required"`

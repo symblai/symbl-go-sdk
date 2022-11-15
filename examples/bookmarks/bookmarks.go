@@ -85,6 +85,45 @@ func main() {
 	spew.Dump(bookmarkResult)
 	fmt.Printf("\n")
 
+	// update
+	// createBookmark := interfaces.BookmarkRequest{
+	// 	Label:       "MyLabel",
+	// 	Description: "MyDescription",
+	// 	User: interfaces.User{
+	// 		Name:   "David",
+	// 		UserID: "MyUserId",
+	// 		Email:  "david.vonthenen@symbl.ai",
+	// 	},
+	// 	// You can use this below...
+	// 	// BeginTimeOffset: 22,
+	// 	// Duration:        33,
+	// 	// Or this below...
+	// 	MessageRefs: []interfaces.MessageRefRequest{
+	// 		interfaces.MessageRefRequest{
+	// 			ID: "4510581827043328",
+	// 		},
+	// 	},
+	// }
+	createBookmark.Description = "Updated Description"
+	updateResponse, err := asyncClient.UpdateBookmark(ctx, conversationId, createResponse.ID, createBookmark)
+	if err != nil {
+		fmt.Printf("UpdateBookmark failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("\n")
+	spew.Dump(updateResponse)
+	fmt.Printf("\n")
+
+	// list again, again
+	bookmarkResult, err = asyncClient.GetBookmarks(ctx, conversationId)
+	if err != nil {
+		fmt.Printf("GetBookmarks failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("\n")
+	spew.Dump(bookmarkResult)
+	fmt.Printf("\n")
+
 	// delete entities
 	for _, bookmark := range bookmarkResult.Bookmarks {
 		err = asyncClient.DeleteBookmark(ctx, conversationId, bookmark.ID)
@@ -94,7 +133,7 @@ func main() {
 		}
 	}
 
-	// list again, again
+	// list again, again, again
 	bookmarkResult, err = asyncClient.GetBookmarks(ctx, conversationId)
 	if err != nil {
 		fmt.Printf("GetBookmarks failed. Err: %v\n", err)

@@ -27,6 +27,13 @@ type Entity struct {
 	Values   []string `json:"values" validate:"required"`
 }
 
+type Group struct {
+	ID          string `json:"id,omitempty"`
+	Name        string `json:"name,omitempty" validate:"required"`
+	Description string `json:"description,omitempty" validate:"required"`
+	Criteria    string `json:"criteria,omitempty" validate:"required"`
+}
+
 /*
 	Input parameters for Management API calls
 */
@@ -72,4 +79,14 @@ type TrackerResponse struct {
 // EntitiesResponse list of Entities
 type EntitiesResponse struct {
 	Entities []Entity `json:"entities"`
+}
+
+// ConversationGroupResponse when create
+type ConversationGroupResponse struct {
+	Group Group `json:"group"`
+}
+
+// ConversationGroupsResponse
+type ConversationGroupsResponse struct {
+	Groups []Group `json:"groups"`
 }
