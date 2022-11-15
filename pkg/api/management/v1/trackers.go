@@ -109,63 +109,60 @@ func (m *Management) CreateTracker(ctx context.Context, request interfaces.Track
 	return &result, nil
 }
 
-/*
-	TODO: This appears broken... This is the error we get back:
+func (m *Management) UpdateTracker(ctx context.Context, trackerId string, request interfaces.UpdateTrackerRequest) (*interfaces.TrackerResponse, error) {
+	klog.V(6).Infof("mgmt.UpdateTracker ENTER\n")
 
-	HTTP Code: 400
-	{
-		"message":"Invalid request. Request body must be an array."
+	// checks
+	if ctx == nil {
+		ctx = context.Background()
 	}
 
-	Which contradicts the documentation: https://docs.symbl.ai/docs/update-trackers-guide
-*/
-// func (m *Management) UpdateTracker(ctx context.Context, request interfaces.ModifyTrackerRequest) (*interfaces.TrackerResponse, error) {
-// 	klog.V(6).Infof("mgmt.UpdateTracker ENTER\n")
+	// validate input
+	v := validator.New()
+	err := v.Struct(request)
+	if err != nil {
+		for _, e := range err.(validator.ValidationErrors) {
+			klog.V(1).Infof("UpdateTracker validation failed. Err: %v\n", e)
+		}
+		klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
+		return nil, err
+	}
 
-// 	// checks
-// 	if ctx == nil {
-// 		ctx = context.Background()
-// 	}
+	// request
+	URI := version.GetManagementAPI(version.ManagementTrackerByIdURI, trackerId)
+	klog.V(6).Infof("Calling %s\n", URI)
 
-// 	// validate input
-// 	v := validator.New()
-// 	err := v.Struct(request)
-// 	if err != nil {
-// 		for _, e := range err.(validator.ValidationErrors) {
-// 			klog.V(1).Infof("UpdateTracker validation failed. Err: %v\n", e)
-// 		}
-// 		klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
-// 		return nil, err
-// 	}
+	jsonStr, err := json.Marshal(request.TrackerArray)
+	if err != nil {
+		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
+		klog.V(6).Infof("async.UpdateTracker LEAVE\n")
+		return nil, err
+	}
 
-// 	// request
-// 	URI := version.GetManagementAPI(version.ManagementtrackerByIdURI, request.TrackerId)
-// 	klog.V(6).Infof("Calling %s\n", URI)
+	req, err := http.NewRequestWithContext(ctx, "PATCH", URI, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
+		return nil, err
+	}
 
-// 	req, err := http.NewRequestWithContext(ctx, "PATCH", URI, nil)
-// 	if err != nil {
-// 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
-// 		klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
-// 		return nil, err
-// 	}
+	// check the status
+	var result interfaces.TrackerResponse
 
-// 	// check the status
-// 	var result interfaces.TrackerResponse
+	err = m.Client.Do(ctx, req, &result)
 
-// 	err = m.Client.Do(ctx, req, &result)
+	if e, ok := err.(*symbl.StatusError); ok {
+		if e.Resp.StatusCode != http.StatusOK {
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
+			return nil, err
+		}
+	}
 
-// 	if e, ok := err.(*symbl.StatusError); ok {
-// 		if e.Resp.StatusCode != http.StatusOK {
-// 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-// 			klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
-// 			return nil, err
-// 		}
-// 	}
-
-// 	klog.V(3).Infof("GET Update Trackers succeeded\n"))
-// 	klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
-// 	return &result, nil
-// }
+	klog.V(3).Infof("PATCH UpdateTracker succeeded\n")
+	klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
+	return &result, nil
+}
 
 func (m *Management) DeleteTracker(ctx context.Context, trackerId string) error {
 	klog.V(6).Infof("mgmt.DeleteTracker ENTER\n")
@@ -183,7 +180,7 @@ func (m *Management) DeleteTracker(ctx context.Context, trackerId string) error 
 	}
 
 	// request
-	URI := version.GetManagementAPI(version.ManagementtrackerByIdURI, trackerId)
+	URI := version.GetManagementAPI(version.ManagementTrackerByIdURI, trackerId)
 	klog.V(6).Infof("Calling %s\n", URI)
 
 	req, err := http.NewRequestWithContext(ctx, "DELETE", URI, nil)

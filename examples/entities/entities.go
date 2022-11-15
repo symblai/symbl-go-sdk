@@ -46,11 +46,15 @@ func main() {
 	fmt.Printf("\n")
 
 	// create
-	createEntity := interfaces.EntityRequest{
-		Type:     "Vehicle",
-		SubType:  "Honda",
-		Category: "Custom",
-		Values:   []string{"hrv", "crv"},
+	createEntity := interfaces.CreateEntityRequest{
+		EntityArray: []interfaces.EntityRequest{
+			interfaces.EntityRequest{
+				Type:     "Vehicle",
+				SubType:  "Honda",
+				Category: "Custom",
+				Values:   []string{"hrv", "crv"},
+			},
+		},
 	}
 	createResponse, err := mgmtClient.CreateEntity(ctx, createEntity)
 	if err != nil {
@@ -71,6 +75,35 @@ func main() {
 	spew.Dump(entitiesResult)
 	fmt.Printf("\n")
 
+	// update
+	for _, entity := range entitiesResult.Entities {
+
+		updateEntity := interfaces.Entity{
+			Type:     entity.Type,
+			SubType:  entity.SubType,
+			Category: entity.Category,
+			Values:   append(entity.Values, "crx"),
+		}
+		updateResponse, err := mgmtClient.UpdateEntity(ctx, entity.ID, updateEntity)
+		if err != nil {
+			fmt.Printf("UpdateEntity failed. Err: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("\n")
+		spew.Dump(updateResponse)
+		fmt.Printf("\n")
+	}
+
+	// list again, again
+	entitiesResult, err = mgmtClient.GetEntites(ctx)
+	if err != nil {
+		fmt.Printf("GetEntites failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("\n")
+	spew.Dump(entitiesResult)
+	fmt.Printf("\n")
+
 	// delete entities
 	for _, entity := range entitiesResult.Entities {
 		err = mgmtClient.DeleteEntity(ctx, entity.ID)
@@ -80,7 +113,7 @@ func main() {
 		}
 	}
 
-	// list again, again
+	// list again, again, again
 	entitiesResult, err = mgmtClient.GetEntites(ctx)
 	if err != nil {
 		fmt.Printf("GetEntites failed. Err: %v\n", err)
