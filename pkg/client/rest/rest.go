@@ -17,6 +17,7 @@ import (
 
 	klog "k8s.io/klog/v2"
 
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
 	simple "github.com/dvonthenen/symbl-go-sdk/pkg/client/simple"
 )
@@ -168,7 +169,7 @@ func (c *Client) WithHeader(
 // 	return nil
 // }
 
-func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{}) error {
+func (c *Client) DoFile(ctx context.Context, filePath string, options interfaces.AsyncOptions, resBody interface{}) error {
 	klog.V(6).Infof("rest.DoFile ENTER\n")
 
 	// checks
@@ -197,7 +198,40 @@ func (c *Client) DoFile(ctx context.Context, filePath string, resBody interface{
 	}
 	defer file.Close()
 
+	// start: until multipart post is supported, options must be used as a query string
+	params := make([]string, 0)
+	params = append(params, "?")
+
+	if len(options.Name) > 0 {
+		params = append(params, fmt.Sprintf("name=%s", options.Name))
+	}
+	if options.ConfidenceThreshold > 0 {
+		params = append(params, fmt.Sprintf("confidenceThreshold=%f", options.ConfidenceThreshold))
+	}
+	if options.DetectPhrases {
+		params = append(params, fmt.Sprintf("detectPhrases=%t", options.DetectPhrases))
+	}
+	if options.DetectEntities {
+		params = append(params, fmt.Sprintf("detectEntities=%t", options.DetectEntities))
+	}
+	if len(options.LanguageCode) > 0 {
+		params = append(params, fmt.Sprintf("languageCode=%s", options.LanguageCode))
+	}
+	for _, vocab := range options.CustomVocabulary {
+		params = append(params, fmt.Sprintf("customVocabulary=%s", vocab))
+	}
+	if options.ParentRefs {
+		params = append(params, fmt.Sprintf("parentRefs=%t", options.ParentRefs))
+	}
+	if options.Sentiment {
+		params = append(params, fmt.Sprintf("sentiment=%t", options.Sentiment))
+	}
+	// end
+
 	URI := version.GetAsyncAPI(version.ProcessAudioURI, baseName)
+	if len(params) > 1 {
+		URI = version.GetAsyncAPI(version.ProcessAudioURI, baseName, params)
+	}
 	klog.V(6).Infof("URI: %s\n", URI)
 
 	req, err := http.NewRequestWithContext(ctx, "POST", URI, file)
@@ -287,32 +321,30 @@ func IsUrl(str string) bool {
 	return err == nil && u.Scheme != "" && u.Host != ""
 }
 
-func (c *Client) DoURL(ctx context.Context, url string, resBody interface{}) error {
+func (c *Client) DoURL(ctx context.Context, options interfaces.AsyncOptions, resBody interface{}) error {
 	klog.V(6).Infof("rest.DoURL ENTER\n")
 
 	// checks
-	validURL := IsUrl(url)
+	validURL := IsUrl(options.URL)
 	if !validURL {
-		klog.V(1).Infof("Invalid URL: %s\n", url)
+		klog.V(1).Infof("Invalid URL: %s\n", options.URL)
 		klog.V(6).Infof("rest.DoURL LEAVE\n")
 		return ErrInvalidInput
 	}
 
-	baseName := filepath.Base(url)
-	klog.V(4).Infof("url: %s\n", url)
+	baseName := filepath.Base(options.URL)
+	klog.V(4).Infof("url: %s\n", options.URL)
 	klog.V(4).Infof("baseName: %s\n", baseName)
+
+	if len(options.Name) == 0 {
+		options.Name = baseName
+	}
 
 	URI := version.GetAsyncAPI(version.ProcessURLURI)
 	klog.V(6).Infof("URI: %s\n", URI)
 
-	urlRequest := ProcessAudioURLRequest{
-		URL:          url,
-		Name:         baseName,
-		LanguageCode: version.SupportedLanguage,
-	}
-
 	var buf bytes.Buffer
-	err := json.NewEncoder(&buf).Encode(urlRequest)
+	err := json.NewEncoder(&buf).Encode(options)
 	if err != nil {
 		klog.V(1).Infof("json.NewEncoder().Encode() failed. Err: %v\n", err)
 		klog.V(6).Infof("rest.DoURL LEAVE\n")

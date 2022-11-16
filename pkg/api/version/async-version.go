@@ -18,20 +18,20 @@ const (
 	JobStatusURI string = "https://api.symbl.ai/%s/job/%s"
 
 	// intelligence
-	TopicsURI      string = "https://api.symbl.ai/%s/conversations/%s/topics?parentRefs=true&sentiment=true"
-	QuestionsURI   string = "https://api.symbl.ai/%s/conversations/%s/questions?parentRefs=true&sentiment=true"
-	FollowUpsURI   string = "https://api.symbl.ai/%s/conversations/%s/follow-ups?parentRefs=true&sentiment=true"
-	EntitiesURI    string = "https://api.symbl.ai/%s/conversations/%s/entities?parentRefs=true&sentiment=true"
-	ActionItemsURI string = "https://api.symbl.ai/%s/conversations/%s/action-items?parentRefs=true&sentiment=true"
-	MessagesURI    string = "https://api.symbl.ai/%s/conversations/%s/messages?parentRefs=true&sentiment=true"
-	AnalyticsURI   string = "https://api.symbl.ai/%s/conversations/%s/analytics?parentRefs=true&sentiment=true"
-	TrackersURI    string = "https://api.symbl.ai/%s/conversations/%s/trackers?parentRefs=true&sentiment=true"
+	TopicsURI      string = "https://api.symbl.ai/%s/conversations/%s/topics"
+	QuestionsURI   string = "https://api.symbl.ai/%s/conversations/%s/questions"
+	FollowUpsURI   string = "https://api.symbl.ai/%s/conversations/%s/follow-ups"
+	EntitiesURI    string = "https://api.symbl.ai/%s/conversations/%s/entities"
+	ActionItemsURI string = "https://api.symbl.ai/%s/conversations/%s/action-items"
+	MessagesURI    string = "https://api.symbl.ai/%s/conversations/%s/messages"
+	AnalyticsURI   string = "https://api.symbl.ai/%s/conversations/%s/analytics"
+	TrackersURI    string = "https://api.symbl.ai/%s/conversations/%s/trackers"
 
 	// bookmarks
-	BookmarksURI     string = "https://api.symbl.ai/%s/conversations/%s/bookmarks"
-	BookmarksByIdURI string = "https://api.symbl.ai/%s/conversations/%s/bookmarks/%s"
-	// BookmarkSummaryURI      string = "https://api.symbl.ai/%s/conversations/%s/bookmarks/%s/summary"
-	// SummariesOfBookmarksURI string = "https://api.symbl.ai/%s/conversations/%s/bookmarks-summary"
+	BookmarksURI            string = "https://api.symbl.ai/%s/conversations/%s/bookmarks"
+	BookmarksByIdURI        string = "https://api.symbl.ai/%s/conversations/%s/bookmarks/%s"
+	BookmarkSummaryURI      string = "https://api.symbl.ai/%s/conversations/%s/bookmarks/%s/summary"
+	SummariesOfBookmarksURI string = "https://api.symbl.ai/%s/conversations/%s/bookmarks-summary"
 
 	// summary ui
 	SummaryURI string = "https://api.symbl.ai/%s/conversations/%s/experiences"

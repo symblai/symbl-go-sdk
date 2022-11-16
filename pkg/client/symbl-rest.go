@@ -14,6 +14,7 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
+	asyncinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 	rest "github.com/dvonthenen/symbl-go-sdk/pkg/client/rest"
 )
@@ -132,12 +133,25 @@ func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (
 	return c, nil
 }
 
+func (c *RestClient) DoFileWithOptions(ctx context.Context, filePath string, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
+	return c.Client.DoFile(ctx, filePath, options, resBody)
+}
+
+func (c *RestClient) DoURLWithOptions(ctx context.Context, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
+	return c.Client.DoURL(ctx, options, resBody)
+}
+
 func (c *RestClient) DoFile(ctx context.Context, filePath string, resBody interface{}) error {
-	return c.Client.DoFile(ctx, filePath, resBody)
+	options := asyncinterfaces.AsyncOptions{}
+	return c.DoFileWithOptions(ctx, filePath, options, resBody)
 }
 
 func (c *RestClient) DoURL(ctx context.Context, url string, resBody interface{}) error {
-	return c.Client.DoURL(ctx, url, resBody)
+	options := asyncinterfaces.AsyncOptions{
+		URL: url,
+	}
+
+	return c.DoURLWithOptions(ctx, options, resBody)
 }
 
 func (c *RestClient) Do(ctx context.Context, req *http.Request, resBody interface{}) error {

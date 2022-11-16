@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"net/url"
 
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
@@ -113,75 +114,8 @@ func (c *Client) GetBookmarkById(ctx context.Context, conversationId, bookmarkId
 	{
 		"message":"\"description\" is not allowed to be empty"
 	}
-
-	If using MessageRefs, then BeginTimeOffset and Duration cannot be zero (aka present in the struct)
-	which contradicts the docs: https://docs.symbl.ai/docs/create-bookmarks-guide
-	The reverse is also true... using BeginTimeOffset and Duration, MessageRefs must not be present in the struct
 */
-func (c *Client) CreateBookmarkByMessageRefs(ctx context.Context, conversationId string, request interfaces.BookmarkByMessageRefsRequest) (*interfaces.Bookmark, error) {
-	klog.V(6).Infof("async.CreateBookmark ENTER\n")
-
-	// checks
-	if ctx == nil {
-		ctx = context.Background()
-	}
-
-	// validate input
-	v := validator.New()
-	err := v.Struct(request)
-	if err != nil {
-		for _, e := range err.(validator.ValidationErrors) {
-			klog.V(1).Infof("CreateBookmark validation failed. Err: %v\n", e)
-		}
-		klog.V(6).Infof("async.CreateBookmark LEAVE\n")
-		return nil, err
-	}
-	if conversationId == "" {
-		klog.V(1).Infof("conversationId is empty\n")
-		klog.V(6).Infof("async.CreateBookmark LEAVE\n")
-		return nil, ErrInvalidInput
-	}
-
-	// request
-	URI := version.GetManagementAPI(version.BookmarksURI, conversationId)
-	klog.V(6).Infof("Calling %s\n", URI)
-
-	jsonStr, err := json.Marshal(request)
-	if err != nil {
-		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
-		klog.V(6).Infof("async.CreateBookmark LEAVE\n")
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, "POST", URI, bytes.NewBuffer(jsonStr))
-	if err != nil {
-		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
-		klog.V(6).Infof("async.CreateBookmark LEAVE\n")
-		return nil, err
-	}
-
-	// check the status
-	var result interfaces.Bookmark
-
-	err = c.Client.Do(ctx, req, &result)
-
-	if e, ok := err.(*symbl.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.CreateBookmark LEAVE\n")
-			return nil, err
-		}
-	}
-
-	klog.V(3).Infof("GET Create Bookmark succeeded\n")
-	klog.V(6).Infof("async.CreateBookmark LEAVE\n")
-	return &result, nil
-}
-
-/*
-	Please see comment for CreateBookmarkByMessageRefs above
-*/
-func (c *Client) CreateBookmarkByTimeDuration(ctx context.Context, conversationId string, request interfaces.BookmarkByTimeDurationsRequest) (*interfaces.Bookmark, error) {
+func (c *Client) CreateBookmark(ctx context.Context, conversationId string, request interfaces.BookmarkRequest) (*interfaces.Bookmark, error) {
 	klog.V(6).Infof("async.CreateBookmark ENTER\n")
 
 	// checks
@@ -356,5 +290,102 @@ func (c *Client) DeleteBookmark(ctx context.Context, conversationId, bookmarkId 
 	return nil
 }
 
-// TODO: https://docs.symbl.ai/reference/get-bookmark-summary
-// TODO: https://docs.symbl.ai/reference/get-bookmarks-summaries
+func (c *Client) GetSummaryOfBookmark(ctx context.Context, conversationId, bookmarkId string) (*interfaces.BookmarkSummaryResult, error) {
+	klog.V(6).Infof("async.GetSummaryOfBookmark ENTER\n")
+
+	// checks
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	if conversationId == "" {
+		klog.V(1).Infof("conversationId is empty\n")
+		klog.V(6).Infof("async.GetSummaryOfBookmark LEAVE\n")
+		return nil, ErrInvalidInput
+	}
+	if bookmarkId == "" {
+		klog.V(1).Infof("bookmarkId is empty\n")
+		klog.V(6).Infof("async.GetSummaryOfBookmark LEAVE\n")
+		return nil, ErrInvalidInput
+	}
+
+	// request
+	URI := version.GetAsyncAPI(version.BookmarkSummaryURI, conversationId, bookmarkId)
+	klog.V(6).Infof("Calling %s\n", URI)
+
+	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
+	if err != nil {
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(6).Infof("async.GetSummaryOfBookmark LEAVE\n")
+		return nil, err
+	}
+
+	// check the status
+	var result interfaces.BookmarkSummaryResult
+
+	err = c.Client.Do(ctx, req, &result)
+
+	if e, ok := err.(*symbl.StatusError); ok {
+		if e.Resp.StatusCode != http.StatusOK {
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(6).Infof("async.GetSummaryOfBookmark LEAVE\n")
+			return nil, err
+		}
+	}
+
+	klog.V(3).Infof("GET SummaryOfBookmark succeeded\n")
+	klog.V(6).Infof("async.GetSummaryOfBookmark LEAVE\n")
+	return &result, nil
+}
+
+func (c *Client) GetSummaryOfBookmarks(ctx context.Context, conversationId string, filters []string) (*interfaces.BookmarksSummaryResult, error) {
+	klog.V(6).Infof("async.GetSummaryOfBookmarks ENTER\n")
+
+	// checks
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	if conversationId == "" {
+		klog.V(1).Infof("conversationId is empty\n")
+		klog.V(6).Infof("async.GetSummaryOfBookmarks LEAVE\n")
+		return nil, ErrInvalidInput
+	}
+
+	queryString := ""
+	if len(filters) > 0 {
+		queryString = "?"
+		for _, filter := range filters {
+			queryString += url.QueryEscape(filter)
+		}
+	}
+
+	// request
+	URI := version.GetAsyncAPI(version.SummariesOfBookmarksURI, conversationId)
+	if len(filters) > 0 {
+		URI = version.GetAsyncAPI(version.SummariesOfBookmarksURI, conversationId, queryString)
+	}
+	klog.V(6).Infof("Calling %s\n", URI)
+
+	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
+	if err != nil {
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(6).Infof("async.GetSummaryOfBookmarks LEAVE\n")
+		return nil, err
+	}
+
+	// check the status
+	var result interfaces.BookmarksSummaryResult
+
+	err = c.Client.Do(ctx, req, &result)
+
+	if e, ok := err.(*symbl.StatusError); ok {
+		if e.Resp.StatusCode != http.StatusOK {
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(6).Infof("async.GetSummaryOfBookmarks LEAVE\n")
+			return nil, err
+		}
+	}
+
+	klog.V(3).Infof("GET SummaryOfBookmarks succeeded\n")
+	klog.V(6).Infof("async.GetSummaryOfBookmarks LEAVE\n")
+	return &result, nil
+}

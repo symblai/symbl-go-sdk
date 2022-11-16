@@ -168,13 +168,14 @@ type Message struct {
 }
 
 type Summary struct {
-	ID          string `json:"id,omitempty"`
-	Text        string `json:"text,omitempty"`
-	MessageRefs []struct {
-		ID string `json:"id,omitempty"`
-	} `json:"messageRefs,omitempty"`
-	StartTime time.Time `json:"startTime,omitempty"`
-	EndTime   time.Time `json:"endTime,omitempty"`
+	ID                string       `json:"id,omitempty"`
+	Text              string       `json:"text,omitempty"`
+	MessageRefs       []MessageRef `json:"messageRefs,omitempty"`
+	StartTime         time.Time    `json:"startTime,omitempty"`
+	EndTime           time.Time    `json:"endTime,omitempty"`
+	BookmarkReference struct {
+		ID string `json:"id"`
+	} `json:"bookmarkReference"`
 }
 
 type Member struct {
@@ -197,28 +198,58 @@ type Member struct {
 }
 
 type Conversation struct {
-	ID        string    `json:"id"`
-	Type      string    `json:"type"`
-	Name      string    `json:"name"`
-	StartTime time.Time `json:"startTime"`
-	EndTime   time.Time `json:"endTime"`
-	Members   []Member  `json:"members"`
+	ID        string    `json:"id,omitempty"`
+	Type      string    `json:"type,omitempty"`
+	Name      string    `json:"name,omitempty"`
+	StartTime time.Time `json:"startTime,omitempty"`
+	EndTime   time.Time `json:"endTime,omitempty"`
+	Members   []Member  `json:"members,omitempty"`
 	Metadata  struct {
-	} `json:"metadata"` // TODO: need to revisit this
+	} `json:"metadata,omitempty"` // TODO: need to revisit this
 }
 
 type SpeakerEvent struct {
-	Type   string `json:"type"`
-	User   Member `json:"user"`
+	Type   string `json:"type,omitempty"`
+	User   Member `json:"user,omitempty"`
 	Offset struct {
-		Seconds int `json:"seconds"`
-		Nanos   int `json:"nanos"`
-	} `json:"offset"`
+		Seconds int `json:"seconds,omitempty"`
+		Nanos   int `json:"nanos,omitempty"`
+	} `json:"offset,omitempty"`
+}
+
+type BookmarksSummary struct {
+	BookmarkID string    `json:"bookmarkId,omitempty"`
+	Summaries  []Summary `json:"summary,omitempty"`
 }
 
 /*
 	Input parameters for Async API calls
 */
+// AsyncOptions for PostURL PostFile
+type AsyncOptions struct {
+	CustomVocabulary []string `json:"customVocabulary,omitempty"`
+	ChannelMetadata  []struct {
+		Speaker struct {
+			Name  string `json:"name,omitempty"`
+			Email string `json:"email,omitempty"`
+		} `json:"speaker,omitempty"`
+		Channel int `json:"channel,omitempty"`
+	} `json:"channelMetadata,omitempty"`
+	URL                                 string  `json:"url,omitempty"`
+	Name                                string  `json:"name,omitempty"`
+	ConfidenceThreshold                 float64 `json:"confidenceThreshold,omitempty"`
+	DetectPhrases                       bool    `json:"detectPhrases,omitempty"`
+	WebhookURL                          string  `json:"webhookUrl,omitempty"`
+	DetectEntities                      bool    `json:"detectEntities,omitempty"`
+	LanguageCode                        string  `json:"languageCode,omitempty"`
+	Mode                                string  `json:"mode,omitempty"`
+	EnableSeparateRecognitionPerChannel bool    `json:"enableSeparateRecognitionPerChannel,omitempty"`
+	EnableSpeakerDiarization            bool    `json:"enableSpeakerDiarization,omitempty"`
+	DiarizationSpeakerCount             int     `json:"diarizationSpeakerCount,omitempty"`
+	ParentRefs                          bool    `json:"parentRefs,omitempty"`
+	Sentiment                           bool    `json:"sentiment,omitempty"`
+}
+
 // WaitForJobStatusOpts parameter needed for Wait call
 type WaitForJobStatusOpts struct {
 	JobId         string `validate:"required"`
@@ -231,23 +262,13 @@ type MessageRefRequest struct {
 }
 
 // BookmarkByMessageRefsRequest for creating bookmarks
-type BookmarkByMessageRefsRequest struct {
-	Label       string `json:"label" validate:"required"`
-	Description string `json:"description" validate:"required"`
-	User        User   `json:"user" validate:"required"`
-	// BeginTimeOffset int          `json:"beginTimeOffset"`
-	// Duration        int          `json:"duration"`
-	MessageRefs []MessageRefRequest `json:"messageRefs" validate:"required"`
-}
-
-// BookmarkByMessageRefsRequest for creating bookmarks
-type BookmarkByTimeDurationsRequest struct {
-	Label           string `json:"label" validate:"required"`
-	Description     string `json:"description" validate:"required"`
-	User            User   `json:"user" validate:"required"`
-	BeginTimeOffset int    `json:"beginTimeOffset" validate:"required"`
-	Duration        int    `json:"duration" validate:"required"`
-	// MessageRefs []MessageRef `json:"messageRefs"`
+type BookmarkRequest struct {
+	Label           string              `json:"label,omitempty" validate:"required"`
+	Description     string              `json:"description,omitempty" validate:"required"`
+	User            User                `json:"user,omitempty" validate:"required"`
+	BeginTimeOffset int                 `json:"beginTimeOffset,omitempty"`
+	Duration        int                 `json:"duration,omitempty"`
+	MessageRefs     []MessageRefRequest `json:"messageRefs,omitempty"`
 }
 
 type TextSummaryRequest struct {
@@ -325,4 +346,12 @@ type ConversationsResult struct {
 
 type MembersResult struct {
 	Members []Member `json:"members"`
+}
+
+type BookmarkSummaryResult struct {
+	Summaries []Summary `json:"summary"`
+}
+
+type BookmarksSummaryResult struct {
+	BookmarksSummary []BookmarksSummary `json:"bookmarksSummary"`
 }

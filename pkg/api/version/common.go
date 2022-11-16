@@ -1,5 +1,6 @@
 package version
 
 const (
-	SupportedLanguage string = "en-US"
+	DefaultSupportedLanguage string = SupportedLanguageEnUs
+	SupportedLanguageEnUs    string = "en-US"
 )
