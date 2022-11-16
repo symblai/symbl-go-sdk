@@ -71,6 +71,35 @@ func main() {
 	spew.Dump(trackersResult)
 	fmt.Printf("\n")
 
+	// modify
+	updateRequest := interfaces.UpdateTrackerRequest{
+		TrackerTuples: []interfaces.TrackerTupleRequest{
+			interfaces.TrackerTupleRequest{
+				Op:    interfaces.TrackerOperationReplace,
+				Path:  interfaces.TrackerPathDescription,
+				Value: "Updated Description",
+			},
+		},
+	}
+	updateResponse, err := mgmtClient.UpdateTracker(ctx, createResponse.Tracker.ID, updateRequest)
+	if err != nil {
+		fmt.Printf("CreateTracker failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("\n")
+	spew.Dump(updateResponse)
+	fmt.Printf("\n")
+
+	// list again, again
+	trackersResult, err = mgmtClient.GetTrackers(ctx)
+	if err != nil {
+		fmt.Printf("GetTrackers failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("\n")
+	spew.Dump(trackersResult)
+	fmt.Printf("\n")
+
 	// delete trackers
 	for _, tracker := range trackersResult.Trackers {
 		err = mgmtClient.DeleteTracker(ctx, tracker.ID)
@@ -80,7 +109,7 @@ func main() {
 		}
 	}
 
-	// list again, again
+	// list again, again, again
 	trackersResult, err = mgmtClient.GetTrackers(ctx)
 	if err != nil {
 		fmt.Printf("GetTrackers failed. Err: %v\n", err)

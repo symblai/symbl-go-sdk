@@ -12,10 +12,11 @@ const (
 
 	// trackers
 	ManagementTrackerURI     string = "https://api.symbl.ai/%s/manage/trackers"
-	ManagementtrackerByIdURI string = "https://api.symbl.ai/%s/manage/trackers/%s"
+	ManagementTrackerByIdURI string = "https://api.symbl.ai/%s/manage/trackers/%s"
 
 	// entity
 	ManagementEntitiesURI          string = "https://api.symbl.ai/%s/manage/entities"
+	ManagementEntitiesBulkURI      string = "https://api.symbl.ai/%s/manage/entities/bulk"
 	ManagementEntitiesByIdURI      string = "https://api.symbl.ai/%s/manage/entities/%s"
 	ManagementEntitiesBySubTypeURI string = "https://api.symbl.ai/%s/manage/entities?subType=%s"
 

@@ -46,6 +46,7 @@ type TrackerRequest struct {
 	Vocabulary  []string `json:"vocabulary" validate:"required"`
 }
 
+// EntityRequest minus the ID
 type EntityRequest struct {
 	Type     string   `json:"type" validate:"required"`
 	SubType  string   `json:"subType" validate:"required"`
@@ -53,15 +54,22 @@ type EntityRequest struct {
 	Values   []string `json:"values" validate:"required"`
 }
 
-// ModifyTrackerRequest to modify a tracker
-/*
-type ModifyTrackerRequest struct {
-	TrackerId string `validate:"required"`
-	Op        string `json:"op" validate:"required"`
-	Path      string `json:"path" validate:"required"`
-	Value     string `json:"value" validate:"required"`
+// CreateEntityRequest the request
+type CreateEntityRequest struct {
+	EntityArray []EntityRequest
 }
-*/
+
+// TrackerTupleRequest to modify a tracker
+type TrackerTupleRequest struct {
+	Op    string `json:"op" validate:"required"`
+	Path  string `json:"path" validate:"required"`
+	Value string `json:"value" validate:"required"`
+}
+
+// UpdateTrackerRequest container for TrackerTupleRequest requests
+type UpdateTrackerRequest struct {
+	TrackerArray []TrackerTupleRequest
+}
 
 /*
 	Output structs for Management API calls
@@ -79,6 +87,11 @@ type TrackerResponse struct {
 // EntitiesResponse list of Entities
 type EntitiesResponse struct {
 	Entities []Entity `json:"entities"`
+}
+
+// EntitiesResponse list of Entities
+type EntityResponse struct {
+	Entity Entity `json:"entity"`
 }
 
 // ConversationGroupResponse when create

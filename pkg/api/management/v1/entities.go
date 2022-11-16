@@ -94,7 +94,7 @@ func (m *Management) GetEntitById(ctx context.Context, entityId string) (*interf
 /*
 	TODO: create doesn't return Entity object that's populated
 */
-func (m *Management) CreateEntity(ctx context.Context, request interfaces.EntityRequest) (*interfaces.Entity, error) {
+func (m *Management) CreateEntity(ctx context.Context, request interfaces.CreateEntityRequest) (*interfaces.EntitiesResponse, error) {
 	klog.V(6).Infof("mgmt.CreateEntity ENTER\n")
 
 	// checks
@@ -114,10 +114,10 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Entity
 	}
 
 	// request
-	URI := version.GetManagementAPI(version.ManagementEntitiesURI)
+	URI := version.GetManagementAPI(version.ManagementEntitiesBulkURI)
 	klog.V(6).Infof("Calling %s\n", URI)
 
-	jsonStr, err := json.Marshal(request)
+	jsonStr, err := json.Marshal(request.EntityArray)
 	if err != nil {
 		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
 		klog.V(6).Infof("mgmt.CreateEntity LEAVE\n")
@@ -132,7 +132,7 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Entity
 	}
 
 	// check the status
-	var result interfaces.Entity
+	var result interfaces.EntitiesResponse
 
 	err = m.Client.Do(ctx, req, &result)
 
@@ -149,63 +149,60 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Entity
 	return &result, nil
 }
 
-/*
-	TODO: This appears broken... This is the error we get back:
+func (m *Management) UpdateEntity(ctx context.Context, entityId string, request interfaces.Entity) (*interfaces.EntityResponse, error) {
+	klog.V(6).Infof("mgmt.UpdateEntity ENTER\n")
 
-	HTTP Code: 400
-	{
-		"message":"Entity request body must contain 'type'. Please refer Symbl docs for more information."
+	// checks
+	if ctx == nil {
+		ctx = context.Background()
 	}
 
-	Which contradicts the documentation: https://docs.symbl.ai/docs/update-entities
-*/
-// func (m *Management) UpdateEntity(ctx context.Context, request interfaces.Entity) (*interfaces.Entity, error) {
-// 	klog.V(6).Infof("mgmt.UpdateEntity ENTER\n")
+	// validate input
+	v := validator.New()
+	err := v.Struct(request)
+	if err != nil {
+		for _, e := range err.(validator.ValidationErrors) {
+			klog.V(1).Infof("UpdateEntity validation failed. Err: %v\n", e)
+		}
+		klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
+		return nil, err
+	}
 
-// 	// checks
-// 	if ctx == nil {
-// 		ctx = context.Background()
-// 	}
+	// request
+	URI := version.GetManagementAPI(version.ManagementEntitiesByIdURI, entityId)
+	klog.V(6).Infof("Calling %s\n", URI)
 
-// 	// validate input
-// 	v := validator.New()
-// 	err := v.Struct(request)
-// 	if err != nil {
-// 		for _, e := range err.(validator.ValidationErrors) {
-// 			klog.V(1).Infof("UpdateEntity validation failed. Err: %v\n", e)
-// 		}
-// 		klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
-// 		return nil, err
-// 	}
+	jsonStr, err := json.Marshal(request)
+	if err != nil {
+		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
+		klog.V(6).Infof("async.UpdateEntity LEAVE\n")
+		return nil, err
+	}
 
-// 	// request
-// 	URI := version.GetManagementAPI(version.ManagementEntitiesByIdURI, request.ID)
-// 	klog.V(6).Infof("Calling %s\n", URI)
+	req, err := http.NewRequestWithContext(ctx, "PUT", URI, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
+		return nil, err
+	}
 
-// 	req, err := http.NewRequestWithContext(ctx, "PUT", URI, nil)
-// 	if err != nil {
-// 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
-// 		klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
-// 		return nil, err
-// 	}
+	// check the status
+	var result interfaces.EntityResponse
 
-// 	// check the status
-// 	var result interfaces.Entity
+	err = m.Client.Do(ctx, req, &result)
 
-// 	err = m.Client.Do(ctx, req, &result)
+	if e, ok := err.(*symbl.StatusError); ok {
+		if e.Resp.StatusCode != http.StatusOK {
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
+			return nil, err
+		}
+	}
 
-// 	if e, ok := err.(*symbl.StatusError); ok {
-// 		if e.Resp.StatusCode != http.StatusOK {
-// 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-// 			klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
-// 			return nil, err
-// 		}
-// 	}
-
-// 	klog.V(3).Infof("GET Update Entity succeeded\n"))
-// 	klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
-// 	return &result, nil
-// }
+	klog.V(3).Infof("PUT UpdateEntity succeeded\n")
+	klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
+	return &result, nil
+}
 
 func (m *Management) DeleteEntity(ctx context.Context, entityId string) error {
 	klog.V(6).Infof("mgmt.DeleteEntity ENTER\n")
