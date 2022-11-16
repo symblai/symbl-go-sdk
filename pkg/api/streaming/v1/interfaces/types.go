@@ -56,11 +56,11 @@ type Message struct {
 		ID string `json:"id,omitempty"`
 	} `json:"channel,omitempty"`
 	Metadata struct {
-		DisablePunctuation bool      `json:"disablePunctuation,omitempty"`
-		TimezoneOffset     int       `json:"timezoneOffset,omitempty"`
-		OriginalContent    string    `json:"originalContent,omitempty"`
-		Words              time.Time `json:"words,omitempty"`
-		OriginalMessageID  string    `json:"originalMessageId,omitempty"`
+		DisablePunctuation bool   `json:"disablePunctuation,omitempty"`
+		TimezoneOffset     int    `json:"timezoneOffset,omitempty"`
+		OriginalContent    string `json:"originalContent,omitempty"`
+		Words              string `json:"words,omitempty"`
+		OriginalMessageID  string `json:"originalMessageId,omitempty"`
 	} `json:"metadata,omitempty"`
 	Dismissed bool `json:"dismissed,omitempty"`
 	Duration  struct {
@@ -69,6 +69,7 @@ type Message struct {
 		TimeOffset float64   `json:"timeOffset,omitempty"`
 		Duration   float64   `json:"duration,omitempty"`
 	} `json:"duration,omitempty"`
+	Entities []interface{} `json:"entities,omitempty"` // TODO: need to revisit this
 }
 
 type Insight struct {
@@ -127,13 +128,13 @@ type Topic struct {
 }
 
 type Tracker struct {
-	ID                string `json:"id,omitempty"`
+	ID      string `json:"id,omitempty"`
 	Name    string `json:"name,omitempty"`
 	Matches []struct {
 		Value       string `json:"value,omitempty"`
 		MessageRefs []struct {
-		ID       string `json:"id,omitempty"`
-		Text string `json:"text,omitempty"`
+			ID     string `json:"id,omitempty"`
+			Text   string `json:"text,omitempty"`
 			Offset int    `json:"offset,omitempty"`
 		} `json:"messageRefs,omitempty"`
 		InsightRefs []interface{} `json:"insightRefs,omitempty"` // TODO needs to be defined. Need an example
