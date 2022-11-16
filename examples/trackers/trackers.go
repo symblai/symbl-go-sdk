@@ -73,7 +73,7 @@ func main() {
 
 	// modify
 	updateRequest := interfaces.UpdateTrackerRequest{
-		TrackerTuples: []interfaces.TrackerTupleRequest{
+		TrackerArray: []interfaces.TrackerTupleRequest{
 			interfaces.TrackerTupleRequest{
 				Op:    interfaces.TrackerOperationReplace,
 				Path:  interfaces.TrackerPathDescription,
