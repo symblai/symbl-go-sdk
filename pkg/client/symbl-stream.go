@@ -23,6 +23,10 @@ const (
 	defaultUserName            string  = "Jane Doe"
 )
 
+type StreamingOptions struct {
+	ProxyAddress string
+}
+
 type StreamClient struct {
 	*stream.WebSocketClient
 
@@ -54,7 +58,8 @@ func NewStreamClientWithDefaults(ctx context.Context) (*StreamClient, error) {
 
 // NewStreamClient creates a new client on the Symbl.ai platform. The client authenticates with the
 // server with APP_ID/APP_SECRET.
-func NewStreamClient(ctx context.Context, config *cfginterfaces.StreamingConfig, callback interfaces.InsightCallback) (*StreamClient, error) {
+func NewStreamClient(ctx context.Context, options StreamingOptions,
+	config *cfginterfaces.StreamingConfig, callback interfaces.InsightCallback) (*StreamClient, error) {
 	klog.V(6).Infof("NewStreamClient ENTER\n")
 
 	// set streaming type
@@ -84,8 +89,12 @@ func NewStreamClient(ctx context.Context, config *cfginterfaces.StreamingConfig,
 	symblStreaming := streaming.New(callback)
 
 	// create client
+	streamingAddress := streaming.SymblPlatformHost
+	if len(options.ProxyAddress) > 0 {
+		streamingAddress = options.ProxyAddress
+	}
 	creds := stream.Credentials{
-		Host:      streaming.SymblPlatformHost,
+		Host:      streamingAddress,
 		Channel:   streamPath,
 		AccessKey: restClient.auth.AccessToken,
 	}
