@@ -53,7 +53,7 @@ func GetDefaultConfig() *cfginterfaces.StreamingConfig {
 func NewStreamClientWithDefaults(ctx context.Context) (*StreamClient, error) {
 	config := GetDefaultConfig()
 	callback := streaming.NewDefaultMessageRouter()
-	return NewStreamClient(ctx, config, callback)
+	return NewStreamClient(ctx, StreamingOptions{}, config, callback)
 }
 
 // NewStreamClient creates a new client on the Symbl.ai platform. The client authenticates with the
