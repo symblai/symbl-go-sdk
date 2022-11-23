@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"time"
 
+	streaming "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1"
 	microphone "github.com/dvonthenen/symbl-go-sdk/pkg/audio/microphone"
 	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
 )
@@ -23,11 +24,22 @@ func main() {
 	ctx := context.Background()
 
 	// create a new client
-	client, err := symbl.NewStreamClientWithDefaults(ctx)
+	options := symbl.StreamingOptions{
+		SymblConfig: symbl.GetDefaultConfig(),
+		Callback:    streaming.NewDefaultMessageRouter(),
+	}
+
+	client, err := symbl.NewStreamClient(ctx, options)
 	if err == nil {
 		fmt.Println("Login Succeeded!")
 	} else {
 		fmt.Printf("New failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+
+	err = client.Start()
+	if err != nil {
+		fmt.Printf("client.Start failed. Err: %v\n", err)
 		os.Exit(1)
 	}
 

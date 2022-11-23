@@ -24,7 +24,10 @@ const (
 )
 
 type StreamingOptions struct {
-	ProxyAddress string
+	ProxyAddress   string
+	SymblConfig    *cfginterfaces.StreamingConfig
+	Callback       interfaces.InsightCallback
+	SkipServerAuth bool
 }
 
 type StreamClient struct {
@@ -32,6 +35,8 @@ type StreamClient struct {
 
 	restClient     *RestClient
 	symblStreaming stream.WebSocketMessageCallback
+
+	options *StreamingOptions
 }
 
 func GetDefaultConfig() *cfginterfaces.StreamingConfig {
@@ -51,24 +56,23 @@ func GetDefaultConfig() *cfginterfaces.StreamingConfig {
 
 // NewStreamClientWithDefaults same as NewStreamClient just using defaults
 func NewStreamClientWithDefaults(ctx context.Context) (*StreamClient, error) {
-	config := GetDefaultConfig()
-	callback := streaming.NewDefaultMessageRouter()
-	return NewStreamClient(ctx, StreamingOptions{}, config, callback)
+	options := StreamingOptions{
+		SymblConfig: GetDefaultConfig(),
+		Callback:    streaming.NewDefaultMessageRouter(),
+	}
+	return NewStreamClient(ctx, options)
 }
 
 // NewStreamClient creates a new client on the Symbl.ai platform. The client authenticates with the
 // server with APP_ID/APP_SECRET.
-func NewStreamClient(ctx context.Context, options StreamingOptions,
-	config *cfginterfaces.StreamingConfig, callback interfaces.InsightCallback) (*StreamClient, error) {
+func NewStreamClient(ctx context.Context, options StreamingOptions) (*StreamClient, error) {
 	klog.V(6).Infof("NewStreamClient ENTER\n")
 
-	// set streaming type
-	if config == nil {
+	if options.SymblConfig == nil {
 		klog.V(1).Infof("Config is null\n")
 		klog.V(6).Infof("NewStreamClient LEAVE\n")
 		return nil, ErrInvalidInput
 	}
-	config.Type = streaming.TypeRequestStart
 
 	// create rest client
 	restClient, err := NewRestClient(ctx)
@@ -78,7 +82,14 @@ func NewStreamClient(ctx context.Context, options StreamingOptions,
 		return nil, err
 	}
 
-	// generate unique id... not even sure why this is needed, but hey
+	// is there a proxy?
+	streamingAddress := streaming.SymblPlatformHost
+	if len(options.ProxyAddress) > 0 {
+		streamingAddress = options.ProxyAddress
+		klog.V(3).Infof("Proxy Address: %s\n", streamingAddress)
+	}
+
+	// generate unique conversationId
 	id := uuid.New()
 	klog.V(4).Infof("UUID: %s\n", id.String())
 
@@ -86,37 +97,19 @@ func NewStreamClient(ctx context.Context, options StreamingOptions,
 	klog.V(4).Infof("streamPath: %s\n", streamPath)
 
 	// init symbl websocket message router
-	symblStreaming := streaming.New(callback)
+	symblStreaming := streaming.New(options.Callback)
 
 	// create client
-	streamingAddress := streaming.SymblPlatformHost
-	if len(options.ProxyAddress) > 0 {
-		streamingAddress = options.ProxyAddress
-	}
 	creds := stream.Credentials{
-		Host:      streamingAddress,
-		Channel:   streamPath,
-		AccessKey: restClient.auth.AccessToken,
+		Host:           streamingAddress,
+		Channel:        streamPath,
+		AccessKey:      restClient.auth.AccessToken,
+		Redirect:       len(options.ProxyAddress) > 0,
+		SkipServerAuth: options.SkipServerAuth,
 	}
 	wsClient, err := stream.NewWebSocketClient(creds, symblStreaming)
 	if err != nil {
 		klog.V(1).Infof("stream.NewWebSocketClient failed. Err: %v\n", err)
-		klog.V(6).Infof("NewStreamClient LEAVE\n")
-		return nil, err
-	}
-
-	// establish connection
-	wsConnection := wsClient.Connect()
-	if wsConnection == nil {
-		klog.V(1).Infof("stream.NewWebSocketClient failed. Err: %v\n", err)
-		klog.V(6).Infof("NewStreamClient LEAVE\n")
-		return nil, ErrWebSocketInitializationFailed
-	}
-
-	// write Symbl config to Platform
-	err = wsClient.WriteJSON(config)
-	if err != nil {
-		klog.V(1).Infof("wsClient.WriteJSON failed. Err: %v\n", err)
 		klog.V(6).Infof("NewStreamClient LEAVE\n")
 		return nil, err
 	}
@@ -126,11 +119,44 @@ func NewStreamClient(ctx context.Context, options StreamingOptions,
 		wsClient,
 		restClient,
 		symblStreaming,
+		&options,
 	}
 
-	klog.V(3).Infof("NewStreamClientWithCreds Succeeded\n")
+	klog.V(3).Infof("NewStreamClient Succeeded\n")
 	klog.V(6).Infof("NewStreamClient LEAVE\n")
 	return streamClient, nil
+}
+
+func (sc *StreamClient) Start() error {
+	klog.V(6).Infof("Start ENTER\n")
+
+	// set streaming type
+	if sc.options.SymblConfig == nil {
+		klog.V(1).Infof("Config is null\n")
+		klog.V(6).Infof("Start LEAVE\n")
+		return ErrInvalidInput
+	}
+	sc.options.SymblConfig.Type = streaming.TypeRequestStart
+
+	// establish connection
+	wsConnection := sc.Connect()
+	if wsConnection == nil {
+		klog.V(1).Infof("wsClient.Connect failed\n")
+		klog.V(6).Infof("Start LEAVE\n")
+		return ErrWebSocketInitializationFailed
+	}
+
+	// write Symbl config to Platform
+	err := sc.WriteJSON(sc.options.SymblConfig)
+	if err != nil {
+		klog.V(1).Infof("wsClient.WriteJSON failed. Err: %v\n", err)
+		klog.V(6).Infof("Start LEAVE\n")
+		return err
+	}
+
+	klog.V(3).Infof("Start Succeeded\n")
+	klog.V(6).Infof("Start LEAVE\n")
+	return nil
 }
 
 func (sc *StreamClient) Stop() {
