@@ -10,10 +10,6 @@ import (
 const (
 	JobStatusInProgress string = "in_progress"
 	JobStatusComplete   string = "completed"
-
-	AudioTypeMP3  string = "mp3"
-	AudioTypeMpeg string = "mpeg"
-	AudioTypeWav  string = "wav"
 )
 
 var (

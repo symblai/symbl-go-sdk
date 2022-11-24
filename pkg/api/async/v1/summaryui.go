@@ -13,6 +13,7 @@ import (
 
 	klog "k8s.io/klog/v2"
 
+	common "github.com/dvonthenen/symbl-go-sdk/pkg/api/common"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
 	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
 
@@ -51,14 +52,14 @@ func (c *Client) GetSummaryUI(ctx context.Context, conversationId string, uri st
 		return nil, err
 	}
 
-	extension := u.Path[pos+1 : len(u.Path)]
+	extension := u.Path[pos+1:]
 	klog.V(3).Infof("extension: %s\n", extension)
 
 	// is audio?
 	switch extension {
-	case AudioTypeMP3:
-	case AudioTypeMpeg:
-	case AudioTypeWav:
+	case common.AudioTypeMP3:
+	case common.AudioTypeMpeg:
+	case common.AudioTypeWav:
 		request := interfaces.AudioSummaryRequest{
 			Name:     "audio-summary",
 			AudioURL: uri,

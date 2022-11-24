@@ -133,6 +133,14 @@ func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (
 	return c, nil
 }
 
+func (c *RestClient) DoTextWithOptions(ctx context.Context, options asyncinterfaces.AsyncTextRequest, resBody interface{}) error {
+	return c.Client.DoText(ctx, options, resBody)
+}
+
+func (c *RestClient) DoAppendTextWithOptions(ctx context.Context, conversationId string, options asyncinterfaces.AsyncTextRequest, resBody interface{}) error {
+	return c.Client.DoAppendText(ctx, conversationId, options, resBody)
+}
+
 func (c *RestClient) DoFileWithOptions(ctx context.Context, filePath string, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
 	return c.Client.DoFile(ctx, filePath, options, resBody)
 }

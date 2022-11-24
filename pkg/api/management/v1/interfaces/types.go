@@ -3,20 +3,18 @@
 
 package interfaces
 
-import "time"
-
 /*
 	Shared definitions
 */
 type Tracker struct {
-	ID          string    `json:"id,omitempty"`
-	Name        string    `json:"name" validate:"required"`
-	Description string    `json:"description,omitempty"`
-	Categories  []string  `json:"categories" validate:"required"`
-	Languages   []string  `json:"languages" validate:"required"`
-	Vocabulary  []string  `json:"vocabulary" validate:"required"`
-	CreatedOn   time.Time `json:"createdOn,omitempty"`
-	UpdatedOn   time.Time `json:"updatedOn,omitempty"`
+	ID          string   `json:"id,omitempty"`
+	Name        string   `json:"name" validate:"required"`
+	Description string   `json:"description,omitempty"`
+	Categories  []string `json:"categories" validate:"required"`
+	Languages   []string `json:"languages" validate:"required"`
+	Vocabulary  []string `json:"vocabulary" validate:"required"`
+	CreatedOn   string   `json:"createdOn,omitempty"`
+	UpdatedOn   string   `json:"updatedOn,omitempty"`
 }
 
 type Entity struct {

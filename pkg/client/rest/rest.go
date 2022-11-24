@@ -14,10 +14,13 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 
+	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
+	common "github.com/dvonthenen/symbl-go-sdk/pkg/api/common"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
 	simple "github.com/dvonthenen/symbl-go-sdk/pkg/client/simple"
 )
@@ -66,7 +69,7 @@ func (c *Client) WithHeader(
 // 		return ErrInvalidInput
 // 	}
 
-// 	baseName := filepath.Base(filePath)
+// 	baseName := filepath.Base(strings.TrimSpace(filePath))
 // 	klog.V(4).Infof("Filename: %s\n", baseName)
 
 // 	r, w := io.Pipe()
@@ -169,31 +172,211 @@ func (c *Client) WithHeader(
 // 	return nil
 // }
 
+func (c *Client) DoAppendText(ctx context.Context, conversationId string, text interfaces.AsyncTextRequest, resBody interface{}) error {
+	if len(conversationId) == 0 {
+		klog.V(1).Infof("ConversationID is not valid\n")
+		return ErrInvalidInput
+	}
+
+	return c.doCommonText(ctx, conversationId, text, resBody)
+}
+
+func (c *Client) DoText(ctx context.Context, text interfaces.AsyncTextRequest, resBody interface{}) error {
+	return c.doCommonText(ctx, "", text, resBody)
+}
+
+func (c *Client) doCommonText(ctx context.Context, conversationId string, text interfaces.AsyncTextRequest, resBody interface{}) error {
+	klog.V(6).Infof("rest.doCommonText ENTER\n")
+
+	// validate input
+	v := validator.New()
+	err := v.Struct(text)
+	if err != nil {
+		for _, e := range err.(validator.ValidationErrors) {
+			klog.V(1).Infof("NewWithCreds validation failed. Err: %v\n", e)
+		}
+		klog.V(6).Infof("rest.doCommonText LEAVE\n")
+		return err
+	}
+
+	verb := "POST"
+	URI := version.GetAsyncAPI(version.ProcessTextURI)
+	if len(conversationId) > 0 {
+		verb = "PUT"
+		URI = version.GetAsyncAPI(version.ProcessAppendTextURI, conversationId)
+	}
+	klog.V(6).Infof("verb: %s\n", verb)
+	klog.V(6).Infof("URI: %s\n", URI)
+
+	var buf bytes.Buffer
+	err = json.NewEncoder(&buf).Encode(text)
+	if err != nil {
+		klog.V(1).Infof("json.NewEncoder().Encode() failed. Err: %v\n", err)
+		klog.V(6).Infof("rest.doCommonText LEAVE\n")
+		return err
+	}
+
+	klog.V(1).Infof("DYV: ENCODED TEXT: %s\n", text)
+
+	req, err := http.NewRequestWithContext(ctx, verb, URI, &buf)
+	if err != nil {
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(6).Infof("rest.doCommonText LEAVE\n")
+		return err
+	}
+
+	if headers, ok := ctx.Value(HeadersContext{}).(http.Header); ok {
+		for k, v := range headers {
+			for _, v := range v {
+				req.Header.Add(k, v)
+			}
+		}
+	}
+
+	switch req.Method {
+	case http.MethodPost, http.MethodPatch, http.MethodPut:
+		klog.V(3).Infof("Content-Type = application/json\n")
+		req.Header.Set("Content-Type", "application/json")
+	}
+
+	req.Header.Set("Accept", "application/json")
+	if c.auth != nil && c.auth.AccessToken != "" {
+		req.Header.Set("Authorization", "Bearer "+c.auth.AccessToken)
+	}
+
+	err = c.Client.Do(ctx, req, func(res *http.Response) error {
+		switch res.StatusCode {
+		case http.StatusOK:
+		case http.StatusCreated:
+		case http.StatusNoContent:
+		case http.StatusBadRequest:
+			klog.V(4).Infof("HTTP Error Code: %d\n", res.StatusCode)
+			detail, err := io.ReadAll(res.Body)
+			if err != nil {
+				klog.V(4).Infof("io.ReadAll failed. Err: %e\n", err)
+				klog.V(6).Infof("rest.doCommonText LEAVE\n")
+				return err
+			}
+			klog.V(6).Infof("rest.doCommonText LEAVE\n")
+			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
+		default:
+			return &StatusError{res}
+		}
+
+		if resBody == nil {
+			klog.V(4).Infof("resBody == nil\n")
+			klog.V(6).Infof("rest.doCommonText LEAVE\n")
+			return nil
+		}
+
+		switch b := resBody.(type) {
+		case *RawResponse:
+			klog.V(4).Infof("RawResponse\n")
+			klog.V(6).Infof("rest.doCommonText LEAVE\n")
+			return res.Write(b)
+		case io.Writer:
+			klog.V(4).Infof("io.Writer\n")
+			klog.V(6).Infof("rest.doCommonText LEAVE\n")
+			_, err := io.Copy(b, res.Body)
+			return err
+		default:
+			klog.V(4).Infof("json.NewDecoder\n")
+			d := json.NewDecoder(res.Body)
+			klog.V(6).Infof("rest.doCommonText LEAVE\n")
+			return d.Decode(resBody)
+		}
+	})
+
+	if err != nil {
+		klog.V(1).Infof("err = c.Client.Do failed. Err: %v\n", err)
+		klog.V(6).Infof("rest.doCommonText LEAVE\n")
+		return err
+	}
+
+	klog.V(3).Infof("rest.doCommonText Succeeded\n")
+	klog.V(6).Infof("rest.doCommonText LEAVE\n")
+	return nil
+}
+
 func (c *Client) DoFile(ctx context.Context, filePath string, options interfaces.AsyncOptions, resBody interface{}) error {
-	klog.V(6).Infof("rest.DoFile ENTER\n")
+	// file?
+	fileInfo, err := os.Stat(filePath)
+	if err != nil || errors.Is(err, os.ErrNotExist) {
+		klog.V(1).Infof("File %s does not exist. Err : %v\n", filePath, err)
+		return err
+	}
+
+	if fileInfo.IsDir() || fileInfo.Size() == 0 {
+		klog.V(1).Infof("%s is a directory not a file\n", filePath)
+		return ErrInvalidInput
+	}
+
+	baseName := filepath.Base(strings.TrimSpace(filePath))
+	klog.V(4).Infof("filePath: %s\n", filePath)
+	klog.V(4).Infof("baseName: %s\n", baseName)
+
+	// file
+	pos := strings.LastIndex(filePath, ".")
+	if pos == -1 {
+		err := ErrInvalidURIExtension
+		klog.V(1).Infof("uri is invalid. Err: %v\n", err)
+		return err
+	}
+
+	extension := filePath[pos+1:]
+	klog.V(3).Infof("extension: %s\n", extension)
+
+	// is audio?
+	switch extension {
+	case common.AudioTypeMP3:
+		klog.V(3).Infof("IsAudio = TRUE\n")
+		return c.doAudioFile(ctx, filePath, options, resBody)
+	case common.AudioTypeMpeg:
+		klog.V(3).Infof("IsAudio = TRUE\n")
+		return c.doAudioFile(ctx, filePath, options, resBody)
+	case common.AudioTypeWav:
+		klog.V(3).Infof("IsAudio = TRUE\n")
+		return c.doAudioFile(ctx, filePath, options, resBody)
+	}
+
+	// assume video
+	klog.V(3).Infof("Defaulting IsVideo = TRUE\n")
+	return c.doVideoFile(ctx, filePath, options, resBody)
+}
+
+func (c *Client) doAudioFile(ctx context.Context, filePath string, options interfaces.AsyncOptions, resBody interface{}) error {
+	return c.doCommonFile(ctx, version.ProcessAudioURI, filePath, options, resBody)
+}
+
+func (c *Client) doVideoFile(ctx context.Context, filePath string, options interfaces.AsyncOptions, resBody interface{}) error {
+	return c.doCommonFile(ctx, version.ProcessVideoURI, filePath, options, resBody)
+}
+
+func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, options interfaces.AsyncOptions, resBody interface{}) error {
+	klog.V(6).Infof("rest.doCommonFile ENTER\n")
 
 	// checks
 	fileInfo, err := os.Stat(filePath)
 	if err != nil || errors.Is(err, os.ErrNotExist) {
 		klog.V(1).Infof("File %s does not exist. Err : %v\n", filePath, err)
-		klog.V(6).Infof("rest.DoFile LEAVE\n")
+		klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 		return err
 	}
 
-	if fileInfo.IsDir() && fileInfo.Size() > 0 {
+	if fileInfo.IsDir() || fileInfo.Size() == 0 {
 		klog.V(1).Infof("%s is a directory not a file\n", filePath)
-		klog.V(6).Infof("rest.DoFile LEAVE\n")
+		klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 		return ErrInvalidInput
 	}
 
-	baseName := filepath.Base(filePath)
+	baseName := filepath.Base(strings.TrimSpace(filePath))
 	klog.V(4).Infof("filePath: %s\n", filePath)
 	klog.V(4).Infof("baseName: %s\n", baseName)
 
 	file, err := os.Open(filePath)
 	if err != nil {
 		klog.V(1).Infof("os.Open failed. Err: %v\n", err)
-		klog.V(6).Infof("rest.DoFile LEAVE\n")
+		klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 		return err
 	}
 	defer file.Close()
@@ -228,16 +411,16 @@ func (c *Client) DoFile(ctx context.Context, filePath string, options interfaces
 	}
 	// end
 
-	URI := version.GetAsyncAPI(version.ProcessAudioURI, baseName)
+	URI := version.GetAsyncAPI(apiURI, baseName)
 	if len(params) > 1 {
-		URI = version.GetAsyncAPI(version.ProcessAudioURI, baseName, params)
+		URI = version.GetAsyncAPI(apiURI, baseName, params)
 	}
 	klog.V(6).Infof("URI: %s\n", URI)
 
 	req, err := http.NewRequestWithContext(ctx, "POST", URI, file)
 	if err != nil {
 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
-		klog.V(6).Infof("rest.DoFile LEAVE\n")
+		klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 		return err
 	}
 
@@ -254,14 +437,6 @@ func (c *Client) DoFile(ctx context.Context, filePath string, options interfaces
 		req.Header.Set("Authorization", "Bearer "+c.auth.AccessToken)
 	}
 
-	if headers, ok := ctx.Value(HeadersContext{}).(http.Header); ok {
-		for k, v := range headers {
-			for _, v := range v {
-				req.Header.Add(k, v)
-			}
-		}
-	}
-
 	err = c.Client.Do(ctx, req, func(res *http.Response) error {
 		switch res.StatusCode {
 		case http.StatusOK:
@@ -272,10 +447,10 @@ func (c *Client) DoFile(ctx context.Context, filePath string, options interfaces
 			detail, err := io.ReadAll(res.Body)
 			if err != nil {
 				klog.V(4).Infof("io.ReadAll failed. Err: %e\n", err)
-				klog.V(6).Infof("rest.DoFile LEAVE\n")
+				klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 				return err
 			}
-			klog.V(6).Infof("rest.DoFile LEAVE\n")
+			klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
 		default:
 			return &StatusError{res}
@@ -283,36 +458,36 @@ func (c *Client) DoFile(ctx context.Context, filePath string, options interfaces
 
 		if resBody == nil {
 			klog.V(4).Infof("resBody == nil\n")
-			klog.V(6).Infof("rest.DoFile LEAVE\n")
+			klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 			return nil
 		}
 
 		switch b := resBody.(type) {
 		case *RawResponse:
 			klog.V(4).Infof("RawResponse\n")
-			klog.V(6).Infof("rest.DoFile LEAVE\n")
+			klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 			return res.Write(b)
 		case io.Writer:
 			klog.V(4).Infof("io.Writer\n")
-			klog.V(6).Infof("rest.DoFile LEAVE\n")
+			klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 			_, err := io.Copy(b, res.Body)
 			return err
 		default:
 			klog.V(4).Infof("json.NewDecoder\n")
 			d := json.NewDecoder(res.Body)
-			klog.V(6).Infof("rest.DoFile LEAVE\n")
+			klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 			return d.Decode(resBody)
 		}
 	})
 
 	if err != nil {
 		klog.V(1).Infof("err = c.Client.Do failed. Err: %v\n", err)
-		klog.V(6).Infof("rest.DoFile LEAVE\n")
+		klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 		return err
 	}
 
-	klog.V(3).Infof("rest.DoFile Succeeded\n")
-	klog.V(6).Infof("rest.DoFile LEAVE\n")
+	klog.V(3).Infof("rest.doCommonFile Succeeded\n")
+	klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 	return nil
 }
 
@@ -322,17 +497,61 @@ func IsUrl(str string) bool {
 }
 
 func (c *Client) DoURL(ctx context.Context, options interfaces.AsyncOptions, resBody interface{}) error {
+	// url
+	u, err := url.Parse(options.URL)
+	if err != nil {
+		klog.V(1).Infof("uri is invalid. Err: %v\n", err)
+		return err
+	}
+
+	pos := strings.LastIndex(u.Path, ".")
+	if pos == -1 {
+		err := ErrInvalidURIExtension
+		klog.V(1).Infof("uri is invalid. Err: %v\n", err)
+		return err
+	}
+
+	extension := u.Path[pos+1:]
+	klog.V(3).Infof("extension: %s\n", extension)
+
+	// is audio?
+	switch extension {
+	case common.AudioTypeMP3:
+		klog.V(3).Infof("IsAudio = TRUE\n")
+		return c.doAudioURL(ctx, options, resBody)
+	case common.AudioTypeMpeg:
+		klog.V(3).Infof("IsAudio = TRUE\n")
+		return c.doAudioURL(ctx, options, resBody)
+	case common.AudioTypeWav:
+		klog.V(3).Infof("IsAudio = TRUE\n")
+		return c.doAudioURL(ctx, options, resBody)
+	}
+
+	// assume video
+	klog.V(3).Infof("Default IsVideo = TRUE\n")
+	return c.doVideoURL(ctx, options, resBody)
+}
+
+func (c *Client) doAudioURL(ctx context.Context, options interfaces.AsyncOptions, resBody interface{}) error {
+	return c.doCommonURL(ctx, version.ProcessAudioURLURI, options, resBody)
+}
+
+func (c *Client) doVideoURL(ctx context.Context, options interfaces.AsyncOptions, resBody interface{}) error {
+	return c.doCommonURL(ctx, version.ProcessVideoURLURI, options, resBody)
+}
+
+func (c *Client) doCommonURL(ctx context.Context, apiURI string, options interfaces.AsyncOptions, resBody interface{}) error {
 	klog.V(6).Infof("rest.DoURL ENTER\n")
 
 	// checks
 	validURL := IsUrl(options.URL)
 	if !validURL {
 		klog.V(1).Infof("Invalid URL: %s\n", options.URL)
-		klog.V(6).Infof("rest.DoURL LEAVE\n")
+		klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 		return ErrInvalidInput
 	}
 
-	baseName := filepath.Base(options.URL)
+	baseName := filepath.Base(strings.TrimSpace(options.URL))
 	klog.V(4).Infof("url: %s\n", options.URL)
 	klog.V(4).Infof("baseName: %s\n", baseName)
 
@@ -340,21 +559,21 @@ func (c *Client) DoURL(ctx context.Context, options interfaces.AsyncOptions, res
 		options.Name = baseName
 	}
 
-	URI := version.GetAsyncAPI(version.ProcessURLURI)
+	URI := version.GetAsyncAPI(apiURI)
 	klog.V(6).Infof("URI: %s\n", URI)
 
 	var buf bytes.Buffer
 	err := json.NewEncoder(&buf).Encode(options)
 	if err != nil {
 		klog.V(1).Infof("json.NewEncoder().Encode() failed. Err: %v\n", err)
-		klog.V(6).Infof("rest.DoURL LEAVE\n")
+		klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 		return err
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "POST", URI, &buf)
 	if err != nil {
 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
-		klog.V(6).Infof("rest.DoURL LEAVE\n")
+		klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 		return err
 	}
 
@@ -368,20 +587,13 @@ func (c *Client) DoURL(ctx context.Context, options interfaces.AsyncOptions, res
 
 	switch req.Method {
 	case http.MethodPost, http.MethodPatch, http.MethodPut:
+		klog.V(3).Infof("Content-Type = application/json\n")
 		req.Header.Set("Content-Type", "application/json")
 	}
 
 	req.Header.Set("Accept", "application/json")
 	if c.auth != nil && c.auth.AccessToken != "" {
 		req.Header.Set("Authorization", "Bearer "+c.auth.AccessToken)
-	}
-
-	if headers, ok := ctx.Value(HeadersContext{}).(http.Header); ok {
-		for k, v := range headers {
-			for _, v := range v {
-				req.Header.Add(k, v)
-			}
-		}
 	}
 
 	err = c.Client.Do(ctx, req, func(res *http.Response) error {
@@ -394,10 +606,10 @@ func (c *Client) DoURL(ctx context.Context, options interfaces.AsyncOptions, res
 			detail, err := io.ReadAll(res.Body)
 			if err != nil {
 				klog.V(4).Infof("io.ReadAll failed. Err: %e\n", err)
-				klog.V(6).Infof("rest.DoURL LEAVE\n")
+				klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 				return err
 			}
-			klog.V(6).Infof("rest.DoURL LEAVE\n")
+			klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
 		default:
 			return &StatusError{res}
@@ -405,36 +617,36 @@ func (c *Client) DoURL(ctx context.Context, options interfaces.AsyncOptions, res
 
 		if resBody == nil {
 			klog.V(4).Infof("resBody == nil\n")
-			klog.V(6).Infof("rest.DoURL LEAVE\n")
+			klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 			return nil
 		}
 
 		switch b := resBody.(type) {
 		case *RawResponse:
 			klog.V(4).Infof("RawResponse\n")
-			klog.V(6).Infof("rest.DoURL LEAVE\n")
+			klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 			return res.Write(b)
 		case io.Writer:
 			klog.V(4).Infof("io.Writer\n")
-			klog.V(6).Infof("rest.DoURL LEAVE\n")
+			klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 			_, err := io.Copy(b, res.Body)
 			return err
 		default:
 			klog.V(4).Infof("json.NewDecoder\n")
 			d := json.NewDecoder(res.Body)
-			klog.V(6).Infof("rest.DoURL LEAVE\n")
+			klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 			return d.Decode(resBody)
 		}
 	})
 
 	if err != nil {
 		klog.V(1).Infof("err = c.Client.Do failed. Err: %v\n", err)
-		klog.V(6).Infof("rest.DoURL LEAVE\n")
+		klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 		return err
 	}
 
-	klog.V(3).Infof("rest.DoURL Succeeded\n")
-	klog.V(6).Infof("rest.DoURL LEAVE\n")
+	klog.V(3).Infof("rest.doCommonURL Succeeded\n")
+	klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 	return nil
 }
 
@@ -451,6 +663,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 
 	switch req.Method {
 	case http.MethodPost, http.MethodPatch, http.MethodPut:
+		klog.V(3).Infof("Content-Type = application/json\n")
 		req.Header.Set("Content-Type", "application/json")
 	}
 

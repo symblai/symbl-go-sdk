@@ -29,6 +29,38 @@ func New(client *symbl.RestClient) *Client {
 	return &Client{client}
 }
 
+func (c *Client) PostText(ctx context.Context, messages []string) (*JobConversation, error) {
+	textRequest := interfaces.AsyncTextRequest{}
+
+	for _, message := range messages {
+		textRequest.Messages = append(textRequest.Messages, interfaces.TextMessage{
+			Payload: interfaces.Payload{
+				Content: message,
+			},
+			From:     nil,
+			Duration: nil,
+		})
+	}
+
+	return c.PostTextWithOptions(ctx, textRequest)
+}
+
+func (c *Client) PostAppendText(ctx context.Context, conversationId string, messages []string) (*JobConversation, error) {
+	textRequest := interfaces.AsyncTextRequest{}
+
+	for _, message := range messages {
+		textRequest.Messages = append(textRequest.Messages, interfaces.TextMessage{
+			Payload: interfaces.Payload{
+				Content: message,
+			},
+			From:     nil,
+			Duration: nil,
+		})
+	}
+
+	return c.PostAppendTextWithOptions(ctx, conversationId, textRequest)
+}
+
 func (c *Client) PostFile(ctx context.Context, filePath string) (*JobConversation, error) {
 	options := interfaces.AsyncOptions{}
 	return c.PostFileWithOptions(ctx, filePath, options)
@@ -131,6 +163,52 @@ func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool
 	klog.V(3).Infof("%s: %t", URI, complete)
 	klog.V(6).Infof("async.WaitForJobCompleteOnce LEAVE\n")
 	return complete, nil
+}
+
+func (c *Client) PostTextWithOptions(ctx context.Context, textRequest interfaces.AsyncTextRequest) (*JobConversation, error) {
+	klog.V(6).Infof("async.PostTextWithOptions ENTER\n")
+
+	// checks
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	// send the URL!
+	var jobConvo JobConversation
+
+	err := c.DoTextWithOptions(ctx, textRequest, &jobConvo)
+	if e, ok := err.(*symbl.StatusError); ok {
+		klog.V(1).Infof("DoURL failed. HTTP Code: %v\n", e.Resp.StatusCode)
+		klog.V(6).Infof("async.PostTextWithOptions LEAVE\n")
+		return nil, e
+	}
+
+	klog.V(3).Infof("async.PostTextWithOptions Succeeded\n")
+	klog.V(6).Infof("async.PostTextWithOptions LEAVE\n")
+	return &jobConvo, nil
+}
+
+func (c *Client) PostAppendTextWithOptions(ctx context.Context, conversationId string, textRequest interfaces.AsyncTextRequest) (*JobConversation, error) {
+	klog.V(6).Infof("async.PostAppendTextWithOptions ENTER\n")
+
+	// checks
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	// send the URL!
+	var jobConvo JobConversation
+
+	err := c.DoAppendTextWithOptions(ctx, conversationId, textRequest, &jobConvo)
+	if e, ok := err.(*symbl.StatusError); ok {
+		klog.V(1).Infof("DoURL failed. HTTP Code: %v\n", e.Resp.StatusCode)
+		klog.V(6).Infof("async.PostAppendTextWithOptions LEAVE\n")
+		return nil, e
+	}
+
+	klog.V(3).Infof("async.PostAppendTextWithOptions Succeeded\n")
+	klog.V(6).Infof("async.PostAppendTextWithOptions LEAVE\n")
+	return &jobConvo, nil
 }
 
 func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts interfaces.WaitForJobStatusOpts) (bool, error) {

@@ -3,8 +3,6 @@
 
 package interfaces
 
-import "time"
-
 /*
 	Shared definitions
 */
@@ -64,10 +62,10 @@ type Message struct {
 	} `json:"metadata,omitempty"`
 	Dismissed bool `json:"dismissed,omitempty"`
 	Duration  struct {
-		StartTime  time.Time `json:"startTime,omitempty"`
-		EndTime    time.Time `json:"endTime,omitempty"`
-		TimeOffset float64   `json:"timeOffset,omitempty"`
-		Duration   float64   `json:"duration,omitempty"`
+		StartTime  string  `json:"startTime,omitempty"`
+		EndTime    string  `json:"endTime,omitempty"`
+		TimeOffset float64 `json:"timeOffset,omitempty"`
+		Duration   float64 `json:"duration,omitempty"`
 	} `json:"duration,omitempty"`
 	Entities []interface{} `json:"entities,omitempty"` // TODO: need to revisit this
 }

@@ -10,9 +10,17 @@ import (
 const (
 	AsyncAPIVersion string = "v1"
 
-	// processing
-	ProcessAudioURI string = "https://api.symbl.ai/%s/process/audio?name=%s"
-	ProcessURLURI   string = "https://api.symbl.ai/%s/process/audio/url"
+	// processing audio
+	ProcessAudioURI    string = "https://api.symbl.ai/%s/process/audio?name=%s"
+	ProcessAudioURLURI string = "https://api.symbl.ai/%s/process/audio/url"
+
+	// processing video
+	ProcessVideoURI    string = "https://api.symbl.ai/%s/process/video?name=%s"
+	ProcessVideoURLURI string = "https://api.symbl.ai/%s/process/video/url"
+
+	// processing text
+	ProcessTextURI       string = "https://api.symbl.ai/%s/process/text"
+	ProcessAppendTextURI string = "https://api.symbl.ai/%s/process/text/%s"
 
 	// job status
 	JobStatusURI string = "https://api.symbl.ai/%s/job/%s"
