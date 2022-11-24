@@ -9,9 +9,11 @@ type WebSocketMessageCallback interface {
 
 // Credentials is the input needed to login to the Symbl.ai platform
 type Credentials struct {
-	Host      string `validate:"required"`
-	Channel   string `validate:"required"`
-	AccessKey string `validate:"required"`
+	Host           string `validate:"required"`
+	Channel        string `validate:"required"`
+	AccessKey      string `validate:"required"`
+	Redirect       bool
+	SkipServerAuth bool
 }
 
 // BinaryData format for sending audio
