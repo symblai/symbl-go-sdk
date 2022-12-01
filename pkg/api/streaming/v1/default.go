@@ -71,6 +71,17 @@ func (dmr *DefaultMessageRouter) TrackerResponseMessage(tr *interfaces.TrackerRe
 	return nil
 }
 
+func (dmr *DefaultMessageRouter) EntityResponseMessage(tr *interfaces.EntityResponse) error {
+	data, err := json.Marshal(tr)
+	if err != nil {
+		klog.V(1).Infof("EntityResponseMessage json.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nEntityResponseMessage Object DUMP:\n%v\n\n", string(data))
+	return nil
+}
+
 func (dmr *DefaultMessageRouter) UnhandledMessage(byMsg []byte) error {
 	klog.Infof("\n\nUnhandledMessage Object DUMP:\n%v\n\n", string(byMsg))
 	return nil

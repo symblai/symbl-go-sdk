@@ -3,6 +3,8 @@
 
 package interfaces
 
+import "time"
+
 /*
 	Shared definitions
 */
@@ -139,6 +141,22 @@ type Tracker struct {
 	} `json:"matches,omitempty"`
 }
 
+type Entity struct {
+	Type     string `json:"type,omitempty"`
+	SubType  string `json:"subType,omitempty"`
+	Category string `json:"category,omitempty"`
+	Matches  []struct {
+		DetectedValue string `json:"detectedValue,omitempty"`
+		MessageRefs   []struct {
+			ID        string    `json:"id,omitempty"`
+			StartTime time.Time `json:"startTime,omitempty"`
+			EndTime   time.Time `json:"endTime,omitempty"`
+			Text      string    `json:"text,omitempty"`
+			Offset    int       `json:"offset,omitempty"`
+		} `json:"messageRefs,omitempty"`
+	} `json:"matches,omitempty"`
+}
+
 /*
 	Conversation Insights
 */
@@ -168,4 +186,10 @@ type TopicResponse struct {
 type TrackerResponse struct {
 	Type     string    `json:"type,omitempty"`
 	Trackers []Tracker `json:"trackers,omitempty"`
+}
+
+type EntityResponse struct {
+	Type           string   `json:"type,omitempty"`
+	Entities       []Entity `json:"entities,omitempty"`
+	SequenceNumber int      `json:"sequenceNumber,omitempty"`
 }
