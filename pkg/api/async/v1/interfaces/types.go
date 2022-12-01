@@ -43,12 +43,12 @@ type MessageRef struct {
 	Offset    int    `json:"offset,omitempty"`
 }
 
-type ParentRef []struct {
+type ParentRef struct {
 	Type string `json:"type,omitempty"`
 	Text string `json:"text,omitempty"`
 }
 
-type InsightRef []struct {
+type InsightRef struct {
 	ID   string `json:"id,omitempty"`
 	Type string `json:"type,omitempty"`
 	Text string `json:"text,omitempty"`
@@ -349,7 +349,7 @@ type AnalyticsResult struct {
 	Members []Member `json:"members"`
 }
 
-type TrackerResult []struct {
+type TrackerResult struct {
 	ID      string         `json:"id"`
 	Name    string         `json:"name"`
 	Matches []TrackerMatch `json:"matches"`
