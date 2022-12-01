@@ -91,6 +91,19 @@ type Message struct {
 	Entities []Entity `json:"entities,omitempty"`
 }
 
+type Tag struct {
+	Type        string `json:"type,omitempty"`
+	Text        string `json:"text,omitempty"`
+	BeginOffset int    `json:"beginOffset,omitempty"`
+	Value       struct {
+		Value struct {
+			Name   string `json:"name,omitempty"`
+			Alias  string `json:"alias,omitempty"`
+			UserID string `json:"userId,omitempty"`
+		} `json:"value,omitempty"`
+	} `json:"value,omitempty"`
+}
+
 type Insight struct {
 	ID         string  `json:"id,omitempty"`
 	Confidence float64 `json:"confidence,omitempty"`
@@ -98,21 +111,10 @@ type Insight struct {
 		Key   string `json:"key,omitempty"`
 		Value string `json:"value,omitempty"`
 	} `json:"hints,omitempty"`
-	Type     string   `json:"type,omitempty"`
-	Assignee Assignee `json:"assignee,omitempty"`
-	Tags     []struct {
-		Type        string `json:"type,omitempty"`
-		Text        string `json:"text,omitempty"`
-		BeginOffset int    `json:"beginOffset,omitempty"`
-		Value       struct {
-			Value struct {
-				Name   string `json:"name,omitempty"`
-				Alias  string `json:"alias,omitempty"`
-				UserID string `json:"userId,omitempty"`
-			} `json:"value,omitempty"`
-		} `json:"value,omitempty"`
-	} `json:"tags,omitempty"`
-	Dismissed bool `json:"dismissed,omitempty"`
+	Type      string   `json:"type,omitempty"`
+	Assignee  Assignee `json:"assignee,omitempty"`
+	Tags      []Tag    `json:"tags,omitempty"`
+	Dismissed bool     `json:"dismissed,omitempty"`
 	Payload   struct {
 		Content     string `json:"content,omitempty"`
 		ContentType string `json:"contentType,omitempty"`
@@ -122,36 +124,42 @@ type Insight struct {
 	MessageReference MessageReference `json:"messageReference,omitempty"`
 }
 
+type RootWord struct {
+	Text string `json:"text,omitempty"`
+}
+
 type Topic struct {
 	ID                string             `json:"id,omitempty"`
 	MessageReferences []MessageReference `json:"messageReferences,omitempty"`
 	Phrases           string             `json:"phrases,omitempty"`
-	RootWords         []struct {
-		Text string `json:"text,omitempty"`
-	} `json:"rootWords,omitempty"`
-	Score        float64 `json:"score,omitempty"`
-	Type         string  `json:"type,omitempty"`
-	MessageIndex int     `json:"messageIndex,omitempty"`
+	RootWords         []RootWord         `json:"rootWords,omitempty"`
+	Score             float64            `json:"score,omitempty"`
+	Type              string             `json:"type,omitempty"`
+	MessageIndex      int                `json:"messageIndex,omitempty"`
+}
+
+type TrackerMatch struct {
+	Value       string       `json:"value,omitempty"`
+	MessageRefs []MessageRef `json:"messageRefs,omitempty"`
+	InsightRefs []InsightRef `json:"insightRefs,omitempty"`
 }
 
 type Tracker struct {
-	ID      string `json:"id,omitempty"`
-	Name    string `json:"name,omitempty"`
-	Matches []struct {
-		Value       string       `json:"value,omitempty"`
-		MessageRefs []MessageRef `json:"messageRefs,omitempty"`
-		InsightRefs []InsightRef `json:"insightRefs,omitempty"`
-	} `json:"matches,omitempty"`
+	ID      string         `json:"id,omitempty"`
+	Name    string         `json:"name,omitempty"`
+	Matches []TrackerMatch `json:"matches,omitempty"`
+}
+
+type EntityMatch struct {
+	DetectedValue string       `json:"detectedValue,omitempty"`
+	MessageRefs   []MessageRef `json:"messageRefs,omitempty"`
 }
 
 type Entity struct {
-	Type     string `json:"type,omitempty"`
-	SubType  string `json:"subType,omitempty"`
-	Category string `json:"category,omitempty"`
-	Matches  []struct {
-		DetectedValue string       `json:"detectedValue,omitempty"`
-		MessageRefs   []MessageRef `json:"messageRefs,omitempty"`
-	} `json:"matches,omitempty"`
+	Type     string        `json:"type,omitempty"`
+	SubType  string        `json:"subType,omitempty"`
+	Category string        `json:"category,omitempty"`
+	Matches  []EntityMatch `json:"matches,omitempty"`
 }
 
 /*
