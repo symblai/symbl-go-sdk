@@ -9,6 +9,7 @@ const (
 	MessageTypeInsightResponse   string = "insight_response"
 	MessageTypeTopicResponse     string = "topic_response"
 	MessageTypeTrackerResponse   string = "tracker_response"
+	MessageTypeEntityResponse    string = "entity_response"
 )
 
 const (

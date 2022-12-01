@@ -59,6 +59,8 @@ func (smr *SymblMessageRouter) Message(byMsg []byte) error {
 		return smr.TopicResponseMessage(byMsg)
 	case interfaces.MessageTypeTrackerResponse:
 		return smr.TrackerResponseMessage(byMsg)
+	case interfaces.MessageTypeEntityResponse:
+		return smr.EntityResponseMessage(byMsg)
 	// default
 	default:
 		return smr.UnhandledMessage(byMsg)
@@ -286,6 +288,33 @@ func (smr *SymblMessageRouter) TrackerResponseMessage(byMsg []byte) error {
 
 	klog.V(1).Infof("User callback is undefined\n")
 	klog.V(6).Infof("TrackerResponseMessage LEAVE\n")
+	return ErrUserCallbackNotDefined
+}
+
+func (smr *SymblMessageRouter) EntityResponseMessage(byMsg []byte) error {
+	klog.V(6).Info("EntityResponseMessage ENTER\n")
+
+	var er interfaces.EntityResponse
+	err := json.Unmarshal(byMsg, &er)
+	if err != nil {
+		klog.V(1).Infof("EntityResponseMessage json.Unmarshal failed. Err: %v\n", err)
+		klog.V(6).Infof("EntityResponseMessage LEAVE\n")
+		return err
+	}
+
+	if smr.callback != nil {
+		err := smr.callback.EntityResponseMessage(&er)
+		if err != nil {
+			klog.V(1).Infof("callback.EntityResponseMessage failed. Err: %v\n", err)
+		} else {
+			klog.V(3).Infof("callback.EntityResponseMessage succeeded\n")
+		}
+		klog.V(6).Infof("EntityResponseMessage LEAVE\n")
+		return err
+	}
+
+	klog.V(1).Infof("User callback is undefined\n")
+	klog.V(6).Infof("EntityResponseMessage LEAVE\n")
 	return ErrUserCallbackNotDefined
 }
 

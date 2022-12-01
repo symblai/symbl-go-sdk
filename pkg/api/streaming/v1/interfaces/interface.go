@@ -9,5 +9,6 @@ type InsightCallback interface {
 	InsightResponseMessage(ir *InsightResponse) error
 	TopicResponseMessage(tr *TopicResponse) error
 	TrackerResponseMessage(tr *TrackerResponse) error
+	EntityResponseMessage(tr *EntityResponse) error
 	UnhandledMessage(byMsg []byte) error
 }
