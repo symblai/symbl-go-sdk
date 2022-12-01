@@ -3,11 +3,34 @@
 
 package interfaces
 
-import "time"
-
 /*
 	Shared definitions
 */
+type MessageReference struct {
+	ID string `json:"id,omitempty"`
+}
+
+type From struct {
+	ID     string `json:"id,omitempty"`
+	Name   string `json:"name,omitempty"`
+	UserID string `json:"userId,omitempty"`
+}
+
+type Assignee From
+
+type MessageRef struct {
+	ID        string `json:"id,omitempty"`
+	StartTime string `json:"startTime,omitempty"`
+	EndTime   string `json:"endTime,omitempty"`
+	Text      string `json:"text,omitempty"`
+	Offset    int    `json:"offset,omitempty"`
+}
+
+type InsightRef struct {
+	ID   string `json:"id,omitempty"`
+	Type string `json:"type,omitempty"`
+	Text string `json:"text,omitempty"`
+}
 
 type MessageRecognition struct {
 	Type    string `json:"type,omitempty"`
@@ -42,11 +65,7 @@ type MessageRecognition struct {
 }
 
 type Message struct {
-	From struct {
-		ID     string `json:"id,omitempty"`
-		Name   string `json:"name,omitempty"`
-		UserID string `json:"userId,omitempty"`
-	} `json:"from,omitempty"`
+	From    From `json:"from,omitempty"`
 	Payload struct {
 		Content     string `json:"content,omitempty"`
 		ContentType string `json:"contentType,omitempty"`
@@ -69,7 +88,7 @@ type Message struct {
 		TimeOffset float64 `json:"timeOffset,omitempty"`
 		Duration   float64 `json:"duration,omitempty"`
 	} `json:"duration,omitempty"`
-	Entities []interface{} `json:"entities,omitempty"` // TODO: need to revisit this
+	Entities []Entity `json:"entities,omitempty"`
 }
 
 type Insight struct {
@@ -79,13 +98,9 @@ type Insight struct {
 		Key   string `json:"key,omitempty"`
 		Value string `json:"value,omitempty"`
 	} `json:"hints,omitempty"`
-	Type     string `json:"type,omitempty"`
-	Assignee struct {
-		ID     string `json:"id,omitempty"`
-		Name   string `json:"name,omitempty"`
-		UserID string `json:"userId,omitempty"`
-	} `json:"assignee,omitempty"`
-	Tags []struct {
+	Type     string   `json:"type,omitempty"`
+	Assignee Assignee `json:"assignee,omitempty"`
+	Tags     []struct {
 		Type        string `json:"type,omitempty"`
 		Text        string `json:"text,omitempty"`
 		BeginOffset int    `json:"beginOffset,omitempty"`
@@ -102,24 +117,16 @@ type Insight struct {
 		Content     string `json:"content,omitempty"`
 		ContentType string `json:"contentType,omitempty"`
 	} `json:"payload,omitempty"`
-	From struct {
-		ID     string `json:"id,omitempty"`
-		Name   string `json:"name,omitempty"`
-		UserID string `json:"userId,omitempty"`
-	} `json:"from,omitempty"`
-	Entities         interface{} `json:"entities,omitempty"` // TODO needs to be defined. Need an example
-	MessageReference struct {
-		ID string `json:"id,omitempty"`
-	} `json:"messageReference,omitempty"`
+	From             From             `json:"from,omitempty"`
+	Entities         []Entity         `json:"entities,omitempty"`
+	MessageReference MessageReference `json:"messageReference,omitempty"`
 }
 
 type Topic struct {
-	ID                string `json:"id,omitempty"`
-	MessageReferences []struct {
-		ID string `json:"id,omitempty"`
-	} `json:"messageReferences,omitempty"`
-	Phrases   string `json:"phrases,omitempty"`
-	RootWords []struct {
+	ID                string             `json:"id,omitempty"`
+	MessageReferences []MessageReference `json:"messageReferences,omitempty"`
+	Phrases           string             `json:"phrases,omitempty"`
+	RootWords         []struct {
 		Text string `json:"text,omitempty"`
 	} `json:"rootWords,omitempty"`
 	Score        float64 `json:"score,omitempty"`
@@ -131,13 +138,9 @@ type Tracker struct {
 	ID      string `json:"id,omitempty"`
 	Name    string `json:"name,omitempty"`
 	Matches []struct {
-		Value       string `json:"value,omitempty"`
-		MessageRefs []struct {
-			ID     string `json:"id,omitempty"`
-			Text   string `json:"text,omitempty"`
-			Offset int    `json:"offset,omitempty"`
-		} `json:"messageRefs,omitempty"`
-		InsightRefs []interface{} `json:"insightRefs,omitempty"` // TODO needs to be defined. Need an example
+		Value       string       `json:"value,omitempty"`
+		MessageRefs []MessageRef `json:"messageRefs,omitempty"`
+		InsightRefs []InsightRef `json:"insightRefs,omitempty"`
 	} `json:"matches,omitempty"`
 }
 
@@ -146,14 +149,8 @@ type Entity struct {
 	SubType  string `json:"subType,omitempty"`
 	Category string `json:"category,omitempty"`
 	Matches  []struct {
-		DetectedValue string `json:"detectedValue,omitempty"`
-		MessageRefs   []struct {
-			ID        string    `json:"id,omitempty"`
-			StartTime time.Time `json:"startTime,omitempty"`
-			EndTime   time.Time `json:"endTime,omitempty"`
-			Text      string    `json:"text,omitempty"`
-			Offset    int       `json:"offset,omitempty"`
-		} `json:"messageRefs,omitempty"`
+		DetectedValue string       `json:"detectedValue,omitempty"`
+		MessageRefs   []MessageRef `json:"messageRefs,omitempty"`
 	} `json:"matches,omitempty"`
 }
 
