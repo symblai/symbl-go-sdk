@@ -5,6 +5,7 @@ package main
 
 // streaming
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"os"
@@ -38,13 +39,15 @@ func main() {
 	}
 
 	err = client.Start()
-	if err != nil {
+	if err == nil {
+		fmt.Printf("Streaming Session Started!\n")
+	} else {
 		fmt.Printf("client.Start failed. Err: %v\n", err)
 		os.Exit(1)
 	}
 
 	// delay...
-	time.Sleep(time.Second * 3)
+	time.Sleep(time.Second * 2)
 
 	// mic stuf
 	sig := make(chan os.Signal, 1)
@@ -66,8 +69,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	// this is a blocking call
-	mic.Stream(client)
+	go func() {
+		// this is a blocking call
+		mic.Stream(client)
+	}()
+
+	fmt.Print("Press ENTER to exit!\n\n")
+	input := bufio.NewScanner(os.Stdin)
+	input.Scan()
 
 	// close stream
 	err = mic.Stop()
