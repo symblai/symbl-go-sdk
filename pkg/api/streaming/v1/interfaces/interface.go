@@ -4,6 +4,7 @@
 package interfaces
 
 type InsightCallback interface {
+	InitializedConversation(im *InitializationMessage) error
 	RecognitionResultMessage(rr *RecognitionResult) error
 	MessageResponseMessage(mr *MessageResponse) error
 	InsightResponseMessage(ir *InsightResponse) error
@@ -11,4 +12,5 @@ type InsightCallback interface {
 	TrackerResponseMessage(tr *TrackerResponse) error
 	EntityResponseMessage(tr *EntityResponse) error
 	UnhandledMessage(byMsg []byte) error
+	TeardownConversation() error
 }

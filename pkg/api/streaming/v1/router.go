@@ -49,7 +49,7 @@ func (smr *SymblMessageRouter) Message(byMsg []byte) error {
 		return smr.HandleError(byMsg)
 	// platform messages
 	case MessageTypeMessage:
-		smr.handlePlatformMessage(byMsg)
+		return smr.handlePlatformMessage(byMsg)
 	// insights
 	case interfaces.MessageTypeMessageResponse:
 		return smr.MessageResponseMessage(byMsg)
@@ -96,7 +96,7 @@ func (smr *SymblMessageRouter) handlePlatformMessage(byMsg []byte) error {
 	case MessageTypeTeardownConversation:
 		klog.V(3).Infof("Symbl Platform Conversation Complete\n")
 	case MessageTypeTeardownRecognition:
-		klog.V(3).Infof("Symbl Platform Recognition Stopped\n")
+		return smr.TeardownConversation()
 	// pass insights to the user
 	case interfaces.MessageTypeRecognitionResult:
 		return smr.RecognitionResultMessage(byMsg)
@@ -118,19 +118,33 @@ func (smr *SymblMessageRouter) handlePlatformMessage(byMsg []byte) error {
 func (smr *SymblMessageRouter) InitializedConversation(byMsg []byte) error {
 	klog.V(6).Info("InitializedConversation ENTER\n")
 
-	var symblInit SymblInitializationMessage
-	err := json.Unmarshal(byMsg, &symblInit)
+	var im interfaces.InitializationMessage
+	err := json.Unmarshal(byMsg, &im)
 	if err != nil {
 		klog.V(6).Infof("InitializedConversation json.Unmarshal failed. Err: %v\n", err)
 		klog.V(6).Infof("InitializedConversation LEAVE\n")
 		return err
 	}
 
-	smr.ConversationID = symblInit.Message.Data.ConversationID
+	// save for the router
+	smr.ConversationID = im.Message.Data.ConversationID
 
-	klog.V(3).Infof("Setting Symbl ConversationID %s\n", smr.ConversationID)
+	// callback
+	if smr.callback != nil {
+		err := smr.callback.InitializedConversation(&im)
+		if err != nil {
+			klog.V(1).Infof("callback.InitializedConversation failed. Err: %v\n", err)
+		} else {
+			klog.V(3).Infof("callback.InitializedConversation succeeded\n")
+		}
+
+		klog.V(6).Infof("InitializedConversation LEAVE\n")
+		return err
+	}
+
+	klog.V(3).Infof("InitializedConversation: ConversationID %s\n", smr.ConversationID)
 	klog.V(6).Infof("InitializedConversation LEAVE\n")
-	return nil
+	return ErrUserCallbackNotDefined
 }
 
 func (smr *SymblMessageRouter) HandleError(byMsg []byte) error {
@@ -315,6 +329,25 @@ func (smr *SymblMessageRouter) EntityResponseMessage(byMsg []byte) error {
 
 	klog.V(1).Infof("User callback is undefined\n")
 	klog.V(6).Infof("EntityResponseMessage LEAVE\n")
+	return ErrUserCallbackNotDefined
+}
+
+func (smr *SymblMessageRouter) TeardownConversation() error {
+	klog.V(6).Info("TeardownConversation ENTER\n")
+
+	if smr.callback != nil {
+		err := smr.callback.TeardownConversation()
+		if err != nil {
+			klog.V(1).Infof("callback.RecognitionResultMessage failed. Err: %v\n", err)
+		} else {
+			klog.V(3).Infof("callback.RecognitionResultMessage succeeded\n")
+		}
+
+		klog.V(6).Infof("TeardownConversation LEAVE\n")
+		return err
+	}
+
+	klog.V(6).Infof("TeardownConversation LEAVE\n")
 	return ErrUserCallbackNotDefined
 }
 

@@ -165,6 +165,16 @@ type Entity struct {
 /*
 	Conversation Insights
 */
+type InitializationMessage struct {
+	Type    string `json:"type"`
+	Message struct {
+		Type string `json:"type"`
+		Data struct {
+			ConversationID string `json:"conversationId"`
+		} `json:"data"`
+	} `json:"message"`
+}
+
 type RecognitionResult struct {
 	Type       string             `json:"type,omitempty"`
 	Message    MessageRecognition `json:"message,omitempty"`
