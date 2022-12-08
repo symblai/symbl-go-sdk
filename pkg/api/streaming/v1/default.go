@@ -17,6 +17,17 @@ func NewDefaultMessageRouter() *DefaultMessageRouter {
 	return &DefaultMessageRouter{}
 }
 
+func (dmr *DefaultMessageRouter) InitializedConversation(im *interfaces.InitializationMessage) error {
+	data, err := json.Marshal(im)
+	if err != nil {
+		klog.V(1).Infof("InitializationMessage json.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nInitializationMessage Object DUMP:\n%v\n\n", string(data))
+	return nil
+}
+
 func (dmr *DefaultMessageRouter) RecognitionResultMessage(rr *interfaces.RecognitionResult) error {
 	data, err := json.Marshal(rr)
 	if err != nil {
@@ -79,6 +90,11 @@ func (dmr *DefaultMessageRouter) EntityResponseMessage(tr *interfaces.EntityResp
 	}
 
 	klog.Infof("\n\nEntityResponseMessage Object DUMP:\n%v\n\n", string(data))
+	return nil
+}
+
+func (dmr *DefaultMessageRouter) TeardownConversation() error {
+	klog.Infof("\n\nTeardownConversation Called\n\n")
 	return nil
 }
 
