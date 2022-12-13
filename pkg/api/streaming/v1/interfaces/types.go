@@ -208,3 +208,13 @@ type EntityResponse struct {
 	Entities       []Entity `json:"entities,omitempty"`
 	SequenceNumber int      `json:"sequenceNumber,omitempty"`
 }
+
+type TeardownMessage struct {
+	Type    string `json:"type"`
+	Message struct {
+		Type string `json:"type"`
+		Data struct {
+			ConversationID string `json:"conversationId"`
+		} `json:"data"`
+	} `json:"message"`
+}

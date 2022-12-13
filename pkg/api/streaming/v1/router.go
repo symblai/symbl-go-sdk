@@ -94,9 +94,9 @@ func (smr *SymblMessageRouter) handlePlatformMessage(byMsg []byte) error {
 	case MessageTypeSessionModified:
 		klog.V(3).Infof("Symbl Platform Session Modified\n")
 	case MessageTypeTeardownConversation:
-		klog.V(3).Infof("Symbl Platform Conversation Complete\n")
+		return smr.TeardownConversation(byMsg)
 	case MessageTypeTeardownRecognition:
-		return smr.TeardownConversation()
+		klog.V(3).Infof("Symbl Platform Teardown Recognition\n")
 	// pass insights to the user
 	case interfaces.MessageTypeRecognitionResult:
 		return smr.RecognitionResultMessage(byMsg)
@@ -332,15 +332,23 @@ func (smr *SymblMessageRouter) EntityResponseMessage(byMsg []byte) error {
 	return ErrUserCallbackNotDefined
 }
 
-func (smr *SymblMessageRouter) TeardownConversation() error {
+func (smr *SymblMessageRouter) TeardownConversation(byMsg []byte) error {
 	klog.V(6).Info("TeardownConversation ENTER\n")
 
+	var tm interfaces.TeardownMessage
+	err := json.Unmarshal(byMsg, &tm)
+	if err != nil {
+		klog.V(6).Infof("TeardownConversation json.Unmarshal failed. Err: %v\n", err)
+		klog.V(6).Infof("TeardownConversation LEAVE\n")
+		return err
+	}
+
 	if smr.callback != nil {
-		err := smr.callback.TeardownConversation()
+		err := smr.callback.TeardownConversation(&tm)
 		if err != nil {
-			klog.V(1).Infof("callback.RecognitionResultMessage failed. Err: %v\n", err)
+			klog.V(1).Infof("callback.TeardownConversation failed. Err: %v\n", err)
 		} else {
-			klog.V(3).Infof("callback.RecognitionResultMessage succeeded\n")
+			klog.V(3).Infof("callback.TeardownConversation succeeded\n")
 		}
 
 		klog.V(6).Infof("TeardownConversation LEAVE\n")

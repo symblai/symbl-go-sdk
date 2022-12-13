@@ -25,9 +25,14 @@ func main() {
 	ctx := context.Background()
 
 	// create a new client
+	cfg := symbl.GetDefaultConfig()
+	cfg.Speaker.Name = "John Doe"
+	cfg.Speaker.UserID = "john.doe@mymail.com"
+
 	options := symbl.StreamingOptions{
-		SymblConfig: symbl.GetDefaultConfig(),
-		Callback:    streaming.NewDefaultMessageRouter(),
+		SymblConfig:  cfg,
+		Callback:     streaming.NewDefaultMessageRouter(),
+		ProxyAddress: "127.0.0.1",
 	}
 
 	client, err := symbl.NewStreamClient(ctx, options)
