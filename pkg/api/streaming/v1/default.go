@@ -93,8 +93,14 @@ func (dmr *DefaultMessageRouter) EntityResponseMessage(tr *interfaces.EntityResp
 	return nil
 }
 
-func (dmr *DefaultMessageRouter) TeardownConversation() error {
-	klog.Infof("\n\nTeardownConversation Called\n\n")
+func (dmr *DefaultMessageRouter) TeardownConversation(tm *interfaces.TeardownMessage) error {
+	data, err := json.Marshal(tm)
+	if err != nil {
+		klog.V(1).Infof("TeardownConversation json.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nTeardownConversation Object DUMP:\n%v\n\n", string(data))
 	return nil
 }
 
