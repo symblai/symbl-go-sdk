@@ -27,13 +27,6 @@ const (
 	defaultDelayBetweenReauth int64 = 2
 )
 
-type RestClient struct {
-	*rest.Client
-
-	creds *interfaces.Credentials
-	auth  *interfaces.AuthResp
-}
-
 // NewRestClient creates a new client on the Symbl.ai platform. The client authenticates with the
 // server with APP_ID/APP_SECRET.
 func NewRestClient(ctx context.Context) (*RestClient, error) {
