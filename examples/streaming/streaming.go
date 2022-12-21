@@ -42,6 +42,7 @@ func main() {
 		fmt.Printf("New failed. Err: %v\n", err)
 		os.Exit(1)
 	}
+	fmt.Printf("ConversationID: %s\n", client.GetConversationId())
 
 	err = client.Start()
 	if err == nil {

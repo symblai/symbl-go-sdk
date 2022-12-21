@@ -10,7 +10,6 @@ import (
 	klog "k8s.io/klog/v2"
 
 	streaming "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1"
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
 	cfginterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 	stream "github.com/dvonthenen/symbl-go-sdk/pkg/client/stream"
@@ -22,22 +21,6 @@ const (
 	defaultUserID              string  = "user@email.com"
 	defaultUserName            string  = "Jane Doe"
 )
-
-type StreamingOptions struct {
-	ProxyAddress   string
-	SymblConfig    *cfginterfaces.StreamingConfig
-	Callback       interfaces.InsightCallback
-	SkipServerAuth bool
-}
-
-type StreamClient struct {
-	*stream.WebSocketClient
-
-	restClient     *RestClient
-	symblStreaming stream.WebSocketMessageCallback
-
-	options *StreamingOptions
-}
 
 func GetDefaultConfig() *cfginterfaces.StreamingConfig {
 	config := &cfginterfaces.StreamingConfig{}
@@ -90,10 +73,13 @@ func NewStreamClient(ctx context.Context, options StreamingOptions) (*StreamClie
 	}
 
 	// generate unique conversationId
-	id := uuid.New()
-	klog.V(4).Infof("UUID: %s\n", id.String())
+	conversationId := options.UUID
+	if len(options.UUID) == 0 {
+		conversationId = uuid.New().String()
+	}
+	klog.V(4).Infof("UUID: %s\n", conversationId)
 
-	streamPath := version.GetStreamingAPI(version.StreamPath, id)
+	streamPath := version.GetStreamingAPI(version.StreamPath, conversationId)
 	klog.V(4).Infof("streamPath: %s\n", streamPath)
 
 	// init symbl websocket message router
@@ -117,6 +103,7 @@ func NewStreamClient(ctx context.Context, options StreamingOptions) (*StreamClie
 	// save client for return
 	streamClient := &StreamClient{
 		wsClient,
+		conversationId,
 		restClient,
 		symblStreaming,
 		&options,
@@ -157,6 +144,10 @@ func (sc *StreamClient) Start() error {
 	klog.V(3).Infof("Start Succeeded\n")
 	klog.V(6).Infof("Start LEAVE\n")
 	return nil
+}
+
+func (sc *StreamClient) GetConversationId() string {
+	return sc.uuid
 }
 
 func (sc *StreamClient) Stop() {
