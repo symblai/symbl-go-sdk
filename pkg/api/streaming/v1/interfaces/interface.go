@@ -11,6 +11,7 @@ type InsightCallback interface {
 	TopicResponseMessage(tr *TopicResponse) error
 	TrackerResponseMessage(tr *TrackerResponse) error
 	EntityResponseMessage(tr *EntityResponse) error
-	UnhandledMessage(byMsg []byte) error
 	TeardownConversation(tm *TeardownMessage) error
+	UserDefinedMessage(data []byte) error
+	UnhandledMessage(byMsg []byte) error
 }

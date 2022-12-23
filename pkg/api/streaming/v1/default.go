@@ -6,6 +6,7 @@ package streaming
 import (
 	"encoding/json"
 
+	prettyjson "github.com/hokaccha/go-prettyjson"
 	klog "k8s.io/klog/v2"
 
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
@@ -24,7 +25,13 @@ func (dmr *DefaultMessageRouter) InitializedConversation(im *interfaces.Initiali
 		return err
 	}
 
-	klog.Infof("\n\nInitializationMessage Object DUMP:\n%v\n\n", string(data))
+	prettyJson, err := prettyjson.Format(data)
+	if err != nil {
+		klog.V(1).Infof("prettyjson.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nInitializationMessage Object DUMP:\n%s\n\n", prettyJson)
 	return nil
 }
 
@@ -35,7 +42,13 @@ func (dmr *DefaultMessageRouter) RecognitionResultMessage(rr *interfaces.Recogni
 		return err
 	}
 
-	klog.Infof("\n\nRecognitionResult Object DUMP:\n%v\n\n", string(data))
+	prettyJson, err := prettyjson.Format(data)
+	if err != nil {
+		klog.V(1).Infof("prettyjson.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nRecognitionResult Object DUMP:\n%s\n\n", prettyJson)
 	return nil
 }
 
@@ -46,7 +59,13 @@ func (dmr *DefaultMessageRouter) MessageResponseMessage(mr *interfaces.MessageRe
 		return err
 	}
 
-	klog.Infof("\n\nMessageResponse Object DUMP:\n%v\n\n", string(data))
+	prettyJson, err := prettyjson.Format(data)
+	if err != nil {
+		klog.V(1).Infof("prettyjson.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nMessageResponse Object DUMP:\n%s\n\n", prettyJson)
 	return nil
 }
 
@@ -57,7 +76,13 @@ func (dmr *DefaultMessageRouter) InsightResponseMessage(ir *interfaces.InsightRe
 		return err
 	}
 
-	klog.Infof("\n\nInsightResponseMessage Object DUMP:\n%v\n\n", string(data))
+	prettyJson, err := prettyjson.Format(data)
+	if err != nil {
+		klog.V(1).Infof("prettyjson.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nInsightResponseMessage Object DUMP:\n%s\n\n", prettyJson)
 	return nil
 }
 
@@ -68,7 +93,13 @@ func (dmr *DefaultMessageRouter) TopicResponseMessage(tr *interfaces.TopicRespon
 		return err
 	}
 
-	klog.Infof("\n\nTopicResponseMessage Object DUMP:\n%v\n\n", string(data))
+	prettyJson, err := prettyjson.Format(data)
+	if err != nil {
+		klog.V(1).Infof("prettyjson.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nTopicResponseMessage Object DUMP:\n%s\n\n", prettyJson)
 	return nil
 }
 func (dmr *DefaultMessageRouter) TrackerResponseMessage(tr *interfaces.TrackerResponse) error {
@@ -78,7 +109,13 @@ func (dmr *DefaultMessageRouter) TrackerResponseMessage(tr *interfaces.TrackerRe
 		return err
 	}
 
-	klog.Infof("\n\nTrackerResponseMessage Object DUMP:\n%v\n\n", string(data))
+	prettyJson, err := prettyjson.Format(data)
+	if err != nil {
+		klog.V(1).Infof("prettyjson.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nTrackerResponseMessage Object DUMP:\n%s\n\n", prettyJson)
 	return nil
 }
 
@@ -89,7 +126,13 @@ func (dmr *DefaultMessageRouter) EntityResponseMessage(tr *interfaces.EntityResp
 		return err
 	}
 
-	klog.Infof("\n\nEntityResponseMessage Object DUMP:\n%v\n\n", string(data))
+	prettyJson, err := prettyjson.Format(data)
+	if err != nil {
+		klog.V(1).Infof("prettyjson.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nEntityResponseMessage Object DUMP:\n%s\n\n", prettyJson)
 	return nil
 }
 
@@ -100,11 +143,34 @@ func (dmr *DefaultMessageRouter) TeardownConversation(tm *interfaces.TeardownMes
 		return err
 	}
 
-	klog.Infof("\n\nTeardownConversation Object DUMP:\n%v\n\n", string(data))
+	prettyJson, err := prettyjson.Format(data)
+	if err != nil {
+		klog.V(1).Infof("prettyjson.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nTeardownConversation Object DUMP:\n%s\n\n", prettyJson)
+	return nil
+}
+
+func (dmr *DefaultMessageRouter) UserDefinedMessage(byMsg []byte) error {
+	prettyJson, err := prettyjson.Format(byMsg)
+	if err != nil {
+		klog.V(1).Infof("prettyjson.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nUserDefinedMessage Object DUMP:\n%s\n\n", prettyJson)
 	return nil
 }
 
 func (dmr *DefaultMessageRouter) UnhandledMessage(byMsg []byte) error {
-	klog.Infof("\n\nUnhandledMessage Object DUMP:\n%v\n\n", string(byMsg))
+	prettyJson, err := prettyjson.Format(byMsg)
+	if err != nil {
+		klog.V(1).Infof("prettyjson.Marshal failed. Err: %v\n", err)
+		return err
+	}
+
+	klog.Infof("\n\nUnhandledMessage Object DUMP:\n%s\n\n", prettyJson)
 	return nil
 }

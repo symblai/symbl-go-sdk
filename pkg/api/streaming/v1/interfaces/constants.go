@@ -4,12 +4,16 @@
 package interfaces
 
 const (
+	// message/insight types
 	MessageTypeRecognitionResult string = "recognition_result"
 	MessageTypeMessageResponse   string = "message_response"
 	MessageTypeInsightResponse   string = "insight_response"
 	MessageTypeTopicResponse     string = "topic_response"
 	MessageTypeTrackerResponse   string = "tracker_response"
 	MessageTypeEntityResponse    string = "entity_response"
+
+	// user-defined messages
+	MessageTypeUserDefined string = "user_defined"
 )
 
 const (
