@@ -61,6 +61,9 @@ func (smr *SymblMessageRouter) Message(byMsg []byte) error {
 		return smr.TrackerResponseMessage(byMsg)
 	case interfaces.MessageTypeEntityResponse:
 		return smr.EntityResponseMessage(byMsg)
+	// user defined messages
+	case interfaces.MessageTypeUserDefined:
+		return smr.UserDefinedMessage(byMsg)
 	// default
 	default:
 		return smr.UnhandledMessage(byMsg)
@@ -375,5 +378,24 @@ func (smr *SymblMessageRouter) UnhandledMessage(byMsg []byte) error {
 
 	klog.V(1).Infof("User callback is undefined\n")
 	klog.V(6).Infof("UnhandledMessage LEAVE\n")
+	return ErrInvalidMessageType
+}
+
+func (smr *SymblMessageRouter) UserDefinedMessage(byMsg []byte) error {
+	klog.V(6).Info("UserDefinedMessage ENTER\n")
+
+	if smr.callback != nil {
+		err := smr.callback.UserDefinedMessage(byMsg)
+		if err != nil {
+			klog.V(1).Infof("callback.UserDefinedMessage failed. Err: %v\n", err)
+		} else {
+			klog.V(3).Infof("callback.UserDefinedMessage succeeded\n")
+		}
+		klog.V(6).Infof("UserDefinedMessage LEAVE\n")
+		return err
+	}
+
+	klog.V(1).Infof("User callback is undefined\n")
+	klog.V(6).Infof("UserDefinedMessage LEAVE\n")
 	return ErrInvalidMessageType
 }
