@@ -215,10 +215,12 @@ type Conversation struct {
 type SpeakerEvent struct {
 	Type   string `json:"type,omitempty"`
 	User   Member `json:"user,omitempty"`
-	Offset struct {
-		Seconds int `json:"seconds,omitempty"`
-		Nanos   int `json:"nanos,omitempty"`
-	} `json:"offset,omitempty"`
+	Offset Offset `json:"offset,omitempty"`
+}
+
+type Offset struct {
+	Seconds int `json:"seconds,omitempty"`
+	Nanos   int `json:"nanos,omitempty"`
 }
 
 type BookmarksSummary struct {
@@ -241,27 +243,31 @@ type TextMessage struct {
 */
 // AsyncOptions for PostURL PostFile
 type AsyncOptions struct {
-	CustomVocabulary []string `json:"customVocabulary,omitempty"`
-	ChannelMetadata  []struct {
-		Speaker struct {
-			Name  string `json:"name,omitempty"`
-			Email string `json:"email,omitempty"`
-		} `json:"speaker,omitempty"`
-		Channel int `json:"channel,omitempty"`
-	} `json:"channelMetadata,omitempty"`
-	URL                                 string  `json:"url,omitempty"`
-	Name                                string  `json:"name,omitempty"`
-	ConfidenceThreshold                 float64 `json:"confidenceThreshold,omitempty"`
-	DetectPhrases                       bool    `json:"detectPhrases,omitempty"`
-	WebhookURL                          string  `json:"webhookUrl,omitempty"`
-	DetectEntities                      bool    `json:"detectEntities,omitempty"`
-	LanguageCode                        string  `json:"languageCode,omitempty"`
-	Mode                                string  `json:"mode,omitempty"`
-	EnableSeparateRecognitionPerChannel bool    `json:"enableSeparateRecognitionPerChannel,omitempty"`
-	EnableSpeakerDiarization            bool    `json:"enableSpeakerDiarization,omitempty"`
-	DiarizationSpeakerCount             int     `json:"diarizationSpeakerCount,omitempty"`
-	ParentRefs                          bool    `json:"parentRefs,omitempty"`
-	Sentiment                           bool    `json:"sentiment,omitempty"`
+	CustomVocabulary                    []string          `json:"customVocabulary,omitempty"`
+	ChannelMetadata                     []ChannelMetadata `json:"channelMetadata,omitempty"`
+	URL                                 string            `json:"url,omitempty"`
+	Name                                string            `json:"name,omitempty"`
+	ConfidenceThreshold                 float64           `json:"confidenceThreshold,omitempty"`
+	DetectPhrases                       bool              `json:"detectPhrases,omitempty"`
+	WebhookURL                          string            `json:"webhookUrl,omitempty"`
+	DetectEntities                      bool              `json:"detectEntities,omitempty"`
+	LanguageCode                        string            `json:"languageCode,omitempty"`
+	Mode                                string            `json:"mode,omitempty"`
+	EnableSeparateRecognitionPerChannel bool              `json:"enableSeparateRecognitionPerChannel,omitempty"`
+	EnableSpeakerDiarization            bool              `json:"enableSpeakerDiarization,omitempty"`
+	DiarizationSpeakerCount             int               `json:"diarizationSpeakerCount,omitempty"`
+	ParentRefs                          bool              `json:"parentRefs,omitempty"`
+	Sentiment                           bool              `json:"sentiment,omitempty"`
+}
+
+type ChannelMetadata struct {
+	Speaker Speaker `json:"speaker,omitempty"`
+	Channel int     `json:"channel,omitempty"`
+}
+
+type Speaker struct {
+	Name  string `json:"name,omitempty"`
+	Email string `json:"email,omitempty"`
 }
 
 type AsyncTextRequest struct {
