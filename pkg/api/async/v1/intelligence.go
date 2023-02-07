@@ -9,13 +9,12 @@ import (
 
 	klog "k8s.io/klog/v2"
 
+	asyncinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
-
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
-func (c *Client) GetTopics(ctx context.Context, conversationId string) (*interfaces.TopicResult, error) {
+func (c *Client) GetTopics(ctx context.Context, conversationId string) (*asyncinterfaces.TopicResult, error) {
 	klog.V(6).Infof("async.GetTopics ENTER\n")
 
 	// checks
@@ -40,11 +39,11 @@ func (c *Client) GetTopics(ctx context.Context, conversationId string) (*interfa
 	}
 
 	// check the status
-	var result interfaces.TopicResult
+	var result asyncinterfaces.TopicResult
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetTopics LEAVE\n")
@@ -57,7 +56,7 @@ func (c *Client) GetTopics(ctx context.Context, conversationId string) (*interfa
 	return &result, nil
 }
 
-func (c *Client) GetQuestions(ctx context.Context, conversationId string) (*interfaces.QuestionResult, error) {
+func (c *Client) GetQuestions(ctx context.Context, conversationId string) (*asyncinterfaces.QuestionResult, error) {
 	klog.V(6).Infof("async.GetQuestions ENTER\n")
 
 	// checks
@@ -82,11 +81,11 @@ func (c *Client) GetQuestions(ctx context.Context, conversationId string) (*inte
 	}
 
 	// check the status
-	var result interfaces.QuestionResult
+	var result asyncinterfaces.QuestionResult
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetQuestions LEAVE\n")
@@ -99,7 +98,7 @@ func (c *Client) GetQuestions(ctx context.Context, conversationId string) (*inte
 	return &result, nil
 }
 
-func (c *Client) GetFollowUps(ctx context.Context, conversationId string) (*interfaces.FollowUpResult, error) {
+func (c *Client) GetFollowUps(ctx context.Context, conversationId string) (*asyncinterfaces.FollowUpResult, error) {
 	klog.V(6).Infof("async.GetFollowUps ENTER\n")
 
 	// checks
@@ -124,11 +123,11 @@ func (c *Client) GetFollowUps(ctx context.Context, conversationId string) (*inte
 	}
 
 	// check the status
-	var result interfaces.FollowUpResult
+	var result asyncinterfaces.FollowUpResult
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetFollowUps LEAVE\n")
@@ -141,7 +140,7 @@ func (c *Client) GetFollowUps(ctx context.Context, conversationId string) (*inte
 	return &result, nil
 }
 
-func (c *Client) GetEntities(ctx context.Context, conversationId string) (*interfaces.EntityResult, error) {
+func (c *Client) GetEntities(ctx context.Context, conversationId string) (*asyncinterfaces.EntityResult, error) {
 	klog.V(6).Infof("async.GetEntities ENTER\n")
 
 	// checks
@@ -166,11 +165,11 @@ func (c *Client) GetEntities(ctx context.Context, conversationId string) (*inter
 	}
 
 	// check the status
-	var result interfaces.EntityResult
+	var result asyncinterfaces.EntityResult
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetEntities LEAVE\n")
@@ -183,7 +182,7 @@ func (c *Client) GetEntities(ctx context.Context, conversationId string) (*inter
 	return &result, nil
 }
 
-func (c *Client) GetActionItems(ctx context.Context, conversationId string) (*interfaces.ActionItemResult, error) {
+func (c *Client) GetActionItems(ctx context.Context, conversationId string) (*asyncinterfaces.ActionItemResult, error) {
 	klog.V(6).Infof("async.GetActionItems ENTER\n")
 
 	// checks
@@ -208,11 +207,11 @@ func (c *Client) GetActionItems(ctx context.Context, conversationId string) (*in
 	}
 
 	// check the status
-	var result interfaces.ActionItemResult
+	var result asyncinterfaces.ActionItemResult
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetActionItems LEAVE\n")
@@ -225,7 +224,7 @@ func (c *Client) GetActionItems(ctx context.Context, conversationId string) (*in
 	return &result, nil
 }
 
-func (c *Client) GetMessages(ctx context.Context, conversationId string) (*interfaces.MessageResult, error) {
+func (c *Client) GetMessages(ctx context.Context, conversationId string) (*asyncinterfaces.MessageResult, error) {
 	klog.V(6).Infof("async.GetMessages ENTER\n")
 
 	// checks
@@ -250,11 +249,11 @@ func (c *Client) GetMessages(ctx context.Context, conversationId string) (*inter
 	}
 
 	// check the status
-	var result interfaces.MessageResult
+	var result asyncinterfaces.MessageResult
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetMessages LEAVE\n")
@@ -267,7 +266,7 @@ func (c *Client) GetMessages(ctx context.Context, conversationId string) (*inter
 	return &result, nil
 }
 
-func (c *Client) GetSummary(ctx context.Context, conversationId string) (*interfaces.SummaryResult, error) {
+func (c *Client) GetSummary(ctx context.Context, conversationId string) (*asyncinterfaces.SummaryResult, error) {
 	klog.V(6).Infof("async.GetSummary ENTER\n")
 
 	// checks
@@ -292,11 +291,11 @@ func (c *Client) GetSummary(ctx context.Context, conversationId string) (*interf
 	}
 
 	// check the status
-	var result interfaces.SummaryResult
+	var result asyncinterfaces.SummaryResult
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetSummary LEAVE\n")
@@ -309,7 +308,7 @@ func (c *Client) GetSummary(ctx context.Context, conversationId string) (*interf
 	return &result, nil
 }
 
-func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*interfaces.AnalyticsResult, error) {
+func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*asyncinterfaces.AnalyticsResult, error) {
 	klog.V(6).Infof("async.GetAnalytics ENTER\n")
 
 	// checks
@@ -334,11 +333,11 @@ func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*inte
 	}
 
 	// check the status
-	var result interfaces.AnalyticsResult
+	var result asyncinterfaces.AnalyticsResult
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetAnalytics LEAVE\n")
@@ -351,7 +350,7 @@ func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*inte
 	return &result, nil
 }
 
-func (c *Client) GetTracker(ctx context.Context, conversationId string) (*interfaces.TrackerResult, error) {
+func (c *Client) GetTracker(ctx context.Context, conversationId string) (*asyncinterfaces.TrackerResult, error) {
 	klog.V(6).Infof("async.GetTracker ENTER\n")
 
 	// checks
@@ -376,11 +375,11 @@ func (c *Client) GetTracker(ctx context.Context, conversationId string) (*interf
 	}
 
 	// check the status
-	var result interfaces.TrackerResult
+	var result asyncinterfaces.TrackerResult
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetTracker LEAVE\n")

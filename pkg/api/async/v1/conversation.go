@@ -9,13 +9,12 @@ import (
 
 	klog "k8s.io/klog/v2"
 
+	asyncinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
-
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
-func (c *Client) GetConversations(ctx context.Context) (*interfaces.ConversationsResult, error) {
+func (c *Client) GetConversations(ctx context.Context) (*asyncinterfaces.ConversationsResult, error) {
 	klog.V(6).Infof("async.GetConversations ENTER\n")
 
 	// checks
@@ -35,11 +34,11 @@ func (c *Client) GetConversations(ctx context.Context) (*interfaces.Conversation
 	}
 
 	// check the status
-	var result interfaces.ConversationsResult
+	var result asyncinterfaces.ConversationsResult
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetConversations LEAVE\n")
@@ -52,7 +51,7 @@ func (c *Client) GetConversations(ctx context.Context) (*interfaces.Conversation
 	return &result, nil
 }
 
-func (c *Client) GetConversation(ctx context.Context, conversationId string) (*interfaces.Conversation, error) {
+func (c *Client) GetConversation(ctx context.Context, conversationId string) (*asyncinterfaces.Conversation, error) {
 	klog.V(6).Infof("async.GetConversation ENTER\n")
 
 	// checks
@@ -77,11 +76,11 @@ func (c *Client) GetConversation(ctx context.Context, conversationId string) (*i
 	}
 
 	// check the status
-	var result interfaces.Conversation
+	var result asyncinterfaces.Conversation
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetConversations LEAVE\n")

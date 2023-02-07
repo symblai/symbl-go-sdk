@@ -1,7 +1,7 @@
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/dvonthenen/websocket v1.5.1-0.20221123154619-09865dbf1be2 h1:rsU8o6R7JTsP1c8WnXQhbaGRITJgL+SeDgc6zsFTfSU=
-github.com/dvonthenen/websocket v1.5.1-0.20221123154619-09865dbf1be2/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
+github.com/dvonthenen/websocket v1.5.1-0.20230208185225-642cd054e185 h1:njUDVTY8VzBruYQTpVoI4mW3ucZ91erCrB1CnPHuQQc=
+github.com/dvonthenen/websocket v1.5.1-0.20230208185225-642cd054e185/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/fatih/color v1.13.0 h1:8LOYc1KYPPmyKMuN8QV2DNRWNbLo6LZ0iLs8+mlH53w=
 github.com/fatih/color v1.13.0/go.mod h1:kLAiJbzzSOZDVNGyDpeOxJ47H46qBXwg5ILebYFFOfk=
 github.com/go-logr/logr v1.2.0 h1:QK40JKJyMdUDz+h+xvCsru/bJhvG0UxvePV0ufL/AcE=

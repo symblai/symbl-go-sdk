@@ -7,6 +7,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/gordonklaus/portaudio v0.0.0-20220320131553-cc649ad523c1
 	github.com/gorilla/websocket v1.5.0
+	github.com/hokaccha/go-prettyjson v0.0.0-20211117102719-0474bc63780f
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	k8s.io/klog/v2 v2.80.1
 )
@@ -16,7 +17,6 @@ require (
 	github.com/go-logr/logr v1.2.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
-	github.com/hokaccha/go-prettyjson v0.0.0-20211117102719-0474bc63780f // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-colorable v0.1.9 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
@@ -24,6 +24,6 @@ require (
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
 
-replace github.com/gorilla/websocket => github.com/dvonthenen/websocket v1.5.1-0.20221123154619-09865dbf1be2
+replace github.com/gorilla/websocket => github.com/dvonthenen/websocket v1.5.1-0.20230208185225-642cd054e185
 
 // replace github.com/gorilla/websocket => ../../gorilla/websocket

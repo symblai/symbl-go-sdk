@@ -10,7 +10,7 @@ type InsightCallback interface {
 	InsightResponseMessage(ir *InsightResponse) error
 	TopicResponseMessage(tr *TopicResponse) error
 	TrackerResponseMessage(tr *TrackerResponse) error
-	EntityResponseMessage(tr *EntityResponse) error
+	EntityResponseMessage(er *EntityResponse) error
 	TeardownConversation(tm *TeardownMessage) error
 	UserDefinedMessage(data []byte) error
 	UnhandledMessage(byMsg []byte) error

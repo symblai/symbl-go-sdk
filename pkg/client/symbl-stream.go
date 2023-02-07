@@ -11,7 +11,7 @@ import (
 
 	streaming "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	cfginterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 	stream "github.com/dvonthenen/symbl-go-sdk/pkg/client/stream"
 )
 
@@ -22,8 +22,8 @@ const (
 	defaultUserName            string  = "Jane Doe"
 )
 
-func GetDefaultConfig() *cfginterfaces.StreamingConfig {
-	config := &cfginterfaces.StreamingConfig{}
+func GetDefaultConfig() *interfaces.StreamingConfig {
+	config := &interfaces.StreamingConfig{}
 
 	config.Type = streaming.TypeRequestStart
 	config.InsightTypes = []string{"topic", "question", "action_item", "follow_up"}
@@ -93,7 +93,7 @@ func NewStreamClient(ctx context.Context, options StreamingOptions) (*StreamClie
 		Redirect:       len(options.ProxyAddress) > 0,
 		SkipServerAuth: options.SkipServerAuth,
 	}
-	wsClient, err := stream.NewWebSocketClient(creds, symblStreaming)
+	wsClient, err := stream.NewWebSocketClient(ctx, creds, symblStreaming)
 	if err != nil {
 		klog.V(1).Infof("stream.NewWebSocketClient failed. Err: %v\n", err)
 		klog.V(6).Infof("NewStreamClient LEAVE\n")

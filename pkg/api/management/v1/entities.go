@@ -12,12 +12,12 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/management/v1/interfaces"
+	mgmtinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/management/v1/interfaces"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
-func (m *Management) GetEntites(ctx context.Context) (*interfaces.EntitiesResponse, error) {
+func (m *Management) GetEntites(ctx context.Context) (*mgmtinterfaces.EntitiesResponse, error) {
 	klog.V(6).Infof("mgmt.GetEntites ENTER\n")
 
 	// checks
@@ -37,11 +37,11 @@ func (m *Management) GetEntites(ctx context.Context) (*interfaces.EntitiesRespon
 	}
 
 	// check the status
-	var result interfaces.EntitiesResponse
+	var result mgmtinterfaces.EntitiesResponse
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.GetEntites LEAVE\n")
@@ -54,7 +54,7 @@ func (m *Management) GetEntites(ctx context.Context) (*interfaces.EntitiesRespon
 	return &result, nil
 }
 
-func (m *Management) GetEntitById(ctx context.Context, entityId string) (*interfaces.Entity, error) {
+func (m *Management) GetEntitById(ctx context.Context, entityId string) (*mgmtinterfaces.Entity, error) {
 	klog.V(6).Infof("mgmt.GetEntitById ENTER\n")
 
 	// checks
@@ -74,11 +74,11 @@ func (m *Management) GetEntitById(ctx context.Context, entityId string) (*interf
 	}
 
 	// check the status
-	var result interfaces.Entity
+	var result mgmtinterfaces.Entity
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.GetEntitById LEAVE\n")
@@ -94,7 +94,7 @@ func (m *Management) GetEntitById(ctx context.Context, entityId string) (*interf
 /*
 	TODO: create doesn't return Entity object that's populated
 */
-func (m *Management) CreateEntity(ctx context.Context, request interfaces.CreateEntityRequest) (*interfaces.EntitiesResponse, error) {
+func (m *Management) CreateEntity(ctx context.Context, request mgmtinterfaces.CreateEntityRequest) (*mgmtinterfaces.EntitiesResponse, error) {
 	klog.V(6).Infof("mgmt.CreateEntity ENTER\n")
 
 	// checks
@@ -132,11 +132,11 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Create
 	}
 
 	// check the status
-	var result interfaces.EntitiesResponse
+	var result mgmtinterfaces.EntitiesResponse
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.CreateEntity LEAVE\n")
@@ -149,7 +149,7 @@ func (m *Management) CreateEntity(ctx context.Context, request interfaces.Create
 	return &result, nil
 }
 
-func (m *Management) UpdateEntity(ctx context.Context, entityId string, request interfaces.Entity) (*interfaces.EntityResponse, error) {
+func (m *Management) UpdateEntity(ctx context.Context, entityId string, request mgmtinterfaces.Entity) (*mgmtinterfaces.EntityResponse, error) {
 	klog.V(6).Infof("mgmt.UpdateEntity ENTER\n")
 
 	// checks
@@ -187,11 +187,11 @@ func (m *Management) UpdateEntity(ctx context.Context, entityId string, request 
 	}
 
 	// check the status
-	var result interfaces.EntityResponse
+	var result mgmtinterfaces.EntityResponse
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
@@ -233,7 +233,7 @@ func (m *Management) DeleteEntity(ctx context.Context, entityId string) error {
 	// check the status
 	err = m.Client.Do(ctx, req, nil)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.DeleteEntity LEAVE\n")
@@ -275,7 +275,7 @@ func (m *Management) DeleteEntityBySubType(ctx context.Context, subType string) 
 	// check the status
 	err = m.Client.Do(ctx, req, nil)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.DeleteEntityBySubType LEAVE\n")

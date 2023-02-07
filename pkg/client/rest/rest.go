@@ -19,9 +19,10 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
+	asyncinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
 	common "github.com/dvonthenen/symbl-go-sdk/pkg/api/common"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 	simple "github.com/dvonthenen/symbl-go-sdk/pkg/client/simple"
 )
 
@@ -41,14 +42,6 @@ func New() *Client {
 
 func (c *Client) SetAuthorization(auth *AccessToken) {
 	c.auth = auth
-}
-
-// WithHeader returns a new Context populated with the provided headers map
-func (c *Client) WithHeader(
-	ctx context.Context,
-	headers http.Header) context.Context {
-
-	return context.WithValue(ctx, HeadersContext{}, headers)
 }
 
 // TODO: Multipart file upload is not supported by the platform
@@ -102,9 +95,10 @@ func (c *Client) WithHeader(
 // 		return err
 // 	}
 
-// 	if headers, ok := ctx.Value(HeadersContext{}).(http.Header); ok {
+// 	if headers, ok := ctx.Value(interfaces.HeadersContext{}).(http.Header); ok {
 // 		for k, v := range headers {
 // 			for _, v := range v {
+//				klog.V(3).Infof("DoMultiPartFile() Custom Header: %s = %s\n", k, v)
 // 				req.Header.Add(k, v)
 // 			}
 // 		}
@@ -135,7 +129,7 @@ func (c *Client) WithHeader(
 // 			klog.V(6).Infof("rest.DoFile LEAVE\n")
 // 			return fmt.V(1).Infof("%s: %s", res.Status, bytes.TrimSpace(detail))
 // 		default:
-// 			return &StatusError{res}
+// 			return &interfaces.StatusError{res}
 // 		}
 
 // 		if resBody == nil {
@@ -145,7 +139,7 @@ func (c *Client) WithHeader(
 // 		}
 
 // 		switch b := resBody.(type) {
-// 		case *RawResponse:
+// 		case *interfaces.RawResponse:
 // 			klog.V(4).Infof("RawResponse\n")
 // 			klog.V(6).Infof("rest.DoFile LEAVE\n")
 // 			return res.Write(b)
@@ -172,7 +166,7 @@ func (c *Client) WithHeader(
 // 	return nil
 // }
 
-func (c *Client) DoAppendText(ctx context.Context, conversationId string, text interfaces.AsyncTextRequest, resBody interface{}) error {
+func (c *Client) DoAppendText(ctx context.Context, conversationId string, text asyncinterfaces.AsyncTextRequest, resBody interface{}) error {
 	if len(conversationId) == 0 {
 		klog.V(1).Infof("ConversationID is not valid\n")
 		return ErrInvalidInput
@@ -181,11 +175,11 @@ func (c *Client) DoAppendText(ctx context.Context, conversationId string, text i
 	return c.doCommonText(ctx, conversationId, text, resBody)
 }
 
-func (c *Client) DoText(ctx context.Context, text interfaces.AsyncTextRequest, resBody interface{}) error {
+func (c *Client) DoText(ctx context.Context, text asyncinterfaces.AsyncTextRequest, resBody interface{}) error {
 	return c.doCommonText(ctx, "", text, resBody)
 }
 
-func (c *Client) doCommonText(ctx context.Context, conversationId string, text interfaces.AsyncTextRequest, resBody interface{}) error {
+func (c *Client) doCommonText(ctx context.Context, conversationId string, text asyncinterfaces.AsyncTextRequest, resBody interface{}) error {
 	klog.V(6).Infof("rest.doCommonText ENTER\n")
 
 	// validate input
@@ -216,8 +210,6 @@ func (c *Client) doCommonText(ctx context.Context, conversationId string, text i
 		return err
 	}
 
-	klog.V(1).Infof("DYV: ENCODED TEXT: %s\n", text)
-
 	req, err := http.NewRequestWithContext(ctx, verb, URI, &buf)
 	if err != nil {
 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
@@ -225,9 +217,10 @@ func (c *Client) doCommonText(ctx context.Context, conversationId string, text i
 		return err
 	}
 
-	if headers, ok := ctx.Value(HeadersContext{}).(http.Header); ok {
+	if headers, ok := ctx.Value(interfaces.HeadersContext{}).(http.Header); ok {
 		for k, v := range headers {
 			for _, v := range v {
+				klog.V(3).Infof("doCommonText() Custom Header: %s = %s\n", k, v)
 				req.Header.Add(k, v)
 			}
 		}
@@ -260,7 +253,7 @@ func (c *Client) doCommonText(ctx context.Context, conversationId string, text i
 			klog.V(6).Infof("rest.doCommonText LEAVE\n")
 			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
 		default:
-			return &StatusError{res}
+			return &interfaces.StatusError{res}
 		}
 
 		if resBody == nil {
@@ -270,7 +263,7 @@ func (c *Client) doCommonText(ctx context.Context, conversationId string, text i
 		}
 
 		switch b := resBody.(type) {
-		case *RawResponse:
+		case *interfaces.RawResponse:
 			klog.V(4).Infof("RawResponse\n")
 			klog.V(6).Infof("rest.doCommonText LEAVE\n")
 			return res.Write(b)
@@ -298,7 +291,7 @@ func (c *Client) doCommonText(ctx context.Context, conversationId string, text i
 	return nil
 }
 
-func (c *Client) DoFile(ctx context.Context, filePath string, options interfaces.AsyncOptions, resBody interface{}) error {
+func (c *Client) DoFile(ctx context.Context, filePath string, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
 	// file?
 	fileInfo, err := os.Stat(filePath)
 	if err != nil || errors.Is(err, os.ErrNotExist) {
@@ -344,15 +337,15 @@ func (c *Client) DoFile(ctx context.Context, filePath string, options interfaces
 	return c.doVideoFile(ctx, filePath, options, resBody)
 }
 
-func (c *Client) doAudioFile(ctx context.Context, filePath string, options interfaces.AsyncOptions, resBody interface{}) error {
+func (c *Client) doAudioFile(ctx context.Context, filePath string, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
 	return c.doCommonFile(ctx, version.ProcessAudioURI, filePath, options, resBody)
 }
 
-func (c *Client) doVideoFile(ctx context.Context, filePath string, options interfaces.AsyncOptions, resBody interface{}) error {
+func (c *Client) doVideoFile(ctx context.Context, filePath string, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
 	return c.doCommonFile(ctx, version.ProcessVideoURI, filePath, options, resBody)
 }
 
-func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, options interfaces.AsyncOptions, resBody interface{}) error {
+func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
 	klog.V(6).Infof("rest.doCommonFile ENTER\n")
 
 	// checks
@@ -424,9 +417,10 @@ func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, opti
 		return err
 	}
 
-	if headers, ok := ctx.Value(HeadersContext{}).(http.Header); ok {
+	if headers, ok := ctx.Value(interfaces.HeadersContext{}).(http.Header); ok {
 		for k, v := range headers {
 			for _, v := range v {
+				klog.V(3).Infof("doCommonFile() Custom Header: %s = %s\n", k, v)
 				req.Header.Add(k, v)
 			}
 		}
@@ -453,7 +447,7 @@ func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, opti
 			klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
 		default:
-			return &StatusError{res}
+			return &interfaces.StatusError{res}
 		}
 
 		if resBody == nil {
@@ -463,7 +457,7 @@ func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, opti
 		}
 
 		switch b := resBody.(type) {
-		case *RawResponse:
+		case *interfaces.RawResponse:
 			klog.V(4).Infof("RawResponse\n")
 			klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 			return res.Write(b)
@@ -496,7 +490,7 @@ func IsUrl(str string) bool {
 	return err == nil && u.Scheme != "" && u.Host != ""
 }
 
-func (c *Client) DoURL(ctx context.Context, options interfaces.AsyncOptions, resBody interface{}) error {
+func (c *Client) DoURL(ctx context.Context, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
 	// url
 	u, err := url.Parse(options.URL)
 	if err != nil {
@@ -532,15 +526,15 @@ func (c *Client) DoURL(ctx context.Context, options interfaces.AsyncOptions, res
 	return c.doVideoURL(ctx, options, resBody)
 }
 
-func (c *Client) doAudioURL(ctx context.Context, options interfaces.AsyncOptions, resBody interface{}) error {
+func (c *Client) doAudioURL(ctx context.Context, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
 	return c.doCommonURL(ctx, version.ProcessAudioURLURI, options, resBody)
 }
 
-func (c *Client) doVideoURL(ctx context.Context, options interfaces.AsyncOptions, resBody interface{}) error {
+func (c *Client) doVideoURL(ctx context.Context, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
 	return c.doCommonURL(ctx, version.ProcessVideoURLURI, options, resBody)
 }
 
-func (c *Client) doCommonURL(ctx context.Context, apiURI string, options interfaces.AsyncOptions, resBody interface{}) error {
+func (c *Client) doCommonURL(ctx context.Context, apiURI string, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
 	klog.V(6).Infof("rest.DoURL ENTER\n")
 
 	// checks
@@ -577,9 +571,10 @@ func (c *Client) doCommonURL(ctx context.Context, apiURI string, options interfa
 		return err
 	}
 
-	if headers, ok := ctx.Value(HeadersContext{}).(http.Header); ok {
+	if headers, ok := ctx.Value(interfaces.HeadersContext{}).(http.Header); ok {
 		for k, v := range headers {
 			for _, v := range v {
+				klog.V(3).Infof("doCommonURL() Custom Header: %s = %s\n", k, v)
 				req.Header.Add(k, v)
 			}
 		}
@@ -612,7 +607,7 @@ func (c *Client) doCommonURL(ctx context.Context, apiURI string, options interfa
 			klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
 		default:
-			return &StatusError{res}
+			return &interfaces.StatusError{res}
 		}
 
 		if resBody == nil {
@@ -622,7 +617,7 @@ func (c *Client) doCommonURL(ctx context.Context, apiURI string, options interfa
 		}
 
 		switch b := resBody.(type) {
-		case *RawResponse:
+		case *interfaces.RawResponse:
 			klog.V(4).Infof("RawResponse\n")
 			klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 			return res.Write(b)
@@ -653,9 +648,10 @@ func (c *Client) doCommonURL(ctx context.Context, apiURI string, options interfa
 func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{}) error {
 	klog.V(6).Infof("rest.Do ENTER\n")
 
-	if headers, ok := ctx.Value(HeadersContext{}).(http.Header); ok {
+	if headers, ok := ctx.Value(interfaces.HeadersContext{}).(http.Header); ok {
 		for k, v := range headers {
 			for _, v := range v {
+				klog.V(3).Infof("Do() Custom Header: %s = %s\n", k, v)
 				req.Header.Add(k, v)
 			}
 		}
@@ -688,7 +684,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 			klog.V(6).Infof("rest.Do LEAVE\n")
 			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
 		default:
-			return &StatusError{res}
+			return &interfaces.StatusError{res}
 		}
 
 		if resBody == nil {
@@ -698,7 +694,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 		}
 
 		switch b := resBody.(type) {
-		case *RawResponse:
+		case *interfaces.RawResponse:
 			klog.V(4).Infof("RawResponse\n")
 			klog.V(6).Infof("rest.Do LEAVE\n")
 			return res.Write(b)

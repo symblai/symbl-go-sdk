@@ -11,13 +11,12 @@ import (
 
 	klog "k8s.io/klog/v2"
 
+	asyncinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
-
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
-func (c *Client) GetMembers(ctx context.Context, conversationId string) (*interfaces.MembersResult, error) {
+func (c *Client) GetMembers(ctx context.Context, conversationId string) (*asyncinterfaces.MembersResult, error) {
 	klog.V(6).Infof("async.GetMembers ENTER\n")
 
 	// checks
@@ -42,11 +41,11 @@ func (c *Client) GetMembers(ctx context.Context, conversationId string) (*interf
 	}
 
 	// check the status
-	var result interfaces.MembersResult
+	var result asyncinterfaces.MembersResult
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetMembers LEAVE\n")
@@ -59,7 +58,7 @@ func (c *Client) GetMembers(ctx context.Context, conversationId string) (*interf
 	return &result, nil
 }
 
-func (c *Client) UpdateMember(ctx context.Context, conversationId string, member interfaces.Member) error {
+func (c *Client) UpdateMember(ctx context.Context, conversationId string, member asyncinterfaces.Member) error {
 	klog.V(6).Infof("async.UpdateMember ENTER\n")
 
 	// checks
@@ -93,7 +92,7 @@ func (c *Client) UpdateMember(ctx context.Context, conversationId string, member
 	// check the status
 	err = c.Client.Do(ctx, req, nil)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.UpdateMember LEAVE\n")
@@ -106,7 +105,7 @@ func (c *Client) UpdateMember(ctx context.Context, conversationId string, member
 	return nil
 }
 
-func (c *Client) UpdateSpeakers(ctx context.Context, conversationId string, speakers interfaces.UpdateSpeakerRequest) error {
+func (c *Client) UpdateSpeakers(ctx context.Context, conversationId string, speakers asyncinterfaces.UpdateSpeakerRequest) error {
 	klog.V(6).Infof("async.UpdateSpeakers ENTER\n")
 
 	// checks
@@ -140,7 +139,7 @@ func (c *Client) UpdateSpeakers(ctx context.Context, conversationId string, spea
 	// check the status
 	err = c.Client.Do(ctx, req, nil)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.UpdateSpeakers LEAVE\n")
