@@ -61,6 +61,7 @@ func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (
 
 	// checks
 	if ctx == nil {
+		klog.V(3).Infof("Empty Context... Creating new one!\n")
 		ctx = context.Background()
 	}
 
@@ -92,6 +93,16 @@ func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (
 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("NewWithCreds LEAVE\n")
 		return nil, err
+	}
+
+	// restore application options to HTTP header
+	if headers, ok := ctx.Value(interfaces.HeadersContext{}).(http.Header); ok {
+		for k, vs := range headers {
+			for _, v := range vs {
+				klog.V(5).Infof("NewRestClientWithCreds() RESTORE Header: %s = %s\n", k, v)
+				req.Header.Add(k, v)
+			}
+		}
 	}
 
 	// do it!
@@ -169,7 +180,7 @@ func (c *RestClient) Do(ctx context.Context, req *http.Request, resBody interfac
 		// run request
 		err = c.Client.Do(ctx, req, resBody)
 
-		if e, ok := err.(*rest.StatusError); ok {
+		if e, ok := err.(*interfaces.StatusError); ok {
 			if e.Resp.StatusCode == http.StatusUnauthorized {
 
 				klog.V(3).Info("Received http.StatusUnauthorized\n")

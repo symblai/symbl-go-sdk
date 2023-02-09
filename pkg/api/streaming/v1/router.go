@@ -100,7 +100,7 @@ func (smr *SymblMessageRouter) handlePlatformMessage(byMsg []byte) error {
 		return smr.TeardownConversation(byMsg)
 	case MessageTypeTeardownRecognition:
 		klog.V(3).Infof("Symbl Platform Teardown Recognition\n")
-	// pass insights to the user
+	// transcription
 	case interfaces.MessageTypeRecognitionResult:
 		return smr.RecognitionResultMessage(byMsg)
 	// error

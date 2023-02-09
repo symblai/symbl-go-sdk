@@ -12,12 +12,12 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/management/v1/interfaces"
+	mgmtinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/management/v1/interfaces"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
-func (m *Management) GetConversationGroups(ctx context.Context) (*interfaces.ConversationGroupsResponse, error) {
+func (m *Management) GetConversationGroups(ctx context.Context) (*mgmtinterfaces.ConversationGroupsResponse, error) {
 	klog.V(6).Infof("mgmt.GetConversationGroups ENTER\n")
 
 	// checks
@@ -37,11 +37,11 @@ func (m *Management) GetConversationGroups(ctx context.Context) (*interfaces.Con
 	}
 
 	// check the status
-	var result interfaces.ConversationGroupsResponse
+	var result mgmtinterfaces.ConversationGroupsResponse
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.GetConversationGroups LEAVE\n")
@@ -54,7 +54,7 @@ func (m *Management) GetConversationGroups(ctx context.Context) (*interfaces.Con
 	return &result, nil
 }
 
-func (m *Management) GetConversationGroupById(ctx context.Context, conversationGroupId string) (*interfaces.ConversationGroupResponse, error) {
+func (m *Management) GetConversationGroupById(ctx context.Context, conversationGroupId string) (*mgmtinterfaces.ConversationGroupResponse, error) {
 	klog.V(6).Infof("mgmt.GetConversationGroupById ENTER\n")
 
 	// checks
@@ -74,11 +74,11 @@ func (m *Management) GetConversationGroupById(ctx context.Context, conversationG
 	}
 
 	// check the status
-	var result interfaces.ConversationGroupResponse
+	var result mgmtinterfaces.ConversationGroupResponse
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.GetConversationGroupById LEAVE\n")
@@ -91,7 +91,7 @@ func (m *Management) GetConversationGroupById(ctx context.Context, conversationG
 	return &result, nil
 }
 
-func (m *Management) CreateConversationGroup(ctx context.Context, request interfaces.Group) (*interfaces.ConversationGroupResponse, error) {
+func (m *Management) CreateConversationGroup(ctx context.Context, request mgmtinterfaces.Group) (*mgmtinterfaces.ConversationGroupResponse, error) {
 	klog.V(6).Infof("mgmt.CreateConversationGroup ENTER\n")
 
 	// checks
@@ -129,11 +129,11 @@ func (m *Management) CreateConversationGroup(ctx context.Context, request interf
 	}
 
 	// check the status
-	var result interfaces.ConversationGroupResponse
+	var result mgmtinterfaces.ConversationGroupResponse
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.CreateConversationGroup LEAVE\n")
@@ -146,7 +146,7 @@ func (m *Management) CreateConversationGroup(ctx context.Context, request interf
 	return &result, nil
 }
 
-func (m *Management) UpdateConversationGroup(ctx context.Context, request interfaces.Group) (*interfaces.ConversationGroupResponse, error) {
+func (m *Management) UpdateConversationGroup(ctx context.Context, request mgmtinterfaces.Group) (*mgmtinterfaces.ConversationGroupResponse, error) {
 	klog.V(6).Infof("mgmt.UpdateConversationGroup ENTER\n")
 
 	// checks
@@ -190,11 +190,11 @@ func (m *Management) UpdateConversationGroup(ctx context.Context, request interf
 	}
 
 	// check the status
-	var result interfaces.ConversationGroupResponse
+	var result mgmtinterfaces.ConversationGroupResponse
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.UpdateConversationGroup LEAVE\n")
@@ -236,7 +236,7 @@ func (m *Management) DeleteConversationGroup(ctx context.Context, conversationGr
 	// check the status
 	err = m.Client.Do(ctx, req, nil)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.DeleteConversationGroup LEAVE\n")

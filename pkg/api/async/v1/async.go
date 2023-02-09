@@ -11,9 +11,10 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
+	asyncinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	client "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
 const (
@@ -22,19 +23,19 @@ const (
 )
 
 type Client struct {
-	*symbl.RestClient
+	*client.RestClient
 }
 
-func New(client *symbl.RestClient) *Client {
+func New(client *client.RestClient) *Client {
 	return &Client{client}
 }
 
 func (c *Client) PostText(ctx context.Context, messages []string) (*JobConversation, error) {
-	textRequest := interfaces.AsyncTextRequest{}
+	textRequest := asyncinterfaces.AsyncTextRequest{}
 
 	for _, message := range messages {
-		textRequest.Messages = append(textRequest.Messages, interfaces.TextMessage{
-			Payload: interfaces.Payload{
+		textRequest.Messages = append(textRequest.Messages, asyncinterfaces.TextMessage{
+			Payload: asyncinterfaces.Payload{
 				Content: message,
 			},
 			From:     nil,
@@ -46,11 +47,11 @@ func (c *Client) PostText(ctx context.Context, messages []string) (*JobConversat
 }
 
 func (c *Client) PostAppendText(ctx context.Context, conversationId string, messages []string) (*JobConversation, error) {
-	textRequest := interfaces.AsyncTextRequest{}
+	textRequest := asyncinterfaces.AsyncTextRequest{}
 
 	for _, message := range messages {
-		textRequest.Messages = append(textRequest.Messages, interfaces.TextMessage{
-			Payload: interfaces.Payload{
+		textRequest.Messages = append(textRequest.Messages, asyncinterfaces.TextMessage{
+			Payload: asyncinterfaces.Payload{
 				Content: message,
 			},
 			From:     nil,
@@ -62,18 +63,18 @@ func (c *Client) PostAppendText(ctx context.Context, conversationId string, mess
 }
 
 func (c *Client) PostFile(ctx context.Context, filePath string) (*JobConversation, error) {
-	options := interfaces.AsyncOptions{}
+	options := asyncinterfaces.AsyncOptions{}
 	return c.PostFileWithOptions(ctx, filePath, options)
 }
 
 func (c *Client) PostURL(ctx context.Context, url string) (*JobConversation, error) {
-	options := interfaces.AsyncOptions{
+	options := asyncinterfaces.AsyncOptions{
 		URL: url,
 	}
 	return c.PostURLWithOptions(ctx, options)
 }
 
-func (c *Client) PostURLWithOptions(ctx context.Context, options interfaces.AsyncOptions) (*JobConversation, error) {
+func (c *Client) PostURLWithOptions(ctx context.Context, options asyncinterfaces.AsyncOptions) (*JobConversation, error) {
 	klog.V(6).Infof("async.PostURLWithOptions ENTER\n")
 
 	// checks
@@ -87,7 +88,7 @@ func (c *Client) PostURLWithOptions(ctx context.Context, options interfaces.Asyn
 	var jobConvo JobConversation
 
 	err := c.DoURLWithOptions(ctx, options, &jobConvo)
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		klog.V(1).Infof("DoURL failed. HTTP Code: %v\n", e.Resp.StatusCode)
 		klog.V(6).Infof("async.PostURLWithOptions LEAVE\n")
 		return nil, e
@@ -98,7 +99,7 @@ func (c *Client) PostURLWithOptions(ctx context.Context, options interfaces.Asyn
 	return &jobConvo, nil
 }
 
-func (c *Client) PostFileWithOptions(ctx context.Context, filePath string, options interfaces.AsyncOptions) (*JobConversation, error) {
+func (c *Client) PostFileWithOptions(ctx context.Context, filePath string, options asyncinterfaces.AsyncOptions) (*JobConversation, error) {
 	klog.V(6).Infof("async.PostFileWithOptions ENTER\n")
 
 	// checks
@@ -112,7 +113,7 @@ func (c *Client) PostFileWithOptions(ctx context.Context, filePath string, optio
 	var jobConvo JobConversation
 
 	err := c.DoFileWithOptions(ctx, filePath, options, &jobConvo)
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		klog.V(1).Infof("DoFile failed. HTTP Code: %v\n", e.Resp.StatusCode)
 		klog.V(6).Infof("async.PostFileWithOptions LEAVE\n")
 		return nil, e
@@ -150,7 +151,7 @@ func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool
 
 	err = c.Client.Do(ctx, req, &jobStatus)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.WaitForJobCompleteOnce LEAVE\n")
@@ -165,7 +166,7 @@ func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool
 	return complete, nil
 }
 
-func (c *Client) PostTextWithOptions(ctx context.Context, textRequest interfaces.AsyncTextRequest) (*JobConversation, error) {
+func (c *Client) PostTextWithOptions(ctx context.Context, textRequest asyncinterfaces.AsyncTextRequest) (*JobConversation, error) {
 	klog.V(6).Infof("async.PostTextWithOptions ENTER\n")
 
 	// checks
@@ -177,7 +178,7 @@ func (c *Client) PostTextWithOptions(ctx context.Context, textRequest interfaces
 	var jobConvo JobConversation
 
 	err := c.DoTextWithOptions(ctx, textRequest, &jobConvo)
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		klog.V(1).Infof("DoURL failed. HTTP Code: %v\n", e.Resp.StatusCode)
 		klog.V(6).Infof("async.PostTextWithOptions LEAVE\n")
 		return nil, e
@@ -188,7 +189,7 @@ func (c *Client) PostTextWithOptions(ctx context.Context, textRequest interfaces
 	return &jobConvo, nil
 }
 
-func (c *Client) PostAppendTextWithOptions(ctx context.Context, conversationId string, textRequest interfaces.AsyncTextRequest) (*JobConversation, error) {
+func (c *Client) PostAppendTextWithOptions(ctx context.Context, conversationId string, textRequest asyncinterfaces.AsyncTextRequest) (*JobConversation, error) {
 	klog.V(6).Infof("async.PostAppendTextWithOptions ENTER\n")
 
 	// checks
@@ -200,7 +201,7 @@ func (c *Client) PostAppendTextWithOptions(ctx context.Context, conversationId s
 	var jobConvo JobConversation
 
 	err := c.DoAppendTextWithOptions(ctx, conversationId, textRequest, &jobConvo)
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		klog.V(1).Infof("DoURL failed. HTTP Code: %v\n", e.Resp.StatusCode)
 		klog.V(6).Infof("async.PostAppendTextWithOptions LEAVE\n")
 		return nil, e
@@ -211,7 +212,7 @@ func (c *Client) PostAppendTextWithOptions(ctx context.Context, conversationId s
 	return &jobConvo, nil
 }
 
-func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts interfaces.WaitForJobStatusOpts) (bool, error) {
+func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts asyncinterfaces.WaitForJobStatusOpts) (bool, error) {
 	klog.V(6).Infof("async.WaitForJobComplete ENTER\n")
 
 	// validate input
@@ -237,7 +238,7 @@ func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts interface
 	}
 
 	numOfLoops := float64(defaultWaitForCompletion) / float64(defaultDelayBetweenCheck)
-	if jobStatusOpts.WaitInSeconds != interfaces.UseDefaultWaitForCompletion {
+	if jobStatusOpts.WaitInSeconds != asyncinterfaces.UseDefaultWaitForCompletion {
 		numOfLoops = float64(jobStatusOpts.WaitInSeconds) / float64(defaultDelayBetweenCheck)
 		klog.V(4).Infof("User provided jobStatusOpts.WaitInSeconds\n")
 	}

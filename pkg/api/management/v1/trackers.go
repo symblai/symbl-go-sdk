@@ -12,12 +12,12 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/management/v1/interfaces"
+	mgmtinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/management/v1/interfaces"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
-func (m *Management) GetTrackers(ctx context.Context) (*interfaces.TrackersResponse, error) {
+func (m *Management) GetTrackers(ctx context.Context) (*mgmtinterfaces.TrackersResponse, error) {
 	klog.V(6).Infof("mgmt.GetTrackers ENTER\n")
 
 	// checks
@@ -37,11 +37,11 @@ func (m *Management) GetTrackers(ctx context.Context) (*interfaces.TrackersRespo
 	}
 
 	// check the status
-	var result interfaces.TrackersResponse
+	var result mgmtinterfaces.TrackersResponse
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.GetTrackers LEAVE\n")
@@ -54,7 +54,7 @@ func (m *Management) GetTrackers(ctx context.Context) (*interfaces.TrackersRespo
 	return &result, nil
 }
 
-func (m *Management) CreateTracker(ctx context.Context, request interfaces.TrackerRequest) (*interfaces.TrackerResponse, error) {
+func (m *Management) CreateTracker(ctx context.Context, request mgmtinterfaces.TrackerRequest) (*mgmtinterfaces.TrackerResponse, error) {
 	klog.V(6).Infof("mgmt.CreateTracker ENTER\n")
 
 	// checks
@@ -92,11 +92,11 @@ func (m *Management) CreateTracker(ctx context.Context, request interfaces.Track
 	}
 
 	// check the status
-	var result interfaces.TrackerResponse
+	var result mgmtinterfaces.TrackerResponse
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.CreateTracker LEAVE\n")
@@ -109,7 +109,7 @@ func (m *Management) CreateTracker(ctx context.Context, request interfaces.Track
 	return &result, nil
 }
 
-func (m *Management) UpdateTracker(ctx context.Context, trackerId string, request interfaces.UpdateTrackerRequest) (*interfaces.TrackerResponse, error) {
+func (m *Management) UpdateTracker(ctx context.Context, trackerId string, request mgmtinterfaces.UpdateTrackerRequest) (*mgmtinterfaces.TrackerResponse, error) {
 	klog.V(6).Infof("mgmt.UpdateTracker ENTER\n")
 
 	// checks
@@ -147,11 +147,11 @@ func (m *Management) UpdateTracker(ctx context.Context, trackerId string, reques
 	}
 
 	// check the status
-	var result interfaces.TrackerResponse
+	var result mgmtinterfaces.TrackerResponse
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
@@ -193,7 +193,7 @@ func (m *Management) DeleteTracker(ctx context.Context, trackerId string) error 
 	// check the status
 	err = m.Client.Do(ctx, req, nil)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("mgmt.DeleteTracker LEAVE\n")

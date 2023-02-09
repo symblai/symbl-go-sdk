@@ -4,8 +4,6 @@
 package symbl
 
 import (
-	"fmt"
-
 	rtinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
 	cfginterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
@@ -42,17 +40,4 @@ type StreamClient struct {
 	symblStreaming stream.WebSocketMessageCallback
 
 	options *StreamingOptions
-}
-
-/*
-	Symbl REST API Internals
-*/
-type HeadersContext struct{}
-
-type StatusError struct {
-	*rest.StatusError
-}
-
-func (e *StatusError) Error() string {
-	return fmt.Sprintf("%s %s: %s", e.Resp.Request.Method, e.Resp.Request.URL, e.Resp.Status)
 }

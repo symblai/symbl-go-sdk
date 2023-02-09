@@ -13,14 +13,13 @@ import (
 
 	klog "k8s.io/klog/v2"
 
+	asyncinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
 	common "github.com/dvonthenen/symbl-go-sdk/pkg/api/common"
 	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
-
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
-func (c *Client) GetSummaryUI(ctx context.Context, conversationId string, uri string) (*interfaces.SummaryUIResult, error) {
+func (c *Client) GetSummaryUI(ctx context.Context, conversationId string, uri string) (*asyncinterfaces.SummaryUIResult, error) {
 	// checks
 	if ctx == nil {
 		ctx = context.Background()
@@ -32,7 +31,7 @@ func (c *Client) GetSummaryUI(ctx context.Context, conversationId string, uri st
 
 	// text
 	if len(uri) == 0 {
-		request := interfaces.TextSummaryRequest{
+		request := asyncinterfaces.TextSummaryRequest{
 			Name: "verbose-text-summary",
 		}
 		return c.GetTextSummaryUI(ctx, conversationId, request)
@@ -60,7 +59,7 @@ func (c *Client) GetSummaryUI(ctx context.Context, conversationId string, uri st
 	case common.AudioTypeMP3:
 	case common.AudioTypeMpeg:
 	case common.AudioTypeWav:
-		request := interfaces.AudioSummaryRequest{
+		request := asyncinterfaces.AudioSummaryRequest{
 			Name:     "audio-summary",
 			AudioURL: uri,
 		}
@@ -68,14 +67,14 @@ func (c *Client) GetSummaryUI(ctx context.Context, conversationId string, uri st
 	}
 
 	// assume video
-	request := interfaces.VideoSummaryRequest{
+	request := asyncinterfaces.VideoSummaryRequest{
 		Name:     "video-summary",
 		VideoURL: uri,
 	}
 	return c.GetVideoSummaryUI(ctx, conversationId, request)
 }
 
-func (c *Client) GetTextSummaryUI(ctx context.Context, conversationId string, request interfaces.TextSummaryRequest) (*interfaces.SummaryUIResult, error) {
+func (c *Client) GetTextSummaryUI(ctx context.Context, conversationId string, request asyncinterfaces.TextSummaryRequest) (*asyncinterfaces.SummaryUIResult, error) {
 	klog.V(6).Infof("async.GetTextSummaryUI ENTER\n")
 
 	// checks
@@ -107,11 +106,11 @@ func (c *Client) GetTextSummaryUI(ctx context.Context, conversationId string, re
 	}
 
 	// check the status
-	var result interfaces.SummaryUIResult
+	var result asyncinterfaces.SummaryUIResult
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetTextSummaryUI LEAVE\n")
@@ -124,7 +123,7 @@ func (c *Client) GetTextSummaryUI(ctx context.Context, conversationId string, re
 	return &result, nil
 }
 
-func (c *Client) GetAudioSummaryUI(ctx context.Context, conversationId string, request interfaces.AudioSummaryRequest) (*interfaces.SummaryUIResult, error) {
+func (c *Client) GetAudioSummaryUI(ctx context.Context, conversationId string, request asyncinterfaces.AudioSummaryRequest) (*asyncinterfaces.SummaryUIResult, error) {
 	klog.V(6).Infof("async.GetAudioSummaryUI ENTER\n")
 
 	// checks
@@ -156,11 +155,11 @@ func (c *Client) GetAudioSummaryUI(ctx context.Context, conversationId string, r
 	}
 
 	// check the status
-	var result interfaces.SummaryUIResult
+	var result asyncinterfaces.SummaryUIResult
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetAudioSummaryUI LEAVE\n")
@@ -173,7 +172,7 @@ func (c *Client) GetAudioSummaryUI(ctx context.Context, conversationId string, r
 	return &result, nil
 }
 
-func (c *Client) GetVideoSummaryUI(ctx context.Context, conversationId string, request interfaces.VideoSummaryRequest) (*interfaces.SummaryUIResult, error) {
+func (c *Client) GetVideoSummaryUI(ctx context.Context, conversationId string, request asyncinterfaces.VideoSummaryRequest) (*asyncinterfaces.SummaryUIResult, error) {
 	klog.V(6).Infof("async.GetVideoSummaryUI ENTER\n")
 
 	// checks
@@ -205,11 +204,11 @@ func (c *Client) GetVideoSummaryUI(ctx context.Context, conversationId string, r
 	}
 
 	// check the status
-	var result interfaces.SummaryUIResult
+	var result asyncinterfaces.SummaryUIResult
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*symbl.StatusError); ok {
+	if e, ok := err.(*interfaces.StatusError); ok {
 		if e.Resp.StatusCode != http.StatusOK {
 			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
 			klog.V(6).Infof("async.GetVideoSummaryUI LEAVE\n")

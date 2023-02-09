@@ -16,6 +16,8 @@ import (
 	"github.com/gorilla/websocket"
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
+
+	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
 // Send pings to peer with this period
@@ -38,7 +40,7 @@ type WebSocketClient struct {
 }
 
 // NewWebSocketClient create new websocket connection
-func NewWebSocketClient(creds Credentials, callback WebSocketMessageCallback) (*WebSocketClient, error) {
+func NewWebSocketClient(ctx context.Context, creds Credentials, callback WebSocketMessageCallback) (*WebSocketClient, error) {
 	klog.V(6).Infof("NewWebSocketClient ENTER\n")
 
 	if callback == nil {
@@ -62,7 +64,7 @@ func NewWebSocketClient(creds Credentials, callback WebSocketMessageCallback) (*
 		creds:    &creds,
 		callback: callback,
 	}
-	conn.ctx, conn.ctxCancel = context.WithCancel(context.Background())
+	conn.ctx, conn.ctxCancel = context.WithCancel(ctx)
 
 	u := url.URL{Scheme: "wss", Host: creds.Host, Path: creds.Channel}
 	conn.configStr = u.String()
@@ -93,6 +95,18 @@ func (conn *WebSocketClient) Connect() *websocket.Conn {
 
 	// access key for Symbl Platfom
 	myHeader := http.Header{}
+
+	// restore application options to HTTP header
+	if headers, ok := conn.ctx.Value(interfaces.HeadersContext{}).(http.Header); ok {
+		for k, v := range headers {
+			for _, v := range v {
+				klog.V(5).Infof("Connect() RESTORE Header: %s = %s\n", k, v)
+				myHeader.Add(k, v)
+			}
+		}
+	}
+
+	// sets the API key
 	myHeader.Set("X-API-KEY", conn.creds.AccessKey)
 
 	// wait for handshake
@@ -103,7 +117,7 @@ func (conn *WebSocketClient) Connect() *websocket.Conn {
 		case <-conn.ctx.Done():
 			return nil
 		default:
-			ws, _, err := dialer.Dial(conn.configStr, myHeader)
+			ws, _, err := dialer.DialContext(conn.ctx, conn.configStr, myHeader)
 			if err != nil {
 				klog.V(1).Infof("Cannot connect to websocket: %s\n", conn.configStr)
 				continue
