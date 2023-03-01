@@ -5,6 +5,8 @@ package streaming
 
 import (
 	"encoding/json"
+	"os"
+	"strings"
 
 	prettyjson "github.com/hokaccha/go-prettyjson"
 	klog "k8s.io/klog/v2"
@@ -12,10 +14,47 @@ import (
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
 )
 
-type DefaultMessageRouter struct{}
+type DefaultMessageRouter struct {
+	TranscriptionDemo    bool
+	TranscriptionDisable bool
+
+	ChatmessageDemo    bool
+	ChatmessageDisable bool
+}
 
 func NewDefaultMessageRouter() *DefaultMessageRouter {
-	return &DefaultMessageRouter{}
+	var transcriptionDemoStr string
+	if v := os.Getenv("SYMBL_TRANSCRIPTION_DEMO"); v != "" {
+		klog.V(4).Info("SYMBL_TRANSCRIPTION_DEMO found")
+		transcriptionDemoStr = v
+	}
+	var transcriptionDisableStr string
+	if v := os.Getenv("SYMBL_TRANSCRIPTION_DISABLE"); v != "" {
+		klog.V(4).Info("SYMBL_TRANSCRIPTION_DISABLE found")
+		transcriptionDisableStr = v
+	}
+	var chatmessageDemoStr string
+	if v := os.Getenv("SYMBL_CHAT_MESSAGE_DEMO"); v != "" {
+		klog.V(4).Info("SYMBL_CHAT_MESSAGE_DEMO found")
+		chatmessageDemoStr = v
+	}
+	var chatmessageDisableStr string
+	if v := os.Getenv("SYMBL_CHAT_MESSAGE_DISABLE"); v != "" {
+		klog.V(4).Info("SYMBL_CHAT_MESSAGE_DISABLE found")
+		chatmessageDisableStr = v
+	}
+
+	transcriptionDemo := strings.EqualFold(strings.ToLower(transcriptionDemoStr), "true")
+	transcriptionDisable := strings.EqualFold(strings.ToLower(transcriptionDisableStr), "true")
+	chatmessageDemo := strings.EqualFold(strings.ToLower(chatmessageDemoStr), "true")
+	chatmessageDisable := strings.EqualFold(strings.ToLower(chatmessageDisableStr), "true")
+
+	return &DefaultMessageRouter{
+		TranscriptionDemo:    transcriptionDemo,
+		TranscriptionDisable: transcriptionDisable,
+		ChatmessageDemo:      chatmessageDemo,
+		ChatmessageDisable:   chatmessageDisable,
+	}
 }
 
 func (dmr *DefaultMessageRouter) InitializedConversation(im *interfaces.InitializationMessage) error {
@@ -36,6 +75,15 @@ func (dmr *DefaultMessageRouter) InitializedConversation(im *interfaces.Initiali
 }
 
 func (dmr *DefaultMessageRouter) RecognitionResultMessage(rr *interfaces.RecognitionResult) error {
+	if dmr.TranscriptionDisable {
+		return nil // disable all output
+	}
+
+	if dmr.TranscriptionDemo {
+		klog.Infof("TRANSCRIPTION: %s\n", rr.Message.Punctuated.Transcript)
+		return nil
+	}
+
 	data, err := json.Marshal(rr)
 	if err != nil {
 		klog.V(1).Infof("RecognitionResult json.Marshal failed. Err: %v\n", err)
@@ -49,10 +97,22 @@ func (dmr *DefaultMessageRouter) RecognitionResultMessage(rr *interfaces.Recogni
 	}
 
 	klog.Infof("\n\nRecognitionResult Object DUMP:\n%s\n\n", prettyJson)
+
 	return nil
 }
 
 func (dmr *DefaultMessageRouter) MessageResponseMessage(mr *interfaces.MessageResponse) error {
+	if dmr.ChatmessageDisable {
+		return nil // disable chat output
+	}
+
+	if dmr.ChatmessageDemo {
+		for _, msg := range mr.Messages {
+			klog.Infof("\n\nChat Message [%s]: %s\n\n", msg.From.Name, msg.Payload.Content)
+		}
+		return nil
+	}
+
 	data, err := json.Marshal(mr)
 	if err != nil {
 		klog.V(1).Infof("MessageResponse json.Marshal failed. Err: %v\n", err)
@@ -66,6 +126,7 @@ func (dmr *DefaultMessageRouter) MessageResponseMessage(mr *interfaces.MessageRe
 	}
 
 	klog.Infof("\n\nMessageResponse Object DUMP:\n%s\n\n", prettyJson)
+
 	return nil
 }
 
