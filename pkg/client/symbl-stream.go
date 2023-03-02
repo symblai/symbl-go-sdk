@@ -67,9 +67,9 @@ func NewStreamClient(ctx context.Context, options StreamingOptions) (*StreamClie
 
 	// is there a proxy?
 	streamingAddress := streaming.SymblPlatformHost
-	if len(options.ProxyAddress) > 0 {
-		streamingAddress = options.ProxyAddress
-		klog.V(3).Infof("Proxy Address: %s\n", streamingAddress)
+	if len(options.SymblEndpoint) > 0 {
+		streamingAddress = options.SymblEndpoint
+		klog.V(3).Infof("[OVERRIDE] Symbl Address: %s\n", streamingAddress)
 	}
 
 	// generate unique conversationId
@@ -87,11 +87,11 @@ func NewStreamClient(ctx context.Context, options StreamingOptions) (*StreamClie
 
 	// create client
 	creds := stream.Credentials{
-		Host:           streamingAddress,
-		Channel:        streamPath,
-		AccessKey:      restClient.auth.AccessToken,
-		Redirect:       len(options.ProxyAddress) > 0,
-		SkipServerAuth: options.SkipServerAuth,
+		Host:            streamingAddress,
+		Channel:         streamPath,
+		AccessKey:       restClient.auth.AccessToken,
+		RedirectService: options.RedirectService,
+		SkipServerAuth:  options.SkipServerAuth,
 	}
 	wsClient, err := stream.NewWebSocketClient(ctx, creds, symblStreaming)
 	if err != nil {

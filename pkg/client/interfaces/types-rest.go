@@ -8,6 +8,7 @@ package interfaces
 */
 // Credentials is the input needed to login to the Symbl.ai platform
 type Credentials struct {
+	AuthURI   string
 	Type      string `json:"type"`
 	AppId     string `json:"appId" validate:"required"`
 	AppSecret string `json:"appSecret" validate:"required"`

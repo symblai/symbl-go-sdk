@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	defaultWaitForCompletion int   = 60
+	defaultWaitForCompletion int64 = 120
 	defaultDelayBetweenCheck int64 = 2
 )
 
@@ -226,10 +226,9 @@ func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts asyncinte
 		return false, err
 	}
 
-	if jobStatusOpts.WaitInSeconds < 0 {
-		klog.V(1).Infof("Invalid wait interval. Input: %d\n", jobStatusOpts.WaitInSeconds)
-		klog.V(6).Infof("async.WaitForJobComplete LEAVE\n")
-		return false, ErrInvalidWaitTime
+	if jobStatusOpts.WaitInSeconds <= 0 {
+		jobStatusOpts.WaitInSeconds = defaultDelayBetweenCheck
+		klog.V(3).Infof("Use fauled wait interval. Input: %d\n", jobStatusOpts.WaitInSeconds)
 	}
 
 	// checks
@@ -237,19 +236,15 @@ func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts asyncinte
 		ctx = context.Background()
 	}
 
-	numOfLoops := float64(defaultWaitForCompletion) / float64(defaultDelayBetweenCheck)
-	if jobStatusOpts.WaitInSeconds != asyncinterfaces.UseDefaultWaitForCompletion {
-		numOfLoops = float64(jobStatusOpts.WaitInSeconds) / float64(defaultDelayBetweenCheck)
-		klog.V(4).Infof("User provided jobStatusOpts.WaitInSeconds\n")
-	}
-	klog.V(5).Infof("numOfLoops: %f\n", numOfLoops)
-	klog.V(5).Infof("WaitInSeconds: %f\n", jobStatusOpts.WaitInSeconds)
+	numOfLoops := defaultWaitForCompletion / jobStatusOpts.WaitInSeconds
+	klog.V(5).Infof("numOfLoops: %d\n", numOfLoops)
+	klog.V(5).Infof("WaitInSeconds: %d\n", jobStatusOpts.WaitInSeconds)
 
-	for i := 1; i <= int(numOfLoops); i++ {
+	for i := 0; i < int(numOfLoops); i++ {
 		// delay on subsequent calls
-		if i > 1 {
-			klog.V(4).Info("Sleep for retry...\n")
-			time.Sleep(time.Second * time.Duration(defaultDelayBetweenCheck))
+		if i > 0 {
+			klog.V(4).Infof("Sleep for retry #%d...\n", i)
+			time.Sleep(time.Second * time.Duration(jobStatusOpts.WaitInSeconds))
 		}
 
 		// check for completion

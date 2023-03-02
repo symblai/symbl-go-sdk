@@ -89,7 +89,7 @@ func (conn *WebSocketClient) Connect() *websocket.Conn {
 	dialer := websocket.Dialer{
 		HandshakeTimeout: 45 * time.Second,
 		TLSClientConfig:  &tls.Config{InsecureSkipVerify: true},
-		RedirectService:  conn.creds.Redirect,
+		RedirectService:  conn.creds.RedirectService,
 		SkipServerAuth:   conn.creds.SkipServerAuth,
 	}
 
