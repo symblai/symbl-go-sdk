@@ -4,9 +4,9 @@ go 1.18
 
 require (
 	github.com/davecgh/go-spew v1.1.0
+	github.com/dvonthenen/websocket v1.5.1-dyv.2
 	github.com/google/uuid v1.3.0
 	github.com/gordonklaus/portaudio v0.0.0-20220320131553-cc649ad523c1
-	github.com/gorilla/websocket v1.5.0
 	github.com/hokaccha/go-prettyjson v0.0.0-20211117102719-0474bc63780f
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	k8s.io/klog/v2 v2.80.1
@@ -24,6 +24,4 @@ require (
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
 
-replace github.com/gorilla/websocket => github.com/dvonthenen/websocket v1.5.1-0.20230208185225-642cd054e185
-
-// replace github.com/gorilla/websocket => ../../gorilla/websocket
+// replace github.com/dvonthenen/websocket => ../websocket
