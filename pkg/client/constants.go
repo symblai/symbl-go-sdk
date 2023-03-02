@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	AuthURI string = "https://api.symbl.ai/oauth2/token:generate"
+	defaultAuthURI string = "https://api.symbl.ai/oauth2/token:generate"
 )
 
 var (
@@ -20,9 +20,6 @@ var (
 
 	// ErrReauthFailure failed to re-authenticate to the symbl platform
 	ErrReauthFailure = errors.New("failed to re-authenticate to the symbl platform")
-
-	// ErrInvalidWaitTime the time to wait agurment is invalid
-	ErrInvalidWaitTime = errors.New("the time to wait agurment is invalid")
 
 	// ErrWebSocketInitializationFailed websocket initialization failed
 	ErrWebSocketInitializationFailed = errors.New("websocket initialization failed")

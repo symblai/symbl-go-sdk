@@ -25,11 +25,12 @@ type RestClient struct {
 	Streaming Client
 */
 type StreamingOptions struct {
-	UUID           string
-	ProxyAddress   string
-	SymblConfig    *cfginterfaces.StreamingConfig
-	Callback       rtinterfaces.InsightCallback
-	SkipServerAuth bool
+	UUID            string
+	SymblEndpoint   string
+	SymblConfig     *cfginterfaces.StreamingConfig
+	Callback        rtinterfaces.InsightCallback
+	SkipServerAuth  bool
+	RedirectService bool
 }
 
 type StreamClient struct {

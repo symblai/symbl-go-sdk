@@ -46,8 +46,16 @@ func NewRestClient(ctx context.Context) (*RestClient, error) {
 		klog.Errorln("APP_SECRET not found")
 		return nil, ErrInvalidInput
 	}
+	var symblEndpoint string
+	if v := os.Getenv("SYMBL_ENDPOINT"); v != "" {
+		klog.V(4).Info("SYMBL_ENDPOINT found")
+		symblEndpoint = v
+	} else {
+		klog.V(3).Infof("SYMBL_ENDPOINT not found. Use default.")
+	}
 
 	c := interfaces.Credentials{
+		AuthURI:   symblEndpoint,
 		AppId:     appId,
 		AppSecret: appSecret,
 	}
@@ -58,6 +66,12 @@ func NewRestClient(ctx context.Context) (*RestClient, error) {
 // server with APP_ID/APP_SECRET.
 func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (*RestClient, error) {
 	klog.V(6).Infof("NewWithCreds ENTER\n")
+
+	if len(creds.AuthURI) > 0 {
+		klog.V(3).Infof("[OVERRIDE] AuthURI: %s\n", creds.AuthURI)
+	} else {
+		creds.AuthURI = defaultAuthURI
+	}
 
 	// checks
 	if ctx == nil {
@@ -76,7 +90,7 @@ func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (
 		return nil, err
 	}
 
-	if creds.Type == "" {
+	if len(creds.Type) == 0 {
 		creds.Type = defaultAuthType
 	}
 
@@ -88,7 +102,7 @@ func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (
 		return nil, err
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "POST", AuthURI, bytes.NewBuffer(jsonStr))
+	req, err := http.NewRequestWithContext(ctx, "POST", creds.AuthURI, bytes.NewBuffer(jsonStr))
 	if err != nil {
 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("NewWithCreds LEAVE\n")
