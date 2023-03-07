@@ -147,13 +147,6 @@ func (conn *WebSocketClient) listen() {
 
 // Write struct to the websocket server
 func (conn *WebSocketClient) WriteBinary(byData []byte) error {
-	// conn.mu.Lock()
-	// defer conn.mu.Unlock()
-
-	// if conn.wsconn == nil {
-	// 	return ErrConnectionNoEstablished
-	// }
-
 	ed := &EncapsulatedMessage{
 		Type: websocket.BinaryMessage,
 		Data: byData,
@@ -179,13 +172,6 @@ func (conn *WebSocketClient) WriteBinary(byData []byte) error {
 
 // WriteJSON struct to the websocket server
 func (conn *WebSocketClient) WriteJSON(payload interface{}) error {
-	// conn.mu.Lock()
-	// defer conn.mu.Unlock()
-
-	// if conn.wsconn == nil {
-	// 	return ErrConnectionNoEstablished
-	// }
-
 	dataStruct, err := json.Marshal(payload)
 	if err != nil {
 		klog.V(1).Infof("WebSocketClient::Write json.Marshal failed. Err: %v\n", err)
@@ -240,16 +226,12 @@ func (conn *WebSocketClient) listenWrite() {
 			continue
 		}
 
-		// conn.mu.Lock()
-
 		if err := ws.WriteMessage(
 			em.Type,
 			em.Data,
 		); err != nil {
 			klog.V(1).Infof("WebSocketClient::listenWrite Write failed. Err: %v\n", err)
 		}
-
-		// conn.mu.Unlock()
 	}
 }
 
@@ -263,9 +245,6 @@ func (conn *WebSocketClient) Stop() {
 // Close will send close message and shutdown websocket connection
 func (conn *WebSocketClient) closeWs() {
 	klog.V(3).Infof("WebSocketClient::closeWs closing channels...\n")
-
-	// conn.mu.Lock()
-	// defer conn.mu.Unlock()
 
 	if conn.wsconn != nil {
 		conn.wsconn.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""), time.Now().Add(pingPeriod/2))
@@ -287,11 +266,7 @@ func (conn *WebSocketClient) ping() {
 				continue
 			}
 
-			// conn.mu.Lock()
-			err := conn.wsconn.WriteControl(websocket.PingMessage, []byte{}, time.Now().Add(pingPeriod/2))
-			// conn.mu.Unlock()
-
-			if err != nil {
+			if err := conn.wsconn.WriteControl(websocket.PingMessage, []byte{}, time.Now().Add(pingPeriod/2)); err != nil {
 				conn.closeWs()
 			}
 		case <-conn.ctx.Done():
