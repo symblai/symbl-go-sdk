@@ -24,14 +24,6 @@ var defaultUserAgent = fmt.Sprintf(
 	strings.Join([]string{runtime.Version(), runtime.GOOS, runtime.GOARCH}, ";"),
 )
 
-// Client which extends HTTP client
-type Client struct {
-	http.Client
-
-	d         *debugContainer
-	UserAgent string
-}
-
 func New() *Client {
 	// TODO: add verification later, pick up from ENV or FILE
 	/* #nosec G402 */
