@@ -3,6 +3,13 @@
 
 package stream
 
+import (
+	"context"
+	"sync"
+
+	"github.com/dvonthenen/websocket"
+)
+
 type WebSocketMessageCallback interface {
 	Message(byMsg []byte) error
 }
@@ -20,4 +27,21 @@ type Credentials struct {
 type EncapsulatedMessage struct {
 	Type int    `json:"type"`
 	Data []byte `json:"data"`
+}
+
+// WebSocketClient return websocket client connection
+type WebSocketClient struct {
+	configStr string
+	sendBuf   chan []byte
+	ctx       context.Context
+	ctxCancel context.CancelFunc
+
+	mu     sync.RWMutex
+	wsconn *websocket.Conn
+
+	creds    *Credentials
+	callback WebSocketMessageCallback
+
+	stopListen chan struct{}
+	stopPing   chan struct{}
 }

@@ -26,13 +26,6 @@ import (
 	simple "github.com/dvonthenen/symbl-go-sdk/pkg/client/simple"
 )
 
-// Client which extends basic client to support REST
-type Client struct {
-	*simple.Client
-
-	auth *AccessToken
-}
-
 func New() *Client {
 	c := Client{
 		Client: simple.New(),

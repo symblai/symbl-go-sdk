@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"sync"
 	"time"
 
 	"github.com/dvonthenen/websocket"
@@ -24,20 +23,6 @@ import (
 const (
 	pingPeriod = 30 * time.Second
 )
-
-// WebSocketClient return websocket client connection
-type WebSocketClient struct {
-	configStr string
-	sendBuf   chan []byte
-	ctx       context.Context
-	ctxCancel context.CancelFunc
-
-	mu     sync.RWMutex
-	wsconn *websocket.Conn
-
-	creds    *Credentials
-	callback WebSocketMessageCallback
-}
 
 // NewWebSocketClient create new websocket connection
 func NewWebSocketClient(ctx context.Context, creds Credentials, callback WebSocketMessageCallback) (*WebSocketClient, error) {
@@ -60,18 +45,16 @@ func NewWebSocketClient(ctx context.Context, creds Credentials, callback WebSock
 
 	// init
 	conn := WebSocketClient{
-		sendBuf:  make(chan []byte, 1),
-		creds:    &creds,
-		callback: callback,
+		sendBuf:    make(chan []byte, 1),
+		creds:      &creds,
+		callback:   callback,
+		stopListen: make(chan struct{}),
+		stopPing:   make(chan struct{}),
 	}
 	conn.ctx, conn.ctxCancel = context.WithCancel(ctx)
 
 	u := url.URL{Scheme: "wss", Host: creds.Host, Path: creds.Channel}
 	conn.configStr = u.String()
-
-	go conn.listen()
-	go conn.listenWrite()
-	go conn.ping()
 
 	klog.V(3).Infof("NewWebSocketClient Succeeded\n")
 	klog.V(6).Infof("NewWebSocketClient LEAVE\n")
@@ -110,7 +93,7 @@ func (conn *WebSocketClient) Connect() *websocket.Conn {
 	myHeader.Set("X-API-KEY", conn.creds.AccessKey)
 
 	// wait for handshake
-	ticker := time.NewTicker(time.Second)
+	ticker := time.NewTicker(500 * time.Millisecond)
 	defer ticker.Stop()
 	for ; ; <-ticker.C {
 		select {
@@ -123,21 +106,28 @@ func (conn *WebSocketClient) Connect() *websocket.Conn {
 				continue
 			}
 
+			// set the object to allow threads to function
 			conn.wsconn = ws
+
+			// kick off threads
+			go conn.listen(conn.stopListen)
+			go conn.listenWrite()
+			go conn.ping(conn.stopPing)
+
 			return conn.wsconn
 		}
 	}
 }
 
-func (conn *WebSocketClient) listen() {
+func (conn *WebSocketClient) listen(stopChan chan struct{}) {
 	klog.V(6).Infof("WebSocketClient::listen ENTER\n")
 	klog.V(3).Infof("listen for the messages: %s\n", conn.configStr)
 
-	ticker := time.NewTicker(time.Second)
+	ticker := time.NewTicker(500 * time.Millisecond)
 	defer ticker.Stop()
 	for {
 		select {
-		case <-conn.ctx.Done():
+		case <-stopChan:
 			return
 		case <-ticker.C:
 			for {
@@ -149,9 +139,9 @@ func (conn *WebSocketClient) listen() {
 				}
 				msgType, bytMsg, err := ws.ReadMessage()
 				if err != nil {
-					klog.V(1).Infof("Cannot read websocket message. Err: %v\n", err)
-					conn.closeWs()
-					break
+					klog.V(3).Infof("Cannot read websocket message. Err: %v\n", err)
+					klog.V(6).Infof("WebSocketClient::listen LEAVE\n")
+					return
 				}
 
 				if conn.callback != nil {
@@ -231,11 +221,13 @@ func (conn *WebSocketClient) Write(p []byte) (int, error) {
 }
 
 func (conn *WebSocketClient) listenWrite() {
+	klog.V(6).Infof("WebSocketClient::listen ENTER\n")
+
 	for data := range conn.sendBuf {
 		ws := conn.Connect()
 		if ws == nil {
 			klog.V(1).Infof("WebSocketClient::listenWrite Connect is not valid\n")
-			continue
+			return
 		}
 
 		var em EncapsulatedMessage
@@ -252,13 +244,21 @@ func (conn *WebSocketClient) listenWrite() {
 			klog.V(1).Infof("WebSocketClient::listenWrite Write failed. Err: %v\n", err)
 		}
 	}
+
+	klog.V(6).Infof("WebSocketClient::listen LEAVE\n")
 }
 
 // Close will send close message and shutdown websocket connection
 func (conn *WebSocketClient) Stop() {
 	klog.V(3).Infof("WebSocketClient::Stop Stopping...\n")
-	conn.ctxCancel()
+	conn.ctxCancel() // TODO: is this really needed?
 	conn.closeWs()
+
+	// stop threads
+	close(conn.stopListen)
+	<-conn.stopListen
+	close(conn.stopPing)
+	<-conn.stopPing
 }
 
 // Close will send close message and shutdown websocket connection
@@ -266,21 +266,25 @@ func (conn *WebSocketClient) closeWs() {
 	klog.V(3).Infof("WebSocketClient::closeWs closing channels...\n")
 
 	conn.mu.Lock()
+
 	if conn.wsconn != nil {
 		conn.wsconn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 		conn.wsconn.Close()
-		conn.wsconn = nil
 	}
+	conn.wsconn = nil
+
 	conn.mu.Unlock()
 }
 
-func (conn *WebSocketClient) ping() {
-	klog.V(3).Infof("WebSocketClient::ping started...\n")
+func (conn *WebSocketClient) ping(stopChan chan struct{}) {
+	klog.V(6).Infof("WebSocketClient::ping ENTER\n")
 
 	ticker := time.NewTicker(pingPeriod)
 	defer ticker.Stop()
 	for {
 		select {
+		case <-stopChan:
+			return
 		case <-ticker.C:
 			ws := conn.Connect()
 			if ws == nil {
@@ -289,8 +293,8 @@ func (conn *WebSocketClient) ping() {
 			if err := conn.wsconn.WriteControl(websocket.PingMessage, []byte{}, time.Now().Add(pingPeriod/2)); err != nil {
 				conn.closeWs()
 			}
-		case <-conn.ctx.Done():
-			return
 		}
 	}
+
+	klog.V(6).Infof("WebSocketClient::ping LEAVE\n")
 }
