@@ -103,7 +103,7 @@ func (conn *WebSocketClient) Connect() *websocket.Conn {
 			ws, _, err := dialer.DialContext(conn.ctx, conn.configStr, myHeader)
 			if err != nil {
 				klog.V(1).Infof("Cannot connect to websocket: %s\n", conn.configStr)
-				return nil
+				continue
 			}
 
 			// set the object to allow threads to function
@@ -251,7 +251,7 @@ func (conn *WebSocketClient) listenWrite() {
 // Close will send close message and shutdown websocket connection
 func (conn *WebSocketClient) Stop() {
 	klog.V(3).Infof("WebSocketClient::Stop Stopping...\n")
-	conn.ctxCancel()
+	conn.ctxCancel() // TODO: is this really needed?
 	conn.closeWs()
 
 	// stop threads
