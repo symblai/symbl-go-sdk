@@ -23,16 +23,12 @@ type Credentials struct {
 	SkipServerAuth  bool
 }
 
-// BinaryData format for sending audio
-type EncapsulatedMessage struct {
-	Type int    `json:"type"`
-	Data []byte `json:"data"`
-}
-
 // WebSocketClient return websocket client connection
 type WebSocketClient struct {
 	configStr string
 	sendBuf   chan []byte
+
+	org       context.Context
 	ctx       context.Context
 	ctxCancel context.CancelFunc
 
@@ -41,7 +37,4 @@ type WebSocketClient struct {
 
 	creds    *Credentials
 	callback WebSocketMessageCallback
-
-	stopListen chan struct{}
-	stopPing   chan struct{}
 }

@@ -19,7 +19,7 @@ import (
 
 func main() {
 	symbl.Init(symbl.SybmlInit{
-		LogLevel: symbl.LogLevelStandard,
+		LogLevel: symbl.LogLevelStandard, // LogLevelStandard, LogLevelFull, LogLevelTrace
 	})
 
 	ctx := context.Background()
