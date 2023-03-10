@@ -48,6 +48,7 @@ func NewWebSocketClient(ctx context.Context, creds Credentials, callback WebSock
 		org:      ctx,
 		creds:    &creds,
 		callback: callback,
+		retry:    true,
 	}
 	conn.ctx, conn.ctxCancel = context.WithCancel(ctx)
 
@@ -63,10 +64,23 @@ func (conn *WebSocketClient) Connect() *websocket.Conn {
 	return conn.ConnectWithRetry(defaultConnectRetry)
 }
 
+func (conn *WebSocketClient) AttemptReconnect(retries int64) *websocket.Conn {
+	conn.retry = true
+	return conn.ConnectWithRetry(retries)
+}
+
 func (conn *WebSocketClient) ConnectWithRetry(retries int64) *websocket.Conn {
+	// we explicitly stopped and should not attempt to reconnect
+	if !conn.retry {
+		return nil
+	}
+
+	// if the connection is good, return it
+	// otherwise, attempt reconnect
 	if conn.wsconn != nil {
 		select {
 		case <-conn.ctx.Done():
+			// continue through to reconnect by recreating the wsconn object
 			conn.ctx, conn.ctxCancel = context.WithCancel(conn.org)
 		default:
 			return conn.wsconn
@@ -122,6 +136,7 @@ func (conn *WebSocketClient) ConnectWithRetry(retries int64) *websocket.Conn {
 
 		// set the object to allow threads to function
 		conn.wsconn = ws
+		conn.retry = true
 
 		// kick off threads
 		go conn.listen()
@@ -147,7 +162,7 @@ func (conn *WebSocketClient) listen() {
 			for {
 				ws := conn.Connect()
 				if ws == nil {
-					klog.V(1).Infof("WebSocketClient::listen Connect is not valid\n")
+					klog.V(3).Infof("WebSocketClient::listen Connection is not valid\n")
 					break
 				}
 
@@ -234,6 +249,7 @@ func (conn *WebSocketClient) Write(p []byte) (int, error) {
 // Close will send close message and shutdown websocket connection
 func (conn *WebSocketClient) Stop() {
 	klog.V(3).Infof("WebSocketClient::Stop Stopping...\n")
+	conn.retry = false
 	conn.ctxCancel()
 	conn.closeWs()
 }
@@ -271,7 +287,6 @@ func (conn *WebSocketClient) ping() {
 			defer conn.mu.Unlock()
 
 			ws := conn.Connect()
-
 			if ws == nil {
 				klog.V(1).Infof("WebSocketClient::ping Connect is not valid\n")
 				break

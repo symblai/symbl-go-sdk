@@ -34,6 +34,7 @@ type WebSocketClient struct {
 
 	mu     sync.RWMutex
 	wsconn *websocket.Conn
+	retry  bool
 
 	creds    *Credentials
 	callback WebSocketMessageCallback
