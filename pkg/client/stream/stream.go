@@ -102,7 +102,7 @@ func (conn *WebSocketClient) ConnectWithRetry(retries int64) *websocket.Conn {
 	if headers, ok := conn.ctx.Value(interfaces.HeadersContext{}).(http.Header); ok {
 		for k, v := range headers {
 			for _, v := range v {
-				klog.V(5).Infof("Connect() RESTORE Header: %s = %s\n", k, v)
+				klog.V(4).Infof("Connect() RESTORE Header: %s = %s\n", k, v)
 				myHeader.Add(k, v)
 			}
 		}

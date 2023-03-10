@@ -113,7 +113,7 @@ func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (
 	if headers, ok := ctx.Value(interfaces.HeadersContext{}).(http.Header); ok {
 		for k, vs := range headers {
 			for _, v := range vs {
-				klog.V(5).Infof("NewRestClientWithCreds() RESTORE Header: %s = %s\n", k, v)
+				klog.V(4).Infof("NewRestClientWithCreds() RESTORE Header: %s = %s\n", k, v)
 				req.Header.Add(k, v)
 			}
 		}
