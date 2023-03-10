@@ -72,7 +72,7 @@ func (m *Microphone) Stream(w io.Writer) error {
 			klog.V(1).Infof("w.Write failed. Err: %v\n", err)
 			return err
 		}
-		klog.(7).Infof("io.Writer succeeded. Bytes written: %d\n", byteCount)
+		klog.V(7).Infof("io.Writer succeeded. Bytes written: %d\n", byteCount)
 
 		select {
 		case <-m.sig:
