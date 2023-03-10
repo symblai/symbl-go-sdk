@@ -237,8 +237,8 @@ func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts asyncinte
 	}
 
 	numOfLoops := defaultWaitForCompletion / jobStatusOpts.WaitInSeconds
-	klog.V(5).Infof("numOfLoops: %d\n", numOfLoops)
-	klog.V(5).Infof("WaitInSeconds: %d\n", jobStatusOpts.WaitInSeconds)
+	klog.V(4).Infof("numOfLoops: %d\n", numOfLoops)
+	klog.V(4).Infof("WaitInSeconds: %d\n", jobStatusOpts.WaitInSeconds)
 
 	for i := 0; i < int(numOfLoops); i++ {
 		// delay on subsequent calls

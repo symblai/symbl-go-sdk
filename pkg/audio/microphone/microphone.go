@@ -55,7 +55,7 @@ func (m *Microphone) Read() ([]int16, error) {
 
 	buf := make([]int16, 1024)
 	byteCopied := copy(buf, m.intBuf)
-	klog.V(5).Infof("stream.Read bytes copied: %d\n", byteCopied)
+	klog.V(7).Infof("stream.Read bytes copied: %d\n", byteCopied)
 	return buf, nil
 }
 
@@ -72,7 +72,7 @@ func (m *Microphone) Stream(w io.Writer) error {
 			klog.V(1).Infof("w.Write failed. Err: %v\n", err)
 			return err
 		}
-		klog.V(5).Infof("io.Writer succeeded. Bytes written: %d\n", byteCount)
+		klog.(7).Infof("io.Writer succeeded. Bytes written: %d\n", byteCount)
 
 		select {
 		case <-m.sig:
@@ -115,7 +115,7 @@ func (m *Microphone) int16ToLittleEndianByte(f []int16) []byte {
 	m.mute.Unlock()
 
 	if isMuted {
-		klog.V(5).Infof("Mic is MUTED!\n")
+		klog.V(7).Infof("Mic is MUTED!\n")
 		f = make([]int16, len(f))
 	}
 
