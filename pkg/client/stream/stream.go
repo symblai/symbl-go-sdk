@@ -72,6 +72,7 @@ func (conn *WebSocketClient) AttemptReconnect(retries int64) *websocket.Conn {
 func (conn *WebSocketClient) ConnectWithRetry(retries int64) *websocket.Conn {
 	// we explicitly stopped and should not attempt to reconnect
 	if !conn.retry {
+		klog.V(1).Infof("This connection has been terminated. Please either call with AttemptReconnect or create a new Client object using NewWebSocketClient.")
 		return nil
 	}
 
@@ -81,8 +82,10 @@ func (conn *WebSocketClient) ConnectWithRetry(retries int64) *websocket.Conn {
 		select {
 		case <-conn.ctx.Done():
 			// continue through to reconnect by recreating the wsconn object
+			klog.V(6).Infof("Connection is broken. Will attempt reconnect.")
 			conn.ctx, conn.ctxCancel = context.WithCancel(conn.org)
 		default:
+			klog.V(6).Infof("Connection is good. Return object.")
 			return conn.wsconn
 		}
 	}
@@ -115,7 +118,7 @@ func (conn *WebSocketClient) ConnectWithRetry(retries int64) *websocket.Conn {
 	i := int64(0)
 	for {
 		if retries != connectionRetryInfinite && i >= retries {
-			klog.V(1).Infof("Connect timeout\n")
+			klog.V(1).Infof("Connect timeout... exiting!\n")
 			break
 		}
 
@@ -135,6 +138,7 @@ func (conn *WebSocketClient) ConnectWithRetry(retries int64) *websocket.Conn {
 		}
 
 		// set the object to allow threads to function
+		klog.V(4).Infof("WebSocket Connection Successful!")
 		conn.wsconn = ws
 		conn.retry = true
 
@@ -150,7 +154,6 @@ func (conn *WebSocketClient) ConnectWithRetry(retries int64) *websocket.Conn {
 
 func (conn *WebSocketClient) listen() {
 	klog.V(6).Infof("WebSocketClient::listen ENTER\n")
-	klog.V(3).Infof("listen for the messages: %s\n", conn.configStr)
 
 	ticker := time.NewTicker(500 * time.Millisecond)
 	defer ticker.Stop()
@@ -204,6 +207,9 @@ func (conn *WebSocketClient) WriteBinary(byData []byte) error {
 		return err
 	}
 
+	klog.V(6).Infof("WriteBinary Successful\n")
+	klog.V(7).Infof("WriteBinary payload:\nData: %x\n", byData)
+
 	return nil
 }
 
@@ -232,6 +238,9 @@ func (conn *WebSocketClient) WriteJSON(payload interface{}) error {
 		klog.V(1).Infof("WebSocketClient::WriteJSON WriteMessage failed. Err: %v\n", err)
 		return err
 	}
+
+	klog.V(6).Infof("WriteJSON Successful\n")
+	klog.V(7).Infof("WriteJSON payload:\nData: %s\n", string(dataStruct))
 
 	return nil
 }
@@ -282,9 +291,7 @@ func (conn *WebSocketClient) ping() {
 		case <-conn.ctx.Done():
 			return
 		case <-ticker.C:
-			// doing a write, need to lock
-			conn.mu.Lock()
-			defer conn.mu.Unlock()
+			klog.V(6).Infof("Starting ping...")
 
 			ws := conn.Connect()
 			if ws == nil {
@@ -292,9 +299,17 @@ func (conn *WebSocketClient) ping() {
 				break
 			}
 
-			if err := ws.WriteControl(websocket.PingMessage, []byte{}, time.Now().Add(pingPeriod/2)); err != nil {
+			// doing a write, need to lock
+			conn.mu.Lock()
+			klog.V(6).Infof("Sending ping... need reply in %d\n", (pingPeriod / 2))
+			err := ws.WriteControl(websocket.PingMessage, []byte{}, time.Now().Add(pingPeriod/2))
+			conn.mu.Unlock()
+
+			if err != nil {
 				klog.V(1).Infof("WebSocketClient::ping failed\n")
 				conn.closeWs()
+			} else {
+				klog.V(4).Infof("Ping sent!")
 			}
 		}
 	}
