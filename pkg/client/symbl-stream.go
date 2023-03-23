@@ -16,10 +16,8 @@ import (
 )
 
 const (
-	defaultConfidenceThreshold float64 = 0.7
-	defaultSampleRateHertz     int     = 16000
-	defaultUserID              string  = "user@email.com"
-	defaultUserName            string  = "Jane Doe"
+	defaultUserID   string = "user@email.com"
+	defaultUserName string = "Jane Doe"
 )
 
 func GetDefaultConfig() *interfaces.StreamingConfig {
@@ -27,10 +25,6 @@ func GetDefaultConfig() *interfaces.StreamingConfig {
 
 	config.Type = streaming.TypeRequestStart
 	config.InsightTypes = []string{"topic", "question", "action_item", "follow_up"}
-	config.Config.MeetingTitle = "my-meeting"
-	config.Config.ConfidenceThreshold = defaultConfidenceThreshold
-	config.Config.SpeechRecognition.Encoding = "LINEAR16"
-	config.Config.SpeechRecognition.SampleRateHertz = defaultSampleRateHertz
 	config.Speaker.Name = defaultUserName
 	config.Speaker.UserID = defaultUserID
 

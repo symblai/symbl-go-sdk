@@ -7,31 +7,43 @@ import (
 	"bytes"
 	"encoding/binary"
 	"io"
-	"os"
-	"os/signal"
 
 	"github.com/gordonklaus/portaudio"
 	klog "k8s.io/klog/v2"
 )
 
-func Initialize(cfg AudioConfig) (*Microphone, error) {
+func Initialize() {
+	portaudio.Initialize()
+}
+
+func Teardown() {
+	portaudio.Terminate()
+}
+
+func New(cfg AudioConfig) (*Microphone, error) {
+	klog.V(6).Infof("Microphone.New ENTER\n")
+
 	m := &Microphone{
-		sig:    make(chan os.Signal, 1),
-		intBuf: make([]int16, 1024),
-		muted:  false,
+		stopChan: make(chan struct{}),
+		intBuf:   make([]int16, 1024),
+		muted:    false,
 	}
-	signal.Notify(m.sig, os.Interrupt, os.Kill)
 
 	portaudio.Initialize()
 
 	stream, err := portaudio.OpenDefaultStream(cfg.InputChannels, 0, float64(cfg.SamplingRate), len(m.intBuf), m.intBuf)
 	if err != nil {
 		klog.V(1).Infof("OpenDefaultStream failed. Err: %v\n", err)
+		klog.V(6).Infof("Microphone.New LEAVE\n")
 		return nil, err
 	}
 
+	// housekeeping
 	m.stream = stream
+
 	klog.V(3).Infof("OpenDefaultStream succeded\n")
+	klog.V(6).Infof("Microphone.New LEAVE\n")
+
 	return m, nil
 }
 
@@ -61,23 +73,22 @@ func (m *Microphone) Read() ([]int16, error) {
 
 func (m *Microphone) Stream(w io.Writer) error {
 	for {
-		err := m.stream.Read()
-		if err != nil {
-			klog.V(1).Infof("stream.Read failed. Err: %v\n", err)
-			return err
-		}
-
-		byteCount, err := w.Write(m.int16ToLittleEndianByte(m.intBuf))
-		if err != nil {
-			klog.V(1).Infof("w.Write failed. Err: %v\n", err)
-			return err
-		}
-		klog.V(7).Infof("io.Writer succeeded. Bytes written: %d\n", byteCount)
-
 		select {
-		case <-m.sig:
+		case <-m.stopChan:
 			return nil
 		default:
+			err := m.stream.Read()
+			if err != nil {
+				klog.V(1).Infof("stream.Read failed. Err: %v\n", err)
+				return err
+			}
+
+			byteCount, err := w.Write(m.int16ToLittleEndianByte(m.intBuf))
+			if err != nil {
+				klog.V(1).Infof("w.Write failed. Err: %v\n", err)
+				return err
+			}
+			klog.V(7).Infof("io.Writer succeeded. Bytes written: %d\n", byteCount)
 		}
 	}
 
@@ -102,11 +113,11 @@ func (m *Microphone) Stop() error {
 		klog.V(1).Infof("stream.Stop failed. Err: %v\n", err)
 		return err
 	}
-	return nil
-}
 
-func Teardown() {
-	portaudio.Terminate()
+	close(m.stopChan)
+	<-m.stopChan
+
+	return nil
 }
 
 func (m *Microphone) int16ToLittleEndianByte(f []int16) []byte {
