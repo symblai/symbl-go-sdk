@@ -72,7 +72,7 @@ func (conn *WebSocketClient) AttemptReconnect(retries int64) *websocket.Conn {
 func (conn *WebSocketClient) ConnectWithRetry(retries int64) *websocket.Conn {
 	// we explicitly stopped and should not attempt to reconnect
 	if !conn.retry {
-		klog.V(1).Infof("This connection has been terminated. Please either call with AttemptReconnect or create a new Client object using NewWebSocketClient.")
+		klog.V(5).Infof("This connection has been terminated. Please either call with AttemptReconnect or create a new Client object using NewWebSocketClient.")
 		return nil
 	}
 

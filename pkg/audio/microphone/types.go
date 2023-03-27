@@ -4,7 +4,6 @@
 package microphone
 
 import (
-	"os"
 	"sync"
 
 	"github.com/gordonklaus/portaudio"
@@ -18,11 +17,14 @@ type AudioConfig struct {
 
 // Microphone...
 type Microphone struct {
+	// microphone
 	stream *portaudio.Stream
 
+	// buffer
 	intBuf []int16
-	sig    chan os.Signal
 
-	mute  sync.Mutex
-	muted bool
+	// operational
+	stopChan chan struct{}
+	mute     sync.Mutex
+	muted    bool
 }

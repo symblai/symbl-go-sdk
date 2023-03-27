@@ -12,22 +12,21 @@ import (
 	"time"
 
 	streaming "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1"
-	microphone "github.com/dvonthenen/symbl-go-sdk/pkg/audio/microphone"
+	replay "github.com/dvonthenen/symbl-go-sdk/pkg/audio/replay"
 	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
 )
 
 func main() {
 	symbl.Init(symbl.SybmlInit{
-		LogLevel: symbl.LogLevelStandard, // LogLevelStandard, LogLevelFull, LogLevelTrace, LogLevelVerbose
+		LogLevel: symbl.LogLevelVerbose, // LogLevelStandard, LogLevelFull, LogLevelTrace, LogLevelVerbose
 	})
 
 	ctx := context.Background()
 
-	// init library
-	microphone.Initialize()
-
 	// create a new client
 	cfg := symbl.GetDefaultConfig()
+	cfg.Config.SpeechRecognition.Encoding = "MULAW"
+	cfg.Config.SpeechRecognition.SampleRateHertz = 8000
 	cfg.Speaker.Name = "John Doe"
 	cfg.Speaker.UserID = "john.doe@mymail.com"
 
@@ -54,28 +53,27 @@ func main() {
 	}
 
 	// delay...
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 5)
 
-	// mic stuf
-	mic, err := microphone.New(microphone.AudioConfig{
-		InputChannels: 1,
-		SamplingRate:  16000,
+	// replay stuff
+	play, err := replay.New(replay.ReplayOpts{
+		FullFilename: "testing.wav",
 	})
 	if err != nil {
-		fmt.Printf("Initialize failed. Err: %v\n", err)
+		fmt.Printf("replay.New failed. Err: %v\n", err)
 		os.Exit(1)
 	}
 
-	// start the mic
-	err = mic.Start()
+	// start replay
+	err = play.Start()
 	if err != nil {
-		fmt.Printf("mic.Start failed. Err: %v\n", err)
+		fmt.Printf("replay.Start failed. Err: %v\n", err)
 		os.Exit(1)
 	}
 
 	go func() {
 		// this is a blocking call
-		mic.Stream(client)
+		play.Stream(client)
 	}()
 
 	fmt.Print("Press ENTER to exit!\n\n")
@@ -83,14 +81,11 @@ func main() {
 	input.Scan()
 
 	// close stream
-	err = mic.Stop()
+	err = play.Stop()
 	if err != nil {
-		fmt.Printf("mic.Stop failed. Err: %v\n", err)
+		fmt.Printf("replay.Stop failed. Err: %v\n", err)
 		os.Exit(1)
 	}
-
-	// teardown library
-	microphone.Teardown()
 
 	// close client
 	client.Stop()
