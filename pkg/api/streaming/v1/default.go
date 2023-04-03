@@ -20,6 +20,13 @@ type DefaultMessageRouter struct {
 
 	ChatmessageDemo    bool
 	ChatmessageDisable bool
+
+	AllDisable     bool
+	InsightDisable bool
+	EntityDisable  bool
+	TopicDisable   bool
+	TrackerDisable bool
+	UserDisable    bool
 }
 
 func NewDefaultMessageRouter() *DefaultMessageRouter {
@@ -44,16 +51,60 @@ func NewDefaultMessageRouter() *DefaultMessageRouter {
 		chatmessageDisableStr = v
 	}
 
+	var allDisableStr string
+	if v := os.Getenv("SYMBL_ALL_DISABLE"); v != "" {
+		klog.V(4).Info("SYMBL_ALL_DISABLE found")
+		allDisableStr = v
+	}
+	var insightDisableStr string
+	if v := os.Getenv("SYMBL_INSIGHT_DISABLE"); v != "" {
+		klog.V(4).Info("SYMBL_INSIGHT_DISABLE found")
+		insightDisableStr = v
+	}
+	var entityDisableStr string
+	if v := os.Getenv("SYMBL_ENTITY_DISABLE"); v != "" {
+		klog.V(4).Info("SYMBL_ENTITY_DISABLE found")
+		entityDisableStr = v
+	}
+	var topicDisableStr string
+	if v := os.Getenv("SYMBL_TOPIC_DISABLE"); v != "" {
+		klog.V(4).Info("SYMBL_TOPIC_DISABLE found")
+		topicDisableStr = v
+	}
+	var trackerDisableStr string
+	if v := os.Getenv("SYMBL_TRACKER_DISABLE"); v != "" {
+		klog.V(4).Info("SYMBL_TRACKER_DISABLE found")
+		trackerDisableStr = v
+	}
+	var userDisableStr string
+	if v := os.Getenv("SYMBL_USER_DISABLE"); v != "" {
+		klog.V(4).Info("SYMBL_USER_DISABLE found")
+		userDisableStr = v
+	}
+
 	transcriptionDemo := strings.EqualFold(strings.ToLower(transcriptionDemoStr), "true")
 	transcriptionDisable := strings.EqualFold(strings.ToLower(transcriptionDisableStr), "true")
 	chatmessageDemo := strings.EqualFold(strings.ToLower(chatmessageDemoStr), "true")
 	chatmessageDisable := strings.EqualFold(strings.ToLower(chatmessageDisableStr), "true")
+
+	allDisable := strings.EqualFold(strings.ToLower(allDisableStr), "true")
+	insightDisable := strings.EqualFold(strings.ToLower(insightDisableStr), "true")
+	entityDisable := strings.EqualFold(strings.ToLower(entityDisableStr), "true")
+	topicDisable := strings.EqualFold(strings.ToLower(topicDisableStr), "true")
+	trackerDisable := strings.EqualFold(strings.ToLower(trackerDisableStr), "true")
+	userDisable := strings.EqualFold(strings.ToLower(userDisableStr), "true")
 
 	return &DefaultMessageRouter{
 		TranscriptionDemo:    transcriptionDemo,
 		TranscriptionDisable: transcriptionDisable,
 		ChatmessageDemo:      chatmessageDemo,
 		ChatmessageDisable:   chatmessageDisable,
+		AllDisable:           allDisable,
+		InsightDisable:       insightDisable,
+		EntityDisable:        entityDisable,
+		TopicDisable:         topicDisable,
+		TrackerDisable:       trackerDisable,
+		UserDisable:          userDisable,
 	}
 }
 
@@ -80,7 +131,15 @@ func (dmr *DefaultMessageRouter) RecognitionResultMessage(rr *interfaces.Recogni
 	}
 
 	if dmr.TranscriptionDemo {
+		// if rr.Message.IsFinal {
+		// 	klog.Infof("TRANSCRIPTION (FINAL): %s\n", rr.Message.Punctuated.Transcript)
+		// } else {
+		// 	for cnt, alternative := range rr.Message.Payload.Raw.Alternatives {
+		// 		klog.Infof("TRANSCRIPTION (Alt: %d, %f): %s\n", cnt, alternative.Confidence, alternative.Transcript)
+		// 	}
+		// }
 		klog.Infof("TRANSCRIPTION: %s\n", rr.Message.Punctuated.Transcript)
+
 		return nil
 	}
 
@@ -131,6 +190,10 @@ func (dmr *DefaultMessageRouter) MessageResponseMessage(mr *interfaces.MessageRe
 }
 
 func (dmr *DefaultMessageRouter) InsightResponseMessage(ir *interfaces.InsightResponse) error {
+	if dmr.AllDisable || dmr.InsightDisable {
+		return nil // disable all output
+	}
+
 	data, err := json.Marshal(ir)
 	if err != nil {
 		klog.V(1).Infof("InsightResponseMessage json.Marshal failed. Err: %v\n", err)
@@ -148,6 +211,10 @@ func (dmr *DefaultMessageRouter) InsightResponseMessage(ir *interfaces.InsightRe
 }
 
 func (dmr *DefaultMessageRouter) TopicResponseMessage(tr *interfaces.TopicResponse) error {
+	if dmr.AllDisable || dmr.TopicDisable {
+		return nil // disable all output
+	}
+
 	data, err := json.Marshal(tr)
 	if err != nil {
 		klog.V(1).Infof("TopicResponseMessage json.Marshal failed. Err: %v\n", err)
@@ -164,6 +231,10 @@ func (dmr *DefaultMessageRouter) TopicResponseMessage(tr *interfaces.TopicRespon
 	return nil
 }
 func (dmr *DefaultMessageRouter) TrackerResponseMessage(tr *interfaces.TrackerResponse) error {
+	if dmr.AllDisable || dmr.TrackerDisable {
+		return nil // disable all output
+	}
+
 	data, err := json.Marshal(tr)
 	if err != nil {
 		klog.V(1).Infof("TrackerResponseMessage json.Marshal failed. Err: %v\n", err)
@@ -181,6 +252,10 @@ func (dmr *DefaultMessageRouter) TrackerResponseMessage(tr *interfaces.TrackerRe
 }
 
 func (dmr *DefaultMessageRouter) EntityResponseMessage(tr *interfaces.EntityResponse) error {
+	if dmr.AllDisable || dmr.EntityDisable {
+		return nil // disable all output
+	}
+
 	data, err := json.Marshal(tr)
 	if err != nil {
 		klog.V(1).Infof("EntityResponseMessage json.Marshal failed. Err: %v\n", err)
@@ -215,6 +290,10 @@ func (dmr *DefaultMessageRouter) TeardownConversation(tm *interfaces.TeardownMes
 }
 
 func (dmr *DefaultMessageRouter) UserDefinedMessage(byMsg []byte) error {
+	if dmr.AllDisable || dmr.UserDisable {
+		return nil // disable all output
+	}
+
 	prettyJson, err := prettyjson.Format(byMsg)
 	if err != nil {
 		klog.V(1).Infof("prettyjson.Marshal failed. Err: %v\n", err)

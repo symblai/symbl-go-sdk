@@ -85,7 +85,7 @@ func (conn *WebSocketClient) ConnectWithRetry(retries int64) *websocket.Conn {
 			klog.V(6).Infof("Connection is broken. Will attempt reconnect.")
 			conn.ctx, conn.ctxCancel = context.WithCancel(conn.org)
 		default:
-			klog.V(6).Infof("Connection is good. Return object.")
+			klog.V(7).Infof("Connection is good. Return object.")
 			return conn.wsconn
 		}
 	}
@@ -207,7 +207,7 @@ func (conn *WebSocketClient) WriteBinary(byData []byte) error {
 		return err
 	}
 
-	klog.V(6).Infof("WriteBinary Successful\n")
+	klog.V(7).Infof("WriteBinary Successful\n")
 	klog.V(7).Infof("WriteBinary payload:\nData: %x\n", byData)
 
 	return nil

@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 
+	prettyjson "github.com/hokaccha/go-prettyjson"
 	klog "k8s.io/klog/v2"
 
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
@@ -89,16 +90,20 @@ func (smr *SymblMessageRouter) handlePlatformMessage(byMsg []byte) error {
 	switch smt.Message.Type {
 	// internal messages
 	case MessageTypeInitListening:
+		smr.printDebugMessages("SymblMessageRouter.PlatformMessage", byMsg)
 		klog.V(3).Infof("Symbl Platform Initialized Listening\n")
 	case MessageTypeInitConversation:
 		return smr.InitializedConversation(byMsg)
 	case MessageTypeInitRecognition:
+		smr.printDebugMessages("SymblMessageRouter.PlatformMessage", byMsg)
 		klog.V(3).Infof("Symbl Platform Initialized Recognition\n")
 	case MessageTypeSessionModified:
+		smr.printDebugMessages("SymblMessageRouter.PlatformMessage", byMsg)
 		klog.V(3).Infof("Symbl Platform Session Modified\n")
 	case MessageTypeTeardownConversation:
 		return smr.TeardownConversation(byMsg)
 	case MessageTypeTeardownRecognition:
+		smr.printDebugMessages("SymblMessageRouter.PlatformMessage", byMsg)
 		klog.V(3).Infof("Symbl Platform Teardown Recognition\n")
 	// transcription
 	case interfaces.MessageTypeRecognitionResult:
@@ -108,7 +113,7 @@ func (smr *SymblMessageRouter) handlePlatformMessage(byMsg []byte) error {
 		return smr.HandleError(byMsg)
 	// default handler
 	default:
-		klog.V(1).Infof("\n\nInvalid Type: %s\n", smt.Message.Type)
+		klog.V(1).Infof("\n\nInvalid PlatformMessage Type: %s\n", smt.Message.Type)
 		klog.V(1).Infof("%s\n\n", string(byMsg))
 		return ErrInvalidMessageType
 	}
@@ -120,6 +125,9 @@ func (smr *SymblMessageRouter) handlePlatformMessage(byMsg []byte) error {
 
 func (smr *SymblMessageRouter) InitializedConversation(byMsg []byte) error {
 	klog.V(6).Info("InitializedConversation ENTER\n")
+
+	// trace debugging
+	smr.printDebugMessages("SymblMessageRouter.InitializedConversation", byMsg)
 
 	var im interfaces.InitializationMessage
 	err := json.Unmarshal(byMsg, &im)
@@ -153,6 +161,9 @@ func (smr *SymblMessageRouter) InitializedConversation(byMsg []byte) error {
 func (smr *SymblMessageRouter) HandleError(byMsg []byte) error {
 	klog.V(6).Info("HandleError ENTER\n")
 
+	// trace debugging
+	smr.printDebugMessages("SymblMessageRouter.HandleError", byMsg)
+
 	var symbError SymblError
 	err := json.Unmarshal(byMsg, &symbError)
 	if err != nil {
@@ -175,6 +186,9 @@ func (smr *SymblMessageRouter) HandleError(byMsg []byte) error {
 
 func (smr *SymblMessageRouter) RecognitionResultMessage(byMsg []byte) error {
 	klog.V(6).Info("RecognitionResultMessage ENTER\n")
+
+	// trace debugging
+	smr.printDebugMessages("SymblMessageRouter.RecognitionResultMessage", byMsg)
 
 	var rr interfaces.RecognitionResult
 	err := json.Unmarshal(byMsg, &rr)
@@ -203,6 +217,9 @@ func (smr *SymblMessageRouter) RecognitionResultMessage(byMsg []byte) error {
 func (smr *SymblMessageRouter) MessageResponseMessage(byMsg []byte) error {
 	klog.V(6).Info("MessageResponseMessage ENTER\n")
 
+	// trace debugging
+	smr.printDebugMessages("SymblMessageRouter.MessageResponseMessage", byMsg)
+
 	var mr interfaces.MessageResponse
 	err := json.Unmarshal(byMsg, &mr)
 	if err != nil {
@@ -229,6 +246,9 @@ func (smr *SymblMessageRouter) MessageResponseMessage(byMsg []byte) error {
 
 func (smr *SymblMessageRouter) InsightResponseMessage(byMsg []byte) error {
 	klog.V(6).Info("InsightResponseMessage ENTER\n")
+
+	// trace debugging
+	smr.printDebugMessages("SymblMessageRouter.InsightResponseMessage", byMsg)
 
 	var ir interfaces.InsightResponse
 	err := json.Unmarshal(byMsg, &ir)
@@ -257,6 +277,9 @@ func (smr *SymblMessageRouter) InsightResponseMessage(byMsg []byte) error {
 func (smr *SymblMessageRouter) TopicResponseMessage(byMsg []byte) error {
 	klog.V(6).Info("TopicResponseMessage ENTER\n")
 
+	// trace debugging
+	smr.printDebugMessages("SymblMessageRouter.TopicResponseMessage", byMsg)
+
 	var tr interfaces.TopicResponse
 	err := json.Unmarshal(byMsg, &tr)
 	if err != nil {
@@ -283,6 +306,9 @@ func (smr *SymblMessageRouter) TopicResponseMessage(byMsg []byte) error {
 
 func (smr *SymblMessageRouter) TrackerResponseMessage(byMsg []byte) error {
 	klog.V(6).Info("TrackerResponseMessage ENTER\n")
+
+	// trace debugging
+	smr.printDebugMessages("SymblMessageRouter.TrackerResponseMessage", byMsg)
 
 	var tr interfaces.TrackerResponse
 	err := json.Unmarshal(byMsg, &tr)
@@ -311,6 +337,9 @@ func (smr *SymblMessageRouter) TrackerResponseMessage(byMsg []byte) error {
 func (smr *SymblMessageRouter) EntityResponseMessage(byMsg []byte) error {
 	klog.V(6).Info("EntityResponseMessage ENTER\n")
 
+	// trace debugging
+	smr.printDebugMessages("SymblMessageRouter.EntityResponseMessage", byMsg)
+
 	var er interfaces.EntityResponse
 	err := json.Unmarshal(byMsg, &er)
 	if err != nil {
@@ -337,6 +366,9 @@ func (smr *SymblMessageRouter) EntityResponseMessage(byMsg []byte) error {
 
 func (smr *SymblMessageRouter) TeardownConversation(byMsg []byte) error {
 	klog.V(6).Info("TeardownConversation ENTER\n")
+
+	// trace debugging
+	smr.printDebugMessages("SymblMessageRouter.TeardownConversation", byMsg)
 
 	var tm interfaces.TeardownMessage
 	err := json.Unmarshal(byMsg, &tm)
@@ -365,6 +397,9 @@ func (smr *SymblMessageRouter) TeardownConversation(byMsg []byte) error {
 func (smr *SymblMessageRouter) UnhandledMessage(byMsg []byte) error {
 	klog.V(6).Info("UnhandledMessage ENTER\n")
 
+	// trace debugging
+	smr.printDebugMessages("SymblMessageRouter.UnhandledMessage", byMsg)
+
 	if smr.callback != nil {
 		err := smr.callback.UnhandledMessage(byMsg)
 		if err != nil {
@@ -384,6 +419,9 @@ func (smr *SymblMessageRouter) UnhandledMessage(byMsg []byte) error {
 func (smr *SymblMessageRouter) UserDefinedMessage(byMsg []byte) error {
 	klog.V(6).Info("UserDefinedMessage ENTER\n")
 
+	// trace debugging
+	smr.printDebugMessages("SymblMessageRouter.UserDefinedMessage", byMsg)
+
 	if smr.callback != nil {
 		err := smr.callback.UserDefinedMessage(byMsg)
 		if err != nil {
@@ -398,4 +436,15 @@ func (smr *SymblMessageRouter) UserDefinedMessage(byMsg []byte) error {
 	klog.V(1).Infof("User callback is undefined\n")
 	klog.V(6).Infof("UserDefinedMessage LEAVE\n")
 	return ErrInvalidMessageType
+}
+
+func (smr *SymblMessageRouter) printDebugMessages(function string, byMsg []byte) {
+	prettyJson, err := prettyjson.Format(byMsg)
+	if err != nil {
+		klog.V(1).Infof("prettyjson.Marshal failed. Err: %v\n", err)
+	}
+
+	klog.V(6).Infof("\n\n-----------------------------------------------\n")
+	klog.V(6).Infof("%s RAW:\n%s\n", function, prettyJson)
+	klog.V(6).Infof("-----------------------------------------------\n\n\n")
 }

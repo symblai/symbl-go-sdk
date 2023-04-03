@@ -30,6 +30,8 @@ func main() {
 	cfg := symbl.GetDefaultConfig()
 	cfg.Speaker.Name = "John Doe"
 	cfg.Speaker.UserID = "john.doe@mymail.com"
+	cfg.Config.DetectEntities = true
+	cfg.Config.Sentiment = true
 
 	options := symbl.StreamingOptions{
 		SymblConfig: cfg,
