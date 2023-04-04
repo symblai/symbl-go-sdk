@@ -5,10 +5,11 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 
-	"github.com/davecgh/go-spew/spew"
+	prettyjson "github.com/hokaccha/go-prettyjson"
 
 	async "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1"
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
@@ -70,8 +71,21 @@ func main() {
 		os.Exit(1)
 	}
 
+	// print it
+	byData, err := json.Marshal(topicsResult)
+	if err != nil {
+		fmt.Printf("RecognitionResult json.Marshal failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+
+	prettyJson, err := prettyjson.Format(byData)
+	if err != nil {
+		fmt.Printf("prettyjson.Marshal failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+
 	fmt.Printf("\n\n")
-	spew.Dump(topicsResult)
+	fmt.Printf("%s\n", prettyJson)
 	fmt.Printf("\n\n")
 
 	// append to convo
@@ -107,8 +121,21 @@ func main() {
 		os.Exit(1)
 	}
 
+	// print it
+	byData, err = json.Marshal(topicsResult)
+	if err != nil {
+		fmt.Printf("RecognitionResult json.Marshal failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+
+	prettyJson, err = prettyjson.Format(byData)
+	if err != nil {
+		fmt.Printf("prettyjson.Marshal failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+
 	fmt.Printf("\n\n")
-	spew.Dump(topicsResult)
+	fmt.Printf("%s\n", prettyJson)
 	fmt.Printf("\n\n")
 
 	fmt.Printf("Succeeded")

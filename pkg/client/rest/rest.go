@@ -284,7 +284,7 @@ func (c *Client) doCommonText(ctx context.Context, conversationId string, text a
 	return nil
 }
 
-func (c *Client) DoFile(ctx context.Context, filePath string, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
+func (c *Client) DoFile(ctx context.Context, filePath string, ufRequest asyncinterfaces.AsyncURLFileRequest, resBody interface{}) error {
 	// file?
 	fileInfo, err := os.Stat(filePath)
 	if err != nil || errors.Is(err, os.ErrNotExist) {
@@ -316,30 +316,31 @@ func (c *Client) DoFile(ctx context.Context, filePath string, options asyncinter
 	switch extension {
 	case common.AudioTypeMP3:
 		klog.V(3).Infof("IsAudio = TRUE\n")
-		return c.doAudioFile(ctx, filePath, options, resBody)
+		return c.doAudioFile(ctx, filePath, ufRequest, resBody)
 	case common.AudioTypeMpeg:
 		klog.V(3).Infof("IsAudio = TRUE\n")
-		return c.doAudioFile(ctx, filePath, options, resBody)
+		return c.doAudioFile(ctx, filePath, ufRequest, resBody)
 	case common.AudioTypeWav:
 		klog.V(3).Infof("IsAudio = TRUE\n")
-		return c.doAudioFile(ctx, filePath, options, resBody)
+		return c.doAudioFile(ctx, filePath, ufRequest, resBody)
 	}
 
 	// assume video
 	klog.V(3).Infof("Defaulting IsVideo = TRUE\n")
-	return c.doVideoFile(ctx, filePath, options, resBody)
+	return c.doVideoFile(ctx, filePath, ufRequest, resBody)
 }
 
-func (c *Client) doAudioFile(ctx context.Context, filePath string, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
-	return c.doCommonFile(ctx, version.ProcessAudioURI, filePath, options, resBody)
+func (c *Client) doAudioFile(ctx context.Context, filePath string, ufRequest asyncinterfaces.AsyncURLFileRequest, resBody interface{}) error {
+	return c.doCommonFile(ctx, version.ProcessAudioURI, filePath, ufRequest, resBody)
 }
 
-func (c *Client) doVideoFile(ctx context.Context, filePath string, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
-	return c.doCommonFile(ctx, version.ProcessVideoURI, filePath, options, resBody)
+func (c *Client) doVideoFile(ctx context.Context, filePath string, ufRequest asyncinterfaces.AsyncURLFileRequest, resBody interface{}) error {
+	return c.doCommonFile(ctx, version.ProcessVideoURI, filePath, ufRequest, resBody)
 }
 
-func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
+func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, ufRequest asyncinterfaces.AsyncURLFileRequest, resBody interface{}) error {
 	klog.V(6).Infof("rest.doCommonFile ENTER\n")
+	klog.V(4).Infof("rest.doCommonFile apiURI: %s\n", apiURI)
 
 	// checks
 	fileInfo, err := os.Stat(filePath)
@@ -368,38 +369,51 @@ func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, opti
 	defer file.Close()
 
 	// start: until multipart post is supported, options must be used as a query string
-	params := make([]string, 0)
-	params = append(params, "?")
+	params := make(map[string][]string, 0)
 
-	if len(options.Name) > 0 {
-		params = append(params, fmt.Sprintf("name=%s", options.Name))
+	if len(ufRequest.Name) > 0 {
+		params["name"] = []string{ufRequest.Name}
 	}
-	if options.ConfidenceThreshold > 0 {
-		params = append(params, fmt.Sprintf("confidenceThreshold=%f", options.ConfidenceThreshold))
+	if ufRequest.ConfidenceThreshold > 0 {
+		params["confidenceThreshold"] = []string{fmt.Sprintf("%f", ufRequest.ConfidenceThreshold)}
 	}
-	if options.DetectPhrases {
-		params = append(params, fmt.Sprintf("detectPhrases=%t", options.DetectPhrases))
+	if ufRequest.DetectPhrases {
+		params["detectPhrases"] = []string{fmt.Sprintf("%t", ufRequest.DetectPhrases)}
 	}
-	if options.DetectEntities {
-		params = append(params, fmt.Sprintf("detectEntities=%t", options.DetectEntities))
+	if ufRequest.DetectEntities {
+		params["detectEntities"] = []string{fmt.Sprintf("%t", ufRequest.DetectEntities)}
 	}
-	if len(options.LanguageCode) > 0 {
-		params = append(params, fmt.Sprintf("languageCode=%s", options.LanguageCode))
+	if len(ufRequest.LanguageCode) > 0 {
+		params["languageCode"] = []string{ufRequest.LanguageCode}
 	}
-	for _, vocab := range options.CustomVocabulary {
-		params = append(params, fmt.Sprintf("customVocabulary=%s", vocab))
+	if len(ufRequest.CustomVocabulary) > 0 {
+		params["customVocabulary"] = ufRequest.CustomVocabulary
 	}
-	if options.ParentRefs {
-		params = append(params, fmt.Sprintf("parentRefs=%t", options.ParentRefs))
+	if ufRequest.ParentRefs {
+		params["parentRefs"] = []string{fmt.Sprintf("%t", ufRequest.ParentRefs)}
 	}
-	if options.Sentiment {
-		params = append(params, fmt.Sprintf("sentiment=%t", options.Sentiment))
+	if ufRequest.Sentiment {
+		params["sentiment"] = []string{fmt.Sprintf("%t", ufRequest.Sentiment)}
 	}
 	// end
 
+	// additional query parameters to URL
+	if parameters, ok := ctx.Value(interfaces.ParametersContext{}).(map[string][]string); ok {
+		for k, vs := range parameters {
+			klog.V(4).Infof("Append URL: %s = %v\n", k, vs)
+			params[k] = vs
+		}
+	}
+
 	URI := version.GetAsyncAPI(apiURI, baseName)
-	if len(params) > 1 {
-		URI = version.GetAsyncAPI(apiURI, baseName, params)
+	if len(params) > 0 {
+		queryString := "?"
+		for k, vs := range params {
+			for _, v := range vs {
+				queryString += fmt.Sprintf("%s=%s", k, v)
+			}
+		}
+		URI = URI + queryString
 	}
 	klog.V(6).Infof("URI: %s\n", URI)
 
@@ -483,9 +497,9 @@ func IsUrl(str string) bool {
 	return err == nil && u.Scheme != "" && u.Host != ""
 }
 
-func (c *Client) DoURL(ctx context.Context, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
+func (c *Client) DoURL(ctx context.Context, ufRequest asyncinterfaces.AsyncURLFileRequest, resBody interface{}) error {
 	// url
-	u, err := url.Parse(options.URL)
+	u, err := url.Parse(ufRequest.URL)
 	if err != nil {
 		klog.V(1).Infof("uri is invalid. Err: %v\n", err)
 		return err
@@ -505,52 +519,72 @@ func (c *Client) DoURL(ctx context.Context, options asyncinterfaces.AsyncOptions
 	switch extension {
 	case common.AudioTypeMP3:
 		klog.V(3).Infof("IsAudio = TRUE\n")
-		return c.doAudioURL(ctx, options, resBody)
+		return c.doAudioURL(ctx, ufRequest, resBody)
 	case common.AudioTypeMpeg:
 		klog.V(3).Infof("IsAudio = TRUE\n")
-		return c.doAudioURL(ctx, options, resBody)
+		return c.doAudioURL(ctx, ufRequest, resBody)
 	case common.AudioTypeWav:
 		klog.V(3).Infof("IsAudio = TRUE\n")
-		return c.doAudioURL(ctx, options, resBody)
+		return c.doAudioURL(ctx, ufRequest, resBody)
 	}
 
 	// assume video
 	klog.V(3).Infof("Default IsVideo = TRUE\n")
-	return c.doVideoURL(ctx, options, resBody)
+	return c.doVideoURL(ctx, ufRequest, resBody)
 }
 
-func (c *Client) doAudioURL(ctx context.Context, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
-	return c.doCommonURL(ctx, version.ProcessAudioURLURI, options, resBody)
+func (c *Client) doAudioURL(ctx context.Context, ufRequest asyncinterfaces.AsyncURLFileRequest, resBody interface{}) error {
+	return c.doCommonURL(ctx, version.ProcessAudioURLURI, ufRequest, resBody)
 }
 
-func (c *Client) doVideoURL(ctx context.Context, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
-	return c.doCommonURL(ctx, version.ProcessVideoURLURI, options, resBody)
+func (c *Client) doVideoURL(ctx context.Context, ufRequest asyncinterfaces.AsyncURLFileRequest, resBody interface{}) error {
+	return c.doCommonURL(ctx, version.ProcessVideoURLURI, ufRequest, resBody)
 }
 
-func (c *Client) doCommonURL(ctx context.Context, apiURI string, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
+func (c *Client) doCommonURL(ctx context.Context, apiURI string, ufRequest asyncinterfaces.AsyncURLFileRequest, resBody interface{}) error {
 	klog.V(6).Infof("rest.DoURL ENTER\n")
+	klog.V(4).Infof("rest.doCommonURL apiURI: %s\n", apiURI)
 
 	// checks
-	validURL := IsUrl(options.URL)
+	validURL := IsUrl(ufRequest.URL)
 	if !validURL {
-		klog.V(1).Infof("Invalid URL: %s\n", options.URL)
+		klog.V(1).Infof("Invalid URL: %s\n", ufRequest.URL)
 		klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 		return ErrInvalidInput
 	}
 
-	baseName := filepath.Base(strings.TrimSpace(options.URL))
-	klog.V(4).Infof("url: %s\n", options.URL)
+	baseName := filepath.Base(strings.TrimSpace(ufRequest.URL))
+	klog.V(4).Infof("url: %s\n", ufRequest.URL)
 	klog.V(4).Infof("baseName: %s\n", baseName)
 
-	if len(options.Name) == 0 {
-		options.Name = baseName
+	if len(ufRequest.Name) == 0 {
+		ufRequest.Name = baseName
+	}
+
+	// restore query parameters to URL
+	params := make(map[string][]string, 0)
+
+	if parameters, ok := ctx.Value(interfaces.ParametersContext{}).(map[string][]string); ok {
+		for k, vs := range parameters {
+			klog.V(4).Infof("Append URL: %s = %v\n", k, vs)
+			params[k] = vs
+		}
 	}
 
 	URI := version.GetAsyncAPI(apiURI)
+	if len(params) > 1 {
+		queryString := "?"
+		for k, vs := range params {
+			for _, v := range vs {
+				queryString += fmt.Sprintf("%s=%s", k, v)
+			}
+		}
+		URI = URI + queryString
+	}
 	klog.V(6).Infof("URI: %s\n", URI)
 
 	var buf bytes.Buffer
-	err := json.NewEncoder(&buf).Encode(options)
+	err := json.NewEncoder(&buf).Encode(ufRequest)
 	if err != nil {
 		klog.V(1).Infof("json.NewEncoder().Encode() failed. Err: %v\n", err)
 		klog.V(6).Infof("rest.doCommonURL LEAVE\n")

@@ -14,6 +14,7 @@ import (
 	async "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1"
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
 	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	cfginterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
 func main() {
@@ -23,14 +24,14 @@ func main() {
 
 	/*
 		------------------------------------
-		Summary UI
+		async (file)
 		------------------------------------
 	*/
 	ctx := context.Background()
 
 	restClient, err := symbl.NewRestClient(ctx)
 	if err == nil {
-		fmt.Println("Succeeded!")
+		fmt.Println("Succeeded!\n\n")
 	} else {
 		fmt.Printf("New failed. Err: %v\n", err)
 		os.Exit(1)
@@ -38,7 +39,7 @@ func main() {
 
 	asyncClient := async.New(restClient)
 
-	jobConvo, err := asyncClient.PostURL(ctx, "https://symbltestdata.s3.us-east-2.amazonaws.com/newPhonecall.mp3")
+	jobConvo, err := asyncClient.PostFile(ctx, "phoneNumber.mp3")
 	if err == nil {
 		fmt.Printf("JobID: %s, ConversationID: %s\n\n", jobConvo.JobID, jobConvo.ConversationID)
 	} else {
@@ -56,14 +57,20 @@ func main() {
 		os.Exit(1)
 	}
 
-	summaryResult, err := asyncClient.GetSummaryUI(ctx, jobConvo.ConversationID, "https://symbltestdata.s3.us-east-2.amazonaws.com/newPhonecall.mp3")
+	// custom headers to enable options
+	params := make(map[string][]string, 0)
+	params["exclude"] = []string{"[\"PERSON_NAME\"]"}
+	params["redact"] = []string{"true"}
+	ctx = cfginterfaces.WithCustomParameters(ctx, params)
+
+	messagesResult, err := asyncClient.GetMessages(ctx, jobConvo.ConversationID)
 	if err != nil {
-		fmt.Printf("GetSummaryUI failed. Err: %v\n", err)
+		fmt.Printf("Messages failed. Err: %v\n", err)
 		os.Exit(1)
 	}
 
 	// print it
-	byData, err := json.Marshal(summaryResult)
+	byData, err := json.Marshal(messagesResult)
 	if err != nil {
 		fmt.Printf("RecognitionResult json.Marshal failed. Err: %v\n", err)
 		os.Exit(1)
