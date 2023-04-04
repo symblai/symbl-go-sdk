@@ -159,25 +159,25 @@ func (c *RestClient) DoAppendTextWithOptions(ctx context.Context, conversationId
 	return c.Client.DoAppendText(ctx, conversationId, options, resBody)
 }
 
-func (c *RestClient) DoFileWithOptions(ctx context.Context, filePath string, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
-	return c.Client.DoFile(ctx, filePath, options, resBody)
+func (c *RestClient) DoFileWithOptions(ctx context.Context, filePath string, ufRequest asyncinterfaces.AsyncURLFileRequest, resBody interface{}) error {
+	return c.Client.DoFile(ctx, filePath, ufRequest, resBody)
 }
 
-func (c *RestClient) DoURLWithOptions(ctx context.Context, options asyncinterfaces.AsyncOptions, resBody interface{}) error {
-	return c.Client.DoURL(ctx, options, resBody)
+func (c *RestClient) DoURLWithOptions(ctx context.Context, ufRequest asyncinterfaces.AsyncURLFileRequest, resBody interface{}) error {
+	return c.Client.DoURL(ctx, ufRequest, resBody)
 }
 
 func (c *RestClient) DoFile(ctx context.Context, filePath string, resBody interface{}) error {
-	options := asyncinterfaces.AsyncOptions{}
-	return c.DoFileWithOptions(ctx, filePath, options, resBody)
+	ufRequest := asyncinterfaces.AsyncURLFileRequest{}
+	return c.DoFileWithOptions(ctx, filePath, ufRequest, resBody)
 }
 
 func (c *RestClient) DoURL(ctx context.Context, url string, resBody interface{}) error {
-	options := asyncinterfaces.AsyncOptions{
+	ufRequest := asyncinterfaces.AsyncURLFileRequest{
 		URL: url,
 	}
 
-	return c.DoURLWithOptions(ctx, options, resBody)
+	return c.DoURLWithOptions(ctx, ufRequest, resBody)
 }
 
 func (c *RestClient) Do(ctx context.Context, req *http.Request, resBody interface{}) error {

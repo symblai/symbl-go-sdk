@@ -31,6 +31,13 @@ func WithCustomHeaders(ctx context.Context, headers http.Header) context.Context
 	return context.WithValue(ctx, HeadersContext{}, headers)
 }
 
+// query
+type ParametersContext struct{}
+
+func WithCustomParameters(ctx context.Context, params map[string][]string) context.Context {
+	return context.WithValue(ctx, ParametersContext{}, params)
+}
+
 /*
 	RawResponse may be used with the Do method as the resBody argument in order
 	to capture the raw response data.

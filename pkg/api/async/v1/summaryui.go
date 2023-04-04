@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -88,7 +89,9 @@ func (c *Client) GetTextSummaryUI(ctx context.Context, conversationId string, re
 	}
 
 	// request
-	URI := version.GetAsyncAPI(version.SummaryURI, conversationId)
+	URI := fmt.Sprintf("%s?%s",
+		version.GetAsyncAPI(version.SummaryURI, conversationId),
+		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
 
 	jsonStr, err := json.Marshal(request)
@@ -137,7 +140,9 @@ func (c *Client) GetAudioSummaryUI(ctx context.Context, conversationId string, r
 	}
 
 	// request
-	URI := version.GetAsyncAPI(version.SummaryURI, conversationId)
+	URI := fmt.Sprintf("%s?%s",
+		version.GetAsyncAPI(version.SummaryURI, conversationId),
+		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
 
 	jsonStr, err := json.Marshal(request)
@@ -186,7 +191,9 @@ func (c *Client) GetVideoSummaryUI(ctx context.Context, conversationId string, r
 	}
 
 	// request
-	URI := version.GetAsyncAPI(version.SummaryURI, conversationId)
+	URI := fmt.Sprintf("%s?%s",
+		version.GetAsyncAPI(version.SummaryURI, conversationId),
+		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
 
 	jsonStr, err := json.Marshal(request)

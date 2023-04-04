@@ -5,6 +5,7 @@ package async
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	klog "k8s.io/klog/v2"
@@ -23,7 +24,9 @@ func (c *Client) GetConversations(ctx context.Context) (*asyncinterfaces.Convers
 	}
 
 	// request
-	URI := version.GetAsyncAPI(version.ConversationsURI)
+	URI := fmt.Sprintf("%s?%s",
+		version.GetAsyncAPI(version.ConversationsURI),
+		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
@@ -65,7 +68,9 @@ func (c *Client) GetConversation(ctx context.Context, conversationId string) (*a
 	}
 
 	// request
-	URI := version.GetAsyncAPI(version.ConversationURI, conversationId)
+	URI := fmt.Sprintf("%s?%s",
+		version.GetAsyncAPI(version.ConversationURI, conversationId),
+		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)

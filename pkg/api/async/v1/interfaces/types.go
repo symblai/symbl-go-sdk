@@ -241,8 +241,8 @@ type TextMessage struct {
 /*
 	Input parameters for Async API calls
 */
-// AsyncOptions for PostURL PostFile
-type AsyncOptions struct {
+// AsyncURLFileRequest for PostURL PostFile
+type AsyncURLFileRequest struct {
 	CustomVocabulary                    []string          `json:"customVocabulary,omitempty"`
 	ChannelMetadata                     []ChannelMetadata `json:"channelMetadata,omitempty"`
 	URL                                 string            `json:"url,omitempty"`

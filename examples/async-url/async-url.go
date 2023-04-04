@@ -5,10 +5,11 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 
-	"github.com/davecgh/go-spew/spew"
+	prettyjson "github.com/hokaccha/go-prettyjson"
 
 	async "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1"
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
@@ -55,14 +56,28 @@ func main() {
 		os.Exit(1)
 	}
 
-	topicsResult, err := asyncClient.GetTopics(ctx, jobConvo.ConversationID)
+	messagesResult, err := asyncClient.GetMessages(ctx, jobConvo.ConversationID)
 	if err != nil {
-		fmt.Printf("Topics failed. Err: %v\n", err)
+		fmt.Printf("Messages failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+
+	// print it
+	byData, err := json.Marshal(messagesResult)
+	if err != nil {
+		fmt.Printf("RecognitionResult json.Marshal failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+
+	prettyJson, err := prettyjson.Format(byData)
+	if err != nil {
+		fmt.Printf("prettyjson.Marshal failed. Err: %v\n", err)
 		os.Exit(1)
 	}
 
 	fmt.Printf("\n\n")
-	spew.Dump(topicsResult)
+	fmt.Printf("%s\n", prettyJson)
+	fmt.Printf("\n\n")
 
 	fmt.Printf("Succeeded")
 }

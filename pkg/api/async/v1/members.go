@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	klog "k8s.io/klog/v2"
@@ -30,7 +31,9 @@ func (c *Client) GetMembers(ctx context.Context, conversationId string) (*asynci
 	}
 
 	// request
-	URI := version.GetAsyncAPI(version.MembersURI, conversationId)
+	URI := fmt.Sprintf("%s?%s",
+		version.GetAsyncAPI(version.MembersURI, conversationId),
+		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
 
 	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
@@ -72,7 +75,9 @@ func (c *Client) UpdateMember(ctx context.Context, conversationId string, member
 	}
 
 	// request
-	URI := version.GetAsyncAPI(version.MemberURI, conversationId, member.ID)
+	URI := fmt.Sprintf("%s?%s",
+		version.GetAsyncAPI(version.MemberURI, conversationId, member.ID),
+		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
 
 	jsonStr, err := json.Marshal(member)
@@ -119,7 +124,9 @@ func (c *Client) UpdateSpeakers(ctx context.Context, conversationId string, spea
 	}
 
 	// request
-	URI := version.GetAsyncAPI(version.SpeakersURI, conversationId)
+	URI := fmt.Sprintf("%s?%s",
+		version.GetAsyncAPI(version.SpeakersURI, conversationId),
+		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
 
 	jsonStr, err := json.Marshal(speakers)
