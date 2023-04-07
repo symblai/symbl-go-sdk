@@ -73,7 +73,7 @@ If you have any questions, feel free to contact us at devrelations@symbl.ai or t
 
 This SDK is actively developed, and we love to hear from you! Please feel free to [create an issue][issues] or [open a pull request][pulls] with your questions, comments, suggestions, and feedback. If you liked our integration guide, please star our repo!
 
-This library is released under the [MIT License][license]
+This library is released under the [Apache 2.0 License][license]
 
 
 [api-keys]: https://platform.symbl.ai/#/login
