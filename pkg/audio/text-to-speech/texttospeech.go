@@ -1,5 +1,6 @@
 // Copyright 2023 Symbl.ai SDK contributors. All Rights Reserved.
-// SPDX-License-Identifier: MIT
+// Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
+// SPDX-License-Identifier: Apache-2.0
 
 package texttospeech
 
