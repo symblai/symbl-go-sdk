@@ -5,6 +5,17 @@
 package interfaces
 
 /*
+	Internal package messages
+*/
+type ConversationInitialization struct {
+	ConversationID string `json:"conversationId"`
+}
+
+type ConversationTeardown struct {
+	ConversationID string `json:"conversationId"`
+}
+
+/*
 	Shared definitions
 */
 type User struct {
