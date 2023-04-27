@@ -5,7 +5,7 @@
 package interfaces
 
 type InsightCallback interface {
-	InitializedConversation(ci *ConversationInitialization) error
+	InitializedConversation(ci *InitializationMessage) error
 	MessageResult(mr *MessageResult) error
 	QuestionResult(qr *QuestionResult) error
 	FollowUpResult(fr *FollowUpResult) error
@@ -15,7 +15,7 @@ type InsightCallback interface {
 	TrackerResult(tr *TrackerResult) error
 	EntityResult(er *EntityResult) error
 	SummaryUIResult(er *SummaryUIResult) error
-	TeardownConversation(ct *ConversationTeardown) error
+	TeardownConversation(ct *TeardownMessage) error
 
 	// TODO: need to make the case for this callback. Violates immutable rule.
 	// MembersResult(er *MembersResult) error
