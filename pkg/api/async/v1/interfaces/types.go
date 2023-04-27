@@ -7,11 +7,11 @@ package interfaces
 /*
 	Internal package messages
 */
-type ConversationInitialization struct {
+type InitializationMessage struct {
 	ConversationID string `json:"conversationId"`
 }
 
-type ConversationTeardown struct {
+type TeardownMessage struct {
 	ConversationID string `json:"conversationId"`
 }
 
