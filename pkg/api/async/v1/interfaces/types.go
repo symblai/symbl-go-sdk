@@ -5,17 +5,6 @@
 package interfaces
 
 /*
-	Internal package messages
-*/
-type InitializationMessage struct {
-	ConversationID string `json:"conversationId"`
-}
-
-type TeardownMessage struct {
-	ConversationID string `json:"conversationId"`
-}
-
-/*
 	Shared definitions
 */
 type User struct {
@@ -396,4 +385,15 @@ type BookmarkSummaryResult struct {
 
 type BookmarksSummaryResult struct {
 	BookmarksSummary []BookmarksSummary `json:"bookmarksSummary"`
+}
+
+/*
+	Internal package messages
+*/
+type InitializationMessage struct {
+	ConversationID string `json:"conversationId"`
+}
+
+type TeardownMessage struct {
+	ConversationID string `json:"conversationId"`
 }
