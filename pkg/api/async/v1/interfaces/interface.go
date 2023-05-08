@@ -11,15 +11,15 @@ type InsightCallback interface {
 	FollowUpResult(fr *FollowUpResult) error
 	ActionItemResult(air *ActionItemResult) error
 	TopicResult(tr *TopicResult) error
-	SummaryResult(tr *SummaryResult) error
 	TrackerResult(tr *TrackerResult) error
 	EntityResult(er *EntityResult) error
-	SummaryUIResult(er *SummaryUIResult) error
 	TeardownConversation(ct *TeardownMessage) error
 
 	// TODO: need to make the case for this callback. Violates immutable rule.
 	// MembersResult(er *MembersResult) error
+	// SummaryResult(tr *SummaryResult) error
 	// BookmarksResult(er *BookmarksResult) error
 	// BookmarkSummaryResult(er *BookmarkSummaryResult) error
 	// BookmarksSummaryResult(er *BookmarksSummaryResult) error
+	// SummaryUIResult(er *SummaryUIResult) error
 }
