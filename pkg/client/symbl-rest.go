@@ -66,7 +66,7 @@ func NewRestClient(ctx context.Context) (*RestClient, error) {
 // NewRestClientWithCreds creates a new client on the Symbl.ai platform. The client authenticates with the
 // server with APP_ID/APP_SECRET.
 func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (*RestClient, error) {
-	klog.V(6).Infof("NewWithCreds ENTER\n")
+	klog.V(6).Infof("NewRestClientWithCreds ENTER\n")
 
 	if len(creds.AuthURI) > 0 {
 		klog.V(3).Infof("[OVERRIDE] AuthURI: %s\n", creds.AuthURI)
@@ -85,9 +85,9 @@ func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (
 	err := v.Struct(creds)
 	if err != nil {
 		for _, e := range err.(validator.ValidationErrors) {
-			klog.V(1).Infof("NewWithCreds validation failed. Err: %v\n", e)
+			klog.V(1).Infof("NewRestClientWithCreds validation failed. Err: %v\n", e)
 		}
-		klog.V(6).Infof("NewWithCreds LEAVE\n")
+		klog.V(6).Infof("NewRestClientWithCreds LEAVE\n")
 		return nil, err
 	}
 
@@ -99,14 +99,14 @@ func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (
 	jsonStr, err := json.Marshal(creds)
 	if err != nil {
 		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
-		klog.V(6).Infof("NewWithCreds LEAVE\n")
+		klog.V(6).Infof("NewRestClientWithCreds LEAVE\n")
 		return nil, err
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "POST", creds.AuthURI, bytes.NewBuffer(jsonStr))
 	if err != nil {
 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
-		klog.V(6).Infof("NewWithCreds LEAVE\n")
+		klog.V(6).Infof("NewRestClientWithCreds LEAVE\n")
 		return nil, err
 	}
 
@@ -132,7 +132,7 @@ func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (
 
 	if resp.AccessToken == "" {
 		klog.V(1).Infof("Symbl auth token is empty\n")
-		klog.V(6).Infof("NewWithCreds LEAVE\n")
+		klog.V(6).Infof("NewRestClientWithCreds LEAVE\n")
 		return nil, ErrAuthFailure
 	}
 
@@ -147,8 +147,56 @@ func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (
 		auth:   &resp,
 	}
 
-	klog.V(3).Infof("NewWithCreds Succeeded\n")
-	klog.V(6).Infof("NewWithCreds LEAVE\n")
+	klog.V(3).Infof("NewRestClientWithCreds Succeeded\n")
+	klog.V(6).Infof("NewRestClientWithCreds LEAVE\n")
+	return c, nil
+}
+
+// NewRestClientWithToken creates a new client on the Symbl.ai platform. The client authenticates
+// reusing an already valid auth token
+func NewRestClientWithToken(ctx context.Context, accessToken string) (*RestClient, error) {
+	klog.V(6).Infof("NewRestClientWithToken ENTER\n")
+
+	creds := interfaces.Credentials{
+		Type: defaultAuthType,
+	}
+	resp := interfaces.AuthResp{
+		AccessToken: accessToken,
+	}
+
+	if len(creds.AuthURI) > 0 {
+		klog.V(3).Infof("[OVERRIDE] AuthURI: %s\n", creds.AuthURI)
+	} else {
+		creds.AuthURI = defaultAuthURI
+	}
+
+	// checks
+	if ctx == nil {
+		klog.V(3).Infof("Empty Context... Creating new one!\n")
+		ctx = context.Background()
+	}
+
+	// validate input
+	if resp.AccessToken == "" {
+		klog.V(1).Infof("Symbl auth token is empty\n")
+		klog.V(6).Infof("NewRestClientWithToken LEAVE\n")
+		return nil, ErrInvalidInput
+	}
+
+	restClient := rest.New()
+	restClient.SetAuthorization(&rest.AccessToken{
+		AccessToken: resp.AccessToken,
+		ExpiresOn:   time.Now().Add(time.Hour * 24),
+	})
+
+	c := &RestClient{
+		Client: restClient,
+		creds:  &creds,
+		auth:   &resp,
+	}
+
+	klog.V(3).Infof("NewRestClientWithToken Succeeded\n")
+	klog.V(6).Infof("NewRestClientWithToken LEAVE\n")
 	return c, nil
 }
 
@@ -196,7 +244,7 @@ func (c *RestClient) Do(ctx context.Context, req *http.Request, resBody interfac
 		err = c.Client.Do(ctx, req, resBody)
 
 		if e, ok := err.(*interfaces.StatusError); ok {
-			if e.Resp.StatusCode == http.StatusUnauthorized {
+			if e.Resp.StatusCode == http.StatusUnauthorized && len(c.creds.AppId) > 0 && len(c.creds.AppSecret) > 0 {
 
 				klog.V(3).Info("Received http.StatusUnauthorized\n")
 				newClient, reauthErr := NewRestClientWithCreds(ctx, *c.creds)
