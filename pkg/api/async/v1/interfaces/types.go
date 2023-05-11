@@ -303,97 +303,97 @@ type BookmarkRequest struct {
 }
 
 type TextSummaryRequest struct {
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 }
 
 type AudioSummaryRequest struct {
-	Name     string `json:"name"`
-	AudioURL string `json:"audioUrl"`
+	Name     string `json:"name,omitempty"`
+	AudioURL string `json:"audioUrl,omitempty"`
 }
 
 type VideoSummaryRequest struct {
-	Name     string `json:"name"`
-	VideoURL string `json:"videoUrl"`
+	Name     string `json:"name,omitempty"`
+	VideoURL string `json:"videoUrl,omitempty"`
 }
 
 type UpdateSpeakerRequest struct {
-	SpeakerEvents []SpeakerEvent `json:"speakerEvents"`
+	SpeakerEvents []SpeakerEvent `json:"speakerEvents,omitempty"`
 }
 
 /*
 	Output parameters for Async API calls
 */
 type TopicResult struct {
-	Topics []Topic `json:"topics"`
+	Topics []Topic `json:"topics,omitempty"`
 }
 
 type QuestionResult struct {
-	Questions []Question `json:"questions"`
+	Questions []Question `json:"questions,omitempty"`
 }
 
 type FollowUpResult struct {
-	FollowUps []FollowUp `json:"followUps"`
+	FollowUps []FollowUp `json:"followUps,omitempty"`
 }
 
 type EntityResult struct {
-	Entities []Entity `json:"entities"`
+	Entities []Entity `json:"entities,omitempty"`
 }
 
 type ActionItemResult struct {
-	ActionItems []ActionItem `json:"actionItems"`
+	ActionItems []ActionItem `json:"actionItems,omitempty"`
 }
 
 type MessageResult struct {
-	Messages []Message `json:"messages"`
+	Messages []Message `json:"messages,omitempty"`
 }
 
 type SummaryResult struct {
-	Summaries []Summary `json:"summary"`
+	Summaries []Summary `json:"summary,omitempty"`
 }
 
 type AnalyticsResult struct {
-	Metrics []Metric `json:"metrics"`
-	Members []Member `json:"members"`
+	Metrics []Metric `json:"metrics,omitempty"`
+	Members []Member `json:"members,omitempty"`
 }
 
 type TrackerResult struct {
-	ID      string         `json:"id"`
-	Name    string         `json:"name"`
-	Matches []TrackerMatch `json:"matches"`
+	ID      string         `json:"id,omitempty"`
+	Name    string         `json:"name,omitempty"`
+	Matches []TrackerMatch `json:"matches,omitempty"`
 }
 
 type BookmarksResult struct {
-	Bookmarks []Bookmark `json:"bookmarks"`
+	Bookmarks []Bookmark `json:"bookmarks,omitempty"`
 }
 
 type SummaryUIResult struct {
-	Name string `json:"name"`
-	URL  string `json:"url"`
+	Name string `json:"name,omitempty"`
+	URL  string `json:"url,omitempty"`
 }
 
 type ConversationsResult struct {
-	Conversations []Conversation `json:"conversations"`
+	Conversations []Conversation `json:"conversations,omitempty"`
 }
 
 type MembersResult struct {
-	Members []Member `json:"members"`
+	Members []Member `json:"members,omitempty"`
 }
 
 type BookmarkSummaryResult struct {
-	Summaries []Summary `json:"summary"`
+	Summaries []Summary `json:"summary,omitempty"`
 }
 
 type BookmarksSummaryResult struct {
-	BookmarksSummary []BookmarksSummary `json:"bookmarksSummary"`
+	BookmarksSummary []BookmarksSummary `json:"bookmarksSummary,omitempty"`
 }
 
 /*
 	Internal package messages
 */
 type InitializationMessage struct {
-	ConversationID string `json:"conversationId"`
+	ConversationID string `json:"conversationId,omitempty"`
 }
 
 type TeardownMessage struct {
-	ConversationID string `json:"conversationId"`
+	ConversationID string `json:"conversationId,omitempty"`
 }
