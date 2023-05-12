@@ -117,9 +117,6 @@ type Tag struct {
 		} `json:"value,omitempty"`
 	} `json:"value,omitempty"`
 }
-type MessageReferences struct {
-	ID string `json:"id,omitempty"`
-}
 type Insight struct {
 	Assignee         Assignee         `json:"assignee,omitempty"`
 	Confidence       float64          `json:"confidence,omitempty"`
@@ -139,14 +136,14 @@ type RootWord struct {
 	Text string `json:"text,omitempty"`
 }
 type Topic struct {
-	ID                string              `json:"id,omitempty"`
-	MessageIndex      int                 `json:"messageIndex,omitempty"`
-	MessageReferences []MessageReferences `json:"messageReferences,omitempty"`
-	Phrases           string              `json:"phrases,omitempty"`
-	RootWords         []RootWord          `json:"rootWords,omitempty"`
-	Score             float64             `json:"score,omitempty"`
-	Sentiment         Sentiment           `json:"sentiment,omitempty"`
-	Type              string              `json:"type,omitempty"`
+	ID                string             `json:"id,omitempty"`
+	MessageIndex      int                `json:"messageIndex,omitempty"`
+	MessageReferences []MessageReference `json:"messageReferences,omitempty"`
+	Phrases           string             `json:"phrases,omitempty"`
+	RootWords         []RootWord         `json:"rootWords,omitempty"`
+	Score             float64            `json:"score,omitempty"`
+	Sentiment         Sentiment          `json:"sentiment,omitempty"`
+	Type              string             `json:"type,omitempty"`
 }
 
 // tracker
