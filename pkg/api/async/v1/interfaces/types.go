@@ -2,6 +2,9 @@
 // Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+	Defines everything that makes up the Async API interface
+*/
 package interfaces
 
 /*
@@ -82,7 +85,7 @@ type Entity struct {
 }
 
 /*
-	When exercising the API and description is blank...
+	TODO: When exercising the API and description is blank...
 
 	HTTP Code: 400
 	{
@@ -242,7 +245,7 @@ type TextMessage struct {
 /*
 	Input parameters for Async API calls
 */
-// AsyncURLFileRequest for PostURL PostFile
+// AsyncURLFileRequest for PostURL to post a file to the platform
 type AsyncURLFileRequest struct {
 	CustomVocabulary                    []string          `json:"customVocabulary,omitempty"`
 	ChannelMetadata                     []ChannelMetadata `json:"channelMetadata,omitempty"`
@@ -271,6 +274,7 @@ type Speaker struct {
 	Email string `json:"email,omitempty"`
 }
 
+// AsyncTextRequest for PostText to post text to the platform
 type AsyncTextRequest struct {
 	Messages            []TextMessage `json:"messages,omitempty" validate:"required"`
 	Name                string        `json:"name,omitempty"`
@@ -287,12 +291,10 @@ type WaitForJobStatusOpts struct {
 	WaitInSeconds int64
 }
 
-// MessageRefRequest for BookmarkRequest
 type MessageRefRequest struct {
 	ID string `json:"id,omitempty"`
 }
 
-// BookmarkRequest for creating bookmarks
 type BookmarkRequest struct {
 	Label           string              `json:"label,omitempty" validate:"required"`
 	Description     string              `json:"description,omitempty" validate:"required"`
@@ -323,66 +325,81 @@ type UpdateSpeakerRequest struct {
 /*
 	Output parameters for Async API calls
 */
+// TopicResult provides Async API results for topics
 type TopicResult struct {
 	Topics []Topic `json:"topics,omitempty"`
 }
 
+// QuestionResult provides Async API results for questions
 type QuestionResult struct {
 	Questions []Question `json:"questions,omitempty"`
 }
 
+// FollowUpResult provides Async API results for follow ups
 type FollowUpResult struct {
 	FollowUps []FollowUp `json:"followUps,omitempty"`
 }
 
+// EntityResult provides Async API results for entities
 type EntityResult struct {
 	Entities []Entity `json:"entities,omitempty"`
 }
 
+// ActionItemResult provides Async API results for action items
 type ActionItemResult struct {
 	ActionItems []ActionItem `json:"actionItems,omitempty"`
 }
 
+// MessageResult provides Async API results for message results
 type MessageResult struct {
 	Messages []Message `json:"messages,omitempty"`
 }
 
+// SummaryResult provides Async API results for summary results
 type SummaryResult struct {
 	Summaries []Summary `json:"summary,omitempty"`
 }
 
+// AnalyticsResult provides Async API results for analytics results
 type AnalyticsResult struct {
 	Metrics []Metric `json:"metrics,omitempty"`
 	Members []Member `json:"members,omitempty"`
 }
 
+// TrackerResult provides Async API results for tracker results
 type TrackerResult struct {
 	ID      string         `json:"id,omitempty"`
 	Name    string         `json:"name,omitempty"`
 	Matches []TrackerMatch `json:"matches,omitempty"`
 }
 
+// BookmarksResult provides Async API results for bookmarks results
 type BookmarksResult struct {
 	Bookmarks []Bookmark `json:"bookmarks,omitempty"`
 }
 
+// SummaryUIResult provides Async API results for summary ui results
 type SummaryUIResult struct {
 	Name string `json:"name,omitempty"`
 	URL  string `json:"url,omitempty"`
 }
 
+// ConversationsResult provides Async API results for conversation results
 type ConversationsResult struct {
 	Conversations []Conversation `json:"conversations,omitempty"`
 }
 
+// MembersResult provides Async API results for member results
 type MembersResult struct {
 	Members []Member `json:"members,omitempty"`
 }
 
+// BookmarkSummaryResult provides Async API results for bookmark summary results
 type BookmarkSummaryResult struct {
 	Summaries []Summary `json:"summary,omitempty"`
 }
 
+// BookmarksSummaryResult provides Async API results for bookmarks summary results
 type BookmarksSummaryResult struct {
 	BookmarksSummary []BookmarksSummary `json:"bookmarksSummary,omitempty"`
 }
@@ -390,10 +407,12 @@ type BookmarksSummaryResult struct {
 /*
 	Internal package messages
 */
+// InitializationMessage is an internal representation for an Async conversation start event
 type InitializationMessage struct {
 	ConversationID string `json:"conversationId,omitempty"`
 }
 
+// TeardownMessage is an internal representation for an Async conversation stop event
 type TeardownMessage struct {
 	ConversationID string `json:"conversationId,omitempty"`
 }

@@ -2,6 +2,9 @@
 // Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+	Async package for processing Async conversations
+*/
 package async
 
 import (
@@ -23,14 +26,17 @@ const (
 	defaultDelayBetweenCheck int64 = 2
 )
 
+// Context switch for processing Async functionality
 type Client struct {
 	*client.RestClient
 }
 
+// New changes the context of the REST client to an Async client
 func New(client *client.RestClient) *Client {
 	return &Client{client}
 }
 
+// PostText posts text conversations to the platform
 func (c *Client) PostText(ctx context.Context, messages []string) (*JobConversation, error) {
 	textRequest := asyncinterfaces.AsyncTextRequest{}
 
@@ -47,6 +53,7 @@ func (c *Client) PostText(ctx context.Context, messages []string) (*JobConversat
 	return c.PostTextWithOptions(ctx, textRequest)
 }
 
+// PostAppendText appends text conversations to the platform
 func (c *Client) PostAppendText(ctx context.Context, conversationId string, messages []string) (*JobConversation, error) {
 	textRequest := asyncinterfaces.AsyncTextRequest{}
 
@@ -63,11 +70,13 @@ func (c *Client) PostAppendText(ctx context.Context, conversationId string, mess
 	return c.PostAppendTextWithOptions(ctx, conversationId, textRequest)
 }
 
+// PostFile posts a file containing a conversations to the platform
 func (c *Client) PostFile(ctx context.Context, filePath string) (*JobConversation, error) {
 	ufRequest := asyncinterfaces.AsyncURLFileRequest{}
 	return c.PostFileWithOptions(ctx, filePath, ufRequest)
 }
 
+// PostURL posts a URL pointing to a conversations to the platform
 func (c *Client) PostURL(ctx context.Context, url string) (*JobConversation, error) {
 	ufRequest := asyncinterfaces.AsyncURLFileRequest{
 		URL: url,
@@ -75,6 +84,7 @@ func (c *Client) PostURL(ctx context.Context, url string) (*JobConversation, err
 	return c.PostURLWithOptions(ctx, ufRequest)
 }
 
+// PostURLWithOptions posts a URL pointing to a conversations to the platform with given options
 func (c *Client) PostURLWithOptions(ctx context.Context, ufRequest asyncinterfaces.AsyncURLFileRequest) (*JobConversation, error) {
 	klog.V(6).Infof("async.PostURLWithOptions ENTER\n")
 
@@ -100,6 +110,7 @@ func (c *Client) PostURLWithOptions(ctx context.Context, ufRequest asyncinterfac
 	return &jobConvo, nil
 }
 
+// PostFileWithOptions posts a File pointing to a conversations to the platform with given options
 func (c *Client) PostFileWithOptions(ctx context.Context, filePath string, ufRequest asyncinterfaces.AsyncURLFileRequest) (*JobConversation, error) {
 	klog.V(6).Infof("async.PostFileWithOptions ENTER\n")
 
@@ -125,6 +136,7 @@ func (c *Client) PostFileWithOptions(ctx context.Context, filePath string, ufReq
 	return &jobConvo, nil
 }
 
+// WaitForJobCompleteOnce is a convenience wrapper for checking if the platform is finished processing a conversation
 func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool, error) {
 	klog.V(6).Infof("async.WaitForJobCompleteOnce ENTER\n")
 
@@ -167,6 +179,7 @@ func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool
 	return complete, nil
 }
 
+// PostTextWithOptions posts text conversation to the platform with given options
 func (c *Client) PostTextWithOptions(ctx context.Context, textRequest asyncinterfaces.AsyncTextRequest) (*JobConversation, error) {
 	klog.V(6).Infof("async.PostTextWithOptions ENTER\n")
 
@@ -190,6 +203,7 @@ func (c *Client) PostTextWithOptions(ctx context.Context, textRequest asyncinter
 	return &jobConvo, nil
 }
 
+// PostTextWithOptions appends text conversation to the platform with given options
 func (c *Client) PostAppendTextWithOptions(ctx context.Context, conversationId string, textRequest asyncinterfaces.AsyncTextRequest) (*JobConversation, error) {
 	klog.V(6).Infof("async.PostAppendTextWithOptions ENTER\n")
 
@@ -213,6 +227,7 @@ func (c *Client) PostAppendTextWithOptions(ctx context.Context, conversationId s
 	return &jobConvo, nil
 }
 
+// WaitForJobComplete is a loop wrapping the WaitForJobCompleteOnce call
 func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts asyncinterfaces.WaitForJobStatusOpts) (bool, error) {
 	klog.V(6).Infof("async.WaitForJobComplete ENTER\n")
 

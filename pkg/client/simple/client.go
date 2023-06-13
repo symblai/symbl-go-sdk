@@ -25,6 +25,7 @@ var defaultUserAgent = fmt.Sprintf(
 	strings.Join([]string{runtime.Version(), runtime.GOOS, runtime.GOARCH}, ";"),
 )
 
+// New allocated a Simple HTTP client
 func New() *Client {
 	// TODO: add verification later, pick up from ENV or FILE
 	/* #nosec G402 */
@@ -42,6 +43,7 @@ func New() *Client {
 	return &c
 }
 
+// Do performs a simple HTTP-style call
 func (c *Client) Do(ctx context.Context, req *http.Request, f func(*http.Response) error) error {
 	// checks
 	if ctx == nil {

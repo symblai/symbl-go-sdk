@@ -28,8 +28,8 @@ const (
 	defaultDelayBetweenReauth int64 = 2
 )
 
-// NewRestClient creates a new client on the Symbl.ai platform. The client authenticates with the
-// server with APP_ID/APP_SECRET.
+// NewRestClient creates a new client on the Symbl.ai platform.
+// The client authenticates with the server with APP_ID/APP_SECRET as defined in environment variables.
 func NewRestClient(ctx context.Context) (*RestClient, error) {
 	var appId string
 	if v := os.Getenv("APP_ID"); v != "" {
@@ -63,8 +63,8 @@ func NewRestClient(ctx context.Context) (*RestClient, error) {
 	return NewRestClientWithCreds(ctx, c)
 }
 
-// NewRestClientWithCreds creates a new client on the Symbl.ai platform. The client authenticates with the
-// server with APP_ID/APP_SECRET.
+// NewRestClientWithCreds creates a new client on the Symbl.ai platform.
+// The client authenticates with the server using APP_ID/APP_SECRET provided in Credentials struct
 func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (*RestClient, error) {
 	klog.V(6).Infof("NewRestClientWithCreds ENTER\n")
 
@@ -152,8 +152,8 @@ func NewRestClientWithCreds(ctx context.Context, creds interfaces.Credentials) (
 	return c, nil
 }
 
-// NewRestClientWithToken creates a new client on the Symbl.ai platform. The client authenticates
-// reusing an already valid auth token
+// NewRestClientWithToken creates a new client on the Symbl.ai platform.
+// The client authenticates reusing an already valid Symbl Platform auth token
 func NewRestClientWithToken(ctx context.Context, accessToken string) (*RestClient, error) {
 	klog.V(6).Infof("NewRestClientWithToken ENTER\n")
 
@@ -200,70 +200,37 @@ func NewRestClientWithToken(ctx context.Context, accessToken string) (*RestClien
 	return c, nil
 }
 
+// DoTextWithOptions wrapper function for REST Client. Please see pkg/client/rest
 func (c *RestClient) DoTextWithOptions(ctx context.Context, options asyncinterfaces.AsyncTextRequest, resBody interface{}) error {
 	return c.Client.DoText(ctx, options, resBody)
 }
 
+// DoAppendTextWithOptions wrapper function for REST Client. Please see pkg/client/rest
 func (c *RestClient) DoAppendTextWithOptions(ctx context.Context, conversationId string, options asyncinterfaces.AsyncTextRequest, resBody interface{}) error {
 	return c.Client.DoAppendText(ctx, conversationId, options, resBody)
 }
 
+// DoFileWithOptions wrapper function for REST Client. Please see pkg/client/rest
 func (c *RestClient) DoFileWithOptions(ctx context.Context, filePath string, ufRequest asyncinterfaces.AsyncURLFileRequest, resBody interface{}) error {
 	return c.Client.DoFile(ctx, filePath, ufRequest, resBody)
 }
 
+// DoURLWithOptions wrapper function for REST Client. Please see pkg/client/rest
 func (c *RestClient) DoURLWithOptions(ctx context.Context, ufRequest asyncinterfaces.AsyncURLFileRequest, resBody interface{}) error {
 	return c.Client.DoURL(ctx, ufRequest, resBody)
 }
 
+// DoFile wrapper function for REST Client. Please see pkg/client/rest
 func (c *RestClient) DoFile(ctx context.Context, filePath string, resBody interface{}) error {
 	ufRequest := asyncinterfaces.AsyncURLFileRequest{}
 	return c.DoFileWithOptions(ctx, filePath, ufRequest, resBody)
 }
 
+// DoURL wrapper function for REST Client. Please see pkg/client/rest
 func (c *RestClient) DoURL(ctx context.Context, url string, resBody interface{}) error {
 	ufRequest := asyncinterfaces.AsyncURLFileRequest{
 		URL: url,
 	}
 
 	return c.DoURLWithOptions(ctx, ufRequest, resBody)
-}
-
-func (c *RestClient) Do(ctx context.Context, req *http.Request, resBody interface{}) error {
-	klog.V(6).Infof("symbl.Do ENTER\n")
-
-	var err error
-	for i := 1; i <= defaultAttemptsToReauth; i++ {
-		// delay on subsequent calls
-		if i > 1 {
-			klog.V(4).Info("Sleep for retry...\n")
-			time.Sleep(time.Second * time.Duration(defaultDelayBetweenReauth))
-		}
-
-		// run request
-		err = c.Client.Do(ctx, req, resBody)
-
-		if e, ok := err.(*interfaces.StatusError); ok {
-			if e.Resp.StatusCode == http.StatusUnauthorized && len(c.creds.AppId) > 0 && len(c.creds.AppSecret) > 0 {
-
-				klog.V(3).Info("Received http.StatusUnauthorized\n")
-				newClient, reauthErr := NewRestClientWithCreds(ctx, *c.creds)
-				if reauthErr != nil {
-					klog.V(1).Infof("unable to re-authorize to symbl platform\n")
-					klog.V(6).Infof("symbl.Do LEAVE\n")
-					return reauthErr
-				}
-
-				klog.V(4).Info("Re-authorized with the symbl.ai platform\n")
-				c.Client = newClient.Client
-				c.auth = newClient.auth
-			}
-		} else {
-			return err
-		}
-	}
-
-	klog.V(1).Infof("Failed with (%s) %s\n", req.Method, req.URL)
-	klog.V(6).Infof("symbl.Do LEAVE\n")
-	return err
 }

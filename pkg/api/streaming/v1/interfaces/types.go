@@ -2,6 +2,9 @@
 // Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+	Defines everything that makes up the Streaming API interface
+*/
 package interfaces
 
 /*
@@ -186,6 +189,7 @@ type Entity struct {
 /*
 	Conversation Insights
 */
+// InitializationMessage signals conversation start
 type InitializationMessage struct {
 	Type    string `json:"type"`
 	Message struct {
@@ -196,12 +200,14 @@ type InitializationMessage struct {
 	} `json:"message"`
 }
 
+// RecognitionResult contains text usually used for closed captioning
 type RecognitionResult struct {
 	Type       string      `json:"type,omitempty"`
 	Message    Recognition `json:"message,omitempty"`
 	TimeOffset int         `json:"timeOffset,omitempty"`
 }
 
+// MessageResponse contains an event for completed message/sentence
 type MessageResponse struct {
 	Messages       []Message `json:"messages,omitempty"`
 	Sentiment      bool      `json:"sentiment,omitempty"`
@@ -209,17 +215,20 @@ type MessageResponse struct {
 	Type           string    `json:"type,omitempty"`
 }
 
+// InsightResponse is an event for signaling a questions, action items, or follow ups is detected
 type InsightResponse struct {
 	Type           string    `json:"type,omitempty"`
 	Insights       []Insight `json:"insights,omitempty"`
 	SequenceNumber int       `json:"sequenceNumber,omitempty"`
 }
 
+// TopicResponse is an event for signaling a topic is detected
 type TopicResponse struct {
 	Type   string  `json:"type,omitempty"`
 	Topics []Topic `json:"topics,omitempty"`
 }
 
+// TrackerResponse is an event for signaling a tracker is detected
 type TrackerResponse struct {
 	IsFinal        bool      `json:"isFinal,omitempty"`
 	SequenceNumber int       `json:"sequenceNumber,omitempty"`
@@ -227,12 +236,14 @@ type TrackerResponse struct {
 	Type           string    `json:"type,omitempty"`
 }
 
+// EntityResponse is an event for signaling a entity is detected
 type EntityResponse struct {
 	Type           string   `json:"type,omitempty"`
 	Entities       []Entity `json:"entities,omitempty"`
 	SequenceNumber int      `json:"sequenceNumber,omitempty"`
 }
 
+// InitializationMessage signals conversation end
 type TeardownMessage struct {
 	Type    string `json:"type"`
 	Message struct {

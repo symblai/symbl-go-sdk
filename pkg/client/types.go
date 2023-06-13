@@ -12,9 +12,8 @@ import (
 	stream "github.com/dvonthenen/symbl-go-sdk/pkg/client/stream"
 )
 
-/*
-	REST Client
-*/
+// RestClient extends the pkg/client/rest Client and also keeps tabs on the
+// Creds and Auth Cookie in order to reconnect
 type RestClient struct {
 	*rest.Client
 
@@ -22,9 +21,7 @@ type RestClient struct {
 	auth  *interfaces.AuthResp
 }
 
-/*
-	Streaming Client
-*/
+// StreamingOptions are connection options for the Real-Time Websocket client
 type StreamingOptions struct {
 	UUID            string
 	SymblEndpoint   string
@@ -34,6 +31,7 @@ type StreamingOptions struct {
 	RedirectService bool
 }
 
+// StreamClient is a representation of the Symbl Platform streaming client over a Websocket interface
 type StreamClient struct {
 	*stream.WebSocketClient
 
