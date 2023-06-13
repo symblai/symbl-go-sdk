@@ -61,15 +61,18 @@ func NewWebSocketClient(ctx context.Context, creds Credentials, callback WebSock
 	return &conn, nil
 }
 
+// Connect performs a websocket connection with "defaultConnectRetry" number of retries.
 func (conn *WebSocketClient) Connect() *websocket.Conn {
 	return conn.ConnectWithRetry(defaultConnectRetry)
 }
 
+// AttemptReconnect does exactly that...
 func (conn *WebSocketClient) AttemptReconnect(retries int64) *websocket.Conn {
 	conn.retry = true
 	return conn.ConnectWithRetry(retries)
 }
 
+// ConnectWithRetry is a function to explicitly do a reconnect
 func (conn *WebSocketClient) ConnectWithRetry(retries int64) *websocket.Conn {
 	// we explicitly stopped and should not attempt to reconnect
 	if !conn.retry {
@@ -188,7 +191,7 @@ func (conn *WebSocketClient) listen() {
 	klog.V(6).Infof("WebSocketClient::listen LEAVE\n")
 }
 
-// Write struct to the websocket server
+// WriteBinary writes a Go struct to the websocket server
 func (conn *WebSocketClient) WriteBinary(byData []byte) error {
 	// doing a write, need to lock
 	conn.mu.Lock()
@@ -214,7 +217,7 @@ func (conn *WebSocketClient) WriteBinary(byData []byte) error {
 	return nil
 }
 
-// WriteJSON struct to the websocket server
+// WriteJSON writes a JSON payload to the websocket server
 func (conn *WebSocketClient) WriteJSON(payload interface{}) error {
 	// doing a write, need to lock
 	conn.mu.Lock()
@@ -246,6 +249,7 @@ func (conn *WebSocketClient) WriteJSON(payload interface{}) error {
 	return nil
 }
 
+// Write performs the lower level websocket write operation
 func (conn *WebSocketClient) Write(p []byte) (int, error) {
 	byteLen := len(p)
 	err := conn.WriteBinary(p)
@@ -256,7 +260,7 @@ func (conn *WebSocketClient) Write(p []byte) (int, error) {
 	return byteLen, nil
 }
 
-// Close will send close message and shutdown websocket connection
+// Stop will send close message and shutdown websocket connection
 func (conn *WebSocketClient) Stop() {
 	klog.V(3).Infof("WebSocketClient::Stop Stopping...\n")
 	conn.retry = false
@@ -264,7 +268,6 @@ func (conn *WebSocketClient) Stop() {
 	conn.closeWs()
 }
 
-// Close will send close message and shutdown websocket connection
 func (conn *WebSocketClient) closeWs() {
 	klog.V(3).Infof("WebSocketClient::closeWs closing channels...\n")
 

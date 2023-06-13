@@ -2,6 +2,9 @@
 // Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+	Implementation for a replay device. In this case, replays an audio file to stream into a mic
+*/
 package replay
 
 import (
@@ -12,6 +15,7 @@ import (
 	klog "k8s.io/klog/v2"
 )
 
+// New creates an audio replay device
 func New(opts ReplayOpts) (*Client, error) {
 	klog.V(6).Infof("Replay.New ENTER\n")
 
@@ -38,6 +42,7 @@ func New(opts ReplayOpts) (*Client, error) {
 	return client, nil
 }
 
+// Start begins streaming the audio for the device
 func (c *Client) Start() error {
 	reader := wav.NewReader(c.file)
 	if reader == nil {
@@ -52,6 +57,7 @@ func (c *Client) Start() error {
 	return nil
 }
 
+// Read bits from the replay device
 func (c *Client) Read() ([]byte, error) {
 	buf := make([]byte, defaultBytesToRead)
 
@@ -65,6 +71,7 @@ func (c *Client) Read() ([]byte, error) {
 	return buf, nil
 }
 
+// Stream is a helper function to stream the replay device data to a source
 func (c *Client) Stream(w io.Writer) error {
 	for {
 		select {
@@ -103,18 +110,21 @@ func (c *Client) Stream(w io.Writer) error {
 	return nil
 }
 
+// Mute silences the replay device
 func (c *Client) Mute() {
 	c.mute.Lock()
 	c.muted = true
 	c.mute.Unlock()
 }
 
+// Unmute restores playback on the replay device
 func (c *Client) Unmute() {
 	c.mute.Lock()
 	c.muted = false
 	c.mute.Unlock()
 }
 
+// Stop terminates the playback on the replay device
 func (c *Client) Stop() error {
 	c.decoder = nil
 

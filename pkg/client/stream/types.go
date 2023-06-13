@@ -11,6 +11,8 @@ import (
 	"github.com/dvonthenen/websocket"
 )
 
+// WebSocketMessageCallback is a callback used to write a message on websocket without
+// exposing the entire struct to the user
 type WebSocketMessageCallback interface {
 	Message(byMsg []byte) error
 }

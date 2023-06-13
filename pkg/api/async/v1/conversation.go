@@ -2,6 +2,9 @@
 // Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+	Async package for processing Async conversations
+*/
 package async
 
 import (
@@ -16,6 +19,7 @@ import (
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
+// GetConversations obtains a list of conversations for the account
 func (c *Client) GetConversations(ctx context.Context) (*asyncinterfaces.ConversationsResult, error) {
 	klog.V(6).Infof("async.GetConversations ENTER\n")
 
@@ -55,6 +59,7 @@ func (c *Client) GetConversations(ctx context.Context) (*asyncinterfaces.Convers
 	return &result, nil
 }
 
+// GetConversation obtains conversation details by conversation ID
 func (c *Client) GetConversation(ctx context.Context, conversationId string) (*asyncinterfaces.Conversation, error) {
 	klog.V(6).Infof("async.GetConversation ENTER\n")
 

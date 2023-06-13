@@ -21,6 +21,7 @@ const (
 	defaultUserName string = "Jane Doe"
 )
 
+// GetDefaultConfig returns a minimal Symbl Config for the Websocket Interface
 func GetDefaultConfig() *interfaces.StreamingConfig {
 	config := &interfaces.StreamingConfig{}
 
@@ -32,7 +33,8 @@ func GetDefaultConfig() *interfaces.StreamingConfig {
 	return config
 }
 
-// NewStreamClientWithDefaults same as NewStreamClient just using defaults
+// NewStreamClientWithDefaults creates a Symbl Streaming Client with the default config and
+// uses the APP_ID/APP_SECRET environment variables for authentication.
 func NewStreamClientWithDefaults(ctx context.Context) (*StreamClient, error) {
 	options := StreamingOptions{
 		SymblConfig: GetDefaultConfig(),
@@ -41,8 +43,8 @@ func NewStreamClientWithDefaults(ctx context.Context) (*StreamClient, error) {
 	return NewStreamClient(ctx, options)
 }
 
-// NewStreamClient creates a new client on the Symbl.ai platform. The client authenticates with the
-// server with APP_ID/APP_SECRET.
+// NewStreamClient creates a Symbl Streaming Client with the provided StreamingOptions and
+// uses the APP_ID/APP_SECRET environment variables for authentication.
 func NewStreamClient(ctx context.Context, options StreamingOptions) (*StreamClient, error) {
 	klog.V(6).Infof("NewStreamClient ENTER\n")
 
@@ -109,6 +111,7 @@ func NewStreamClient(ctx context.Context, options StreamingOptions) (*StreamClie
 	return streamClient, nil
 }
 
+// Start begins the Symbl Platform Websocket Protocol by sending the "start_request" message
 func (sc *StreamClient) Start() error {
 	klog.V(6).Infof("Start ENTER\n")
 
@@ -141,10 +144,12 @@ func (sc *StreamClient) Start() error {
 	return nil
 }
 
+// GetConversationId returns the Symbl Conversation ID for this Real-Time Streaming session.
 func (sc *StreamClient) GetConversationId() string {
 	return sc.uuid
 }
 
+// Stop closes the Websocket connection cleanly by sending "stop_request" message to the Symbl Platform.
 func (sc *StreamClient) Stop() {
 	// signal stop to Symbl Platform
 	stopMsg := &streaming.MessageType{

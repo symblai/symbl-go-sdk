@@ -2,6 +2,9 @@
 // Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+	Async package for processing Async conversations
+*/
 package async
 
 import (
@@ -20,6 +23,7 @@ import (
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
+// GetBookmarks to get bookmarks of a conversation
 func (c *Client) GetBookmarks(ctx context.Context, conversationId string) (*asyncinterfaces.BookmarksResult, error) {
 	klog.V(6).Infof("async.GetBookmarks ENTER\n")
 
@@ -64,6 +68,7 @@ func (c *Client) GetBookmarks(ctx context.Context, conversationId string) (*asyn
 	return &result, nil
 }
 
+// GetBookmarkById get bookmarks by ID
 func (c *Client) GetBookmarkById(ctx context.Context, conversationId, bookmarkId string) (*asyncinterfaces.BookmarksResult, error) {
 	klog.V(6).Infof("async.GetBookmarkById ENTER\n")
 
@@ -114,6 +119,9 @@ func (c *Client) GetBookmarkById(ctx context.Context, conversationId, bookmarkId
 }
 
 /*
+	CreateBookmark creates a bookmark in a conversation
+
+	TODO:
 	When exercising the API and description is blank...
 
 	HTTP Code: 400
@@ -183,6 +191,7 @@ func (c *Client) CreateBookmark(ctx context.Context, conversationId string, requ
 	return &result, nil
 }
 
+// UpdateBookmark updates an existing bookmark in a conversation
 func (c *Client) UpdateBookmark(ctx context.Context, conversationId, bookmarkId string, request asyncinterfaces.BookmarkRequest) (*asyncinterfaces.Bookmark, error) {
 	klog.V(6).Infof("async.UpdateBookmark ENTER\n")
 
@@ -250,6 +259,7 @@ func (c *Client) UpdateBookmark(ctx context.Context, conversationId, bookmarkId 
 	return &result, nil
 }
 
+// DeleteBookmark removes a bookmark in a conversation
 func (c *Client) DeleteBookmark(ctx context.Context, conversationId, bookmarkId string) error {
 	klog.V(6).Infof("async.DeleteBookmark ENTER\n")
 
@@ -299,6 +309,7 @@ func (c *Client) DeleteBookmark(ctx context.Context, conversationId, bookmarkId 
 	return nil
 }
 
+// GetSummaryOfBookmark gets a summary of bookmarks
 func (c *Client) GetSummaryOfBookmark(ctx context.Context, conversationId, bookmarkId string) (*asyncinterfaces.BookmarkSummaryResult, error) {
 	klog.V(6).Infof("async.GetSummaryOfBookmark ENTER\n")
 
@@ -348,6 +359,7 @@ func (c *Client) GetSummaryOfBookmark(ctx context.Context, conversationId, bookm
 	return &result, nil
 }
 
+// GetSummaryOfBookmarks gets a list of bookmarks in a given conversation
 func (c *Client) GetSummaryOfBookmarks(ctx context.Context, conversationId string, filters []string) (*asyncinterfaces.BookmarksSummaryResult, error) {
 	klog.V(6).Infof("async.GetSummaryOfBookmarks ENTER\n")
 

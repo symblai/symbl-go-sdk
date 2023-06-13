@@ -2,6 +2,9 @@
 // Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+	Async package for processing Async conversations
+*/
 package async
 
 import (
@@ -21,6 +24,7 @@ import (
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
+// GetSummaryUI obtains a summary ui for conversation
 func (c *Client) GetSummaryUI(ctx context.Context, conversationId string, uri string) (*asyncinterfaces.SummaryUIResult, error) {
 	// checks
 	if ctx == nil {
@@ -76,6 +80,7 @@ func (c *Client) GetSummaryUI(ctx context.Context, conversationId string, uri st
 	return c.GetVideoSummaryUI(ctx, conversationId, request)
 }
 
+// GetSummaryUI obtains a summary ui for a text conversation
 func (c *Client) GetTextSummaryUI(ctx context.Context, conversationId string, request asyncinterfaces.TextSummaryRequest) (*asyncinterfaces.SummaryUIResult, error) {
 	klog.V(6).Infof("async.GetTextSummaryUI ENTER\n")
 
@@ -127,6 +132,7 @@ func (c *Client) GetTextSummaryUI(ctx context.Context, conversationId string, re
 	return &result, nil
 }
 
+// GetSummaryUI obtains a summary ui for an audio conversation
 func (c *Client) GetAudioSummaryUI(ctx context.Context, conversationId string, request asyncinterfaces.AudioSummaryRequest) (*asyncinterfaces.SummaryUIResult, error) {
 	klog.V(6).Infof("async.GetAudioSummaryUI ENTER\n")
 
@@ -178,6 +184,7 @@ func (c *Client) GetAudioSummaryUI(ctx context.Context, conversationId string, r
 	return &result, nil
 }
 
+// GetSummaryUI obtains a summary ui for a video conversation
 func (c *Client) GetVideoSummaryUI(ctx context.Context, conversationId string, request asyncinterfaces.VideoSummaryRequest) (*asyncinterfaces.SummaryUIResult, error) {
 	klog.V(6).Infof("async.GetVideoSummaryUI ENTER\n")
 

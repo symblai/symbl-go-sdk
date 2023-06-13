@@ -2,6 +2,9 @@
 // Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+	Async package for processing Async conversations
+*/
 package async
 
 import (
@@ -16,6 +19,7 @@ import (
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
+// GetTopics obtains topics in a conversation
 func (c *Client) GetTopics(ctx context.Context, conversationId string) (*asyncinterfaces.TopicResult, error) {
 	klog.V(6).Infof("async.GetTopics ENTER\n")
 
@@ -60,6 +64,7 @@ func (c *Client) GetTopics(ctx context.Context, conversationId string) (*asyncin
 	return &result, nil
 }
 
+// GetQuestions obtains questions in a conversation
 func (c *Client) GetQuestions(ctx context.Context, conversationId string) (*asyncinterfaces.QuestionResult, error) {
 	klog.V(6).Infof("async.GetQuestions ENTER\n")
 
@@ -104,6 +109,7 @@ func (c *Client) GetQuestions(ctx context.Context, conversationId string) (*asyn
 	return &result, nil
 }
 
+// GetFollowUps obtains follow ups in a conversation
 func (c *Client) GetFollowUps(ctx context.Context, conversationId string) (*asyncinterfaces.FollowUpResult, error) {
 	klog.V(6).Infof("async.GetFollowUps ENTER\n")
 
@@ -148,6 +154,7 @@ func (c *Client) GetFollowUps(ctx context.Context, conversationId string) (*asyn
 	return &result, nil
 }
 
+// GetEntities obtains entities in a conversation
 func (c *Client) GetEntities(ctx context.Context, conversationId string) (*asyncinterfaces.EntityResult, error) {
 	klog.V(6).Infof("async.GetEntities ENTER\n")
 
@@ -192,6 +199,7 @@ func (c *Client) GetEntities(ctx context.Context, conversationId string) (*async
 	return &result, nil
 }
 
+// GetActionItems obtains action items in a conversation
 func (c *Client) GetActionItems(ctx context.Context, conversationId string) (*asyncinterfaces.ActionItemResult, error) {
 	klog.V(6).Infof("async.GetActionItems ENTER\n")
 
@@ -236,6 +244,7 @@ func (c *Client) GetActionItems(ctx context.Context, conversationId string) (*as
 	return &result, nil
 }
 
+// GetMessages obtains messages in a conversation
 func (c *Client) GetMessages(ctx context.Context, conversationId string) (*asyncinterfaces.MessageResult, error) {
 	klog.V(6).Infof("async.GetMessages ENTER\n")
 
@@ -280,6 +289,7 @@ func (c *Client) GetMessages(ctx context.Context, conversationId string) (*async
 	return &result, nil
 }
 
+// GetSummary obtains a summary for a conversation
 func (c *Client) GetSummary(ctx context.Context, conversationId string) (*asyncinterfaces.SummaryResult, error) {
 	klog.V(6).Infof("async.GetSummary ENTER\n")
 
@@ -324,6 +334,7 @@ func (c *Client) GetSummary(ctx context.Context, conversationId string) (*asynci
 	return &result, nil
 }
 
+// GetAnalytics obtains analytics for a conversation
 func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*asyncinterfaces.AnalyticsResult, error) {
 	klog.V(6).Infof("async.GetAnalytics ENTER\n")
 
@@ -368,6 +379,7 @@ func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*asyn
 	return &result, nil
 }
 
+// GetTracker obtains trackers for a conversation
 func (c *Client) GetTracker(ctx context.Context, conversationId string) (*asyncinterfaces.TrackerResult, error) {
 	klog.V(6).Infof("async.GetTracker ENTER\n")
 

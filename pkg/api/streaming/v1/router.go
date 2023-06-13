@@ -2,6 +2,9 @@
 // Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+	Streaming package for processing real-time conversations
+*/
 package streaming
 
 import (
@@ -14,25 +17,30 @@ import (
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
 )
 
+// SymblMessageRouter is helper struct that routes events
 type SymblMessageRouter struct {
 	ConversationID string
 	callback       interfaces.InsightCallback
 }
 
+// NewWithDefault creates a default SymblMessageRouter
 func NewWithDefault() *SymblMessageRouter {
 	return New(NewDefaultMessageRouter())
 }
 
+// New creates a SymblMessageRouter with user defined callback
 func New(callback interfaces.InsightCallback) *SymblMessageRouter {
 	return &SymblMessageRouter{
 		callback: callback,
 	}
 }
 
+// GetConversationID returns the conversation ID of the streaming connection
 func (smr *SymblMessageRouter) GetConversationID() string {
 	return smr.ConversationID
 }
 
+// Message handles symbl platform messages
 func (smr *SymblMessageRouter) Message(byMsg []byte) error {
 	klog.V(6).Infof("SymblMessageRouter::Message ENTER\n")
 
@@ -124,6 +132,7 @@ func (smr *SymblMessageRouter) handlePlatformMessage(byMsg []byte) error {
 	return nil
 }
 
+// InitializedConversation handles the InitializedConversation message
 func (smr *SymblMessageRouter) InitializedConversation(byMsg []byte) error {
 	klog.V(6).Info("InitializedConversation ENTER\n")
 
@@ -159,6 +168,7 @@ func (smr *SymblMessageRouter) InitializedConversation(byMsg []byte) error {
 	return ErrUserCallbackNotDefined
 }
 
+// HandleError handles error messages
 func (smr *SymblMessageRouter) HandleError(byMsg []byte) error {
 	klog.V(6).Info("HandleError ENTER\n")
 
@@ -185,6 +195,7 @@ func (smr *SymblMessageRouter) HandleError(byMsg []byte) error {
 	return errors.New(string(b))
 }
 
+// RecognitionResultMessage handles the RecognitionResultMessage message
 func (smr *SymblMessageRouter) RecognitionResultMessage(byMsg []byte) error {
 	klog.V(6).Info("RecognitionResultMessage ENTER\n")
 
@@ -215,6 +226,7 @@ func (smr *SymblMessageRouter) RecognitionResultMessage(byMsg []byte) error {
 	return ErrUserCallbackNotDefined
 }
 
+// MessageResponseMessage handles the MessageResponseMessage message
 func (smr *SymblMessageRouter) MessageResponseMessage(byMsg []byte) error {
 	klog.V(6).Info("MessageResponseMessage ENTER\n")
 
@@ -245,6 +257,7 @@ func (smr *SymblMessageRouter) MessageResponseMessage(byMsg []byte) error {
 	return ErrUserCallbackNotDefined
 }
 
+// InsightResponseMessage handles the InsightResponseMessage message
 func (smr *SymblMessageRouter) InsightResponseMessage(byMsg []byte) error {
 	klog.V(6).Info("InsightResponseMessage ENTER\n")
 
@@ -275,6 +288,7 @@ func (smr *SymblMessageRouter) InsightResponseMessage(byMsg []byte) error {
 	return ErrUserCallbackNotDefined
 }
 
+// TopicResponseMessage handles the TopicResponseMessage message
 func (smr *SymblMessageRouter) TopicResponseMessage(byMsg []byte) error {
 	klog.V(6).Info("TopicResponseMessage ENTER\n")
 
@@ -305,6 +319,7 @@ func (smr *SymblMessageRouter) TopicResponseMessage(byMsg []byte) error {
 	return ErrUserCallbackNotDefined
 }
 
+// TrackerResponseMessage handles the TrackerResponseMessage message
 func (smr *SymblMessageRouter) TrackerResponseMessage(byMsg []byte) error {
 	klog.V(6).Info("TrackerResponseMessage ENTER\n")
 
@@ -335,6 +350,7 @@ func (smr *SymblMessageRouter) TrackerResponseMessage(byMsg []byte) error {
 	return ErrUserCallbackNotDefined
 }
 
+// EntityResponseMessage handles the EntityResponseMessage message
 func (smr *SymblMessageRouter) EntityResponseMessage(byMsg []byte) error {
 	klog.V(6).Info("EntityResponseMessage ENTER\n")
 
@@ -365,6 +381,7 @@ func (smr *SymblMessageRouter) EntityResponseMessage(byMsg []byte) error {
 	return ErrUserCallbackNotDefined
 }
 
+// TeardownConversation handles the TeardownConversation message
 func (smr *SymblMessageRouter) TeardownConversation(byMsg []byte) error {
 	klog.V(6).Info("TeardownConversation ENTER\n")
 
@@ -395,6 +412,7 @@ func (smr *SymblMessageRouter) TeardownConversation(byMsg []byte) error {
 	return ErrUserCallbackNotDefined
 }
 
+// UnhandledMessage handles the UnhandledMessage message
 func (smr *SymblMessageRouter) UnhandledMessage(byMsg []byte) error {
 	klog.V(6).Info("UnhandledMessage ENTER\n")
 
@@ -417,6 +435,7 @@ func (smr *SymblMessageRouter) UnhandledMessage(byMsg []byte) error {
 	return ErrInvalidMessageType
 }
 
+// UserDefinedMessage handles the UserDefinedMessage message
 func (smr *SymblMessageRouter) UserDefinedMessage(byMsg []byte) error {
 	klog.V(6).Info("UserDefinedMessage ENTER\n")
 

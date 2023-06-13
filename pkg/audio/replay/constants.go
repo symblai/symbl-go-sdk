@@ -2,6 +2,9 @@
 // Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+	Implementation for a replay device. In this case, replays an audio file to stream into a mic
+*/
 package replay
 
 import (

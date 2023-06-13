@@ -2,6 +2,9 @@
 // Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+	Async package for processing Async conversations
+*/
 package async
 
 import (
@@ -18,6 +21,7 @@ import (
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 )
 
+// GetMembers obtains members in a conversation
 func (c *Client) GetMembers(ctx context.Context, conversationId string) (*asyncinterfaces.MembersResult, error) {
 	klog.V(6).Infof("async.GetMembers ENTER\n")
 
@@ -62,6 +66,7 @@ func (c *Client) GetMembers(ctx context.Context, conversationId string) (*asynci
 	return &result, nil
 }
 
+// UpdateMember updates a member in a conversation
 func (c *Client) UpdateMember(ctx context.Context, conversationId string, member asyncinterfaces.Member) error {
 	klog.V(6).Infof("async.UpdateMember ENTER\n")
 
@@ -111,6 +116,7 @@ func (c *Client) UpdateMember(ctx context.Context, conversationId string, member
 	return nil
 }
 
+// UpdateSpeakers updates a speaker in a conversation
 func (c *Client) UpdateSpeakers(ctx context.Context, conversationId string, speakers asyncinterfaces.UpdateSpeakerRequest) error {
 	klog.V(6).Infof("async.UpdateSpeakers ENTER\n")
 

@@ -27,6 +27,7 @@ import (
 	simple "github.com/dvonthenen/symbl-go-sdk/pkg/client/simple"
 )
 
+// New allocated a REST client
 func New() *Client {
 	c := Client{
 		Client: simple.New(),
@@ -34,6 +35,7 @@ func New() *Client {
 	return &c
 }
 
+// SetAuthorization sets an authorization token to make API calls to a given platform
 func (c *Client) SetAuthorization(auth *AccessToken) {
 	c.auth = auth
 }
@@ -160,6 +162,7 @@ func (c *Client) SetAuthorization(auth *AccessToken) {
 // 	return nil
 // }
 
+// DoAppendText appends Text to a given conversation ID
 func (c *Client) DoAppendText(ctx context.Context, conversationId string, text asyncinterfaces.AsyncTextRequest, resBody interface{}) error {
 	if len(conversationId) == 0 {
 		klog.V(1).Infof("ConversationID is not valid\n")
@@ -169,6 +172,7 @@ func (c *Client) DoAppendText(ctx context.Context, conversationId string, text a
 	return c.doCommonText(ctx, conversationId, text, resBody)
 }
 
+// DoAppendText initializes Text for a given conversation ID
 func (c *Client) DoText(ctx context.Context, text asyncinterfaces.AsyncTextRequest, resBody interface{}) error {
 	return c.doCommonText(ctx, "", text, resBody)
 }
@@ -285,6 +289,7 @@ func (c *Client) doCommonText(ctx context.Context, conversationId string, text a
 	return nil
 }
 
+// DoFile posts a file capturing a conversation to a given REST endpoint
 func (c *Client) DoFile(ctx context.Context, filePath string, ufRequest asyncinterfaces.AsyncURLFileRequest, resBody interface{}) error {
 	// file?
 	fileInfo, err := os.Stat(filePath)
@@ -493,11 +498,13 @@ func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, ufRe
 	return nil
 }
 
+// IsUrl returns true if a string is of a URL format
 func IsUrl(str string) bool {
 	u, err := url.Parse(str)
 	return err == nil && u.Scheme != "" && u.Host != ""
 }
 
+// DoURL performs a REST call using a URL conversation source
 func (c *Client) DoURL(ctx context.Context, ufRequest asyncinterfaces.AsyncURLFileRequest, resBody interface{}) error {
 	// url
 	u, err := url.Parse(ufRequest.URL)
@@ -673,6 +680,7 @@ func (c *Client) doCommonURL(ctx context.Context, apiURI string, ufRequest async
 	return nil
 }
 
+// Do is a generic REST API call to the platform
 func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{}) error {
 	klog.V(6).Infof("rest.Do ENTER\n")
 

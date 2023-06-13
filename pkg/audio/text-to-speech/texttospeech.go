@@ -2,6 +2,9 @@
 // Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+ Implementation for text-to-speech
+*/
 package texttospeech
 
 import (
@@ -17,6 +20,7 @@ import (
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/audio/text-to-speech/interfaces"
 )
 
+// New creates a new text-to-speech Client
 func New(ctx context.Context, opts SpeechOpts) (*Client, error) {
 	klog.V(6).Infof("TTSClient.New ENTER\n")
 
@@ -58,6 +62,7 @@ func New(ctx context.Context, opts SpeechOpts) (*Client, error) {
 	return client, nil
 }
 
+// Start begins the audio playback of the converted text
 func (c *Client) Start() error {
 	klog.V(6).Infof("TTSClient.Start ENTER\n")
 	klog.V(4).Infof("text: %s\n", c.options.Text)
@@ -102,6 +107,7 @@ func (c *Client) Start() error {
 
 }
 
+// Read gets the raw bits of audio playback
 func (c *Client) Read() ([]byte, error) {
 	klog.V(7).Infof("byteBuf Size: %d\n", c.byteBuf.Len())
 	buf := make([]byte, defaultBytesToRead)
@@ -116,6 +122,7 @@ func (c *Client) Read() ([]byte, error) {
 	return buf, nil
 }
 
+// Stream is a helper function to stream audio to a playback device
 func (c *Client) Stream(w io.Writer) error {
 	for {
 		select {
@@ -154,18 +161,21 @@ func (c *Client) Stream(w io.Writer) error {
 	return nil
 }
 
+// Mute silences the audio playback
 func (c *Client) Mute() {
 	c.mute.Lock()
 	c.muted = true
 	c.mute.Unlock()
 }
 
+// Unmute restores the plyaback audio
 func (c *Client) Unmute() {
 	c.mute.Lock()
 	c.muted = false
 	c.mute.Unlock()
 }
 
+// Stop terminates the audio playback
 func (c *Client) Stop() error {
 	c.speechClient.Close()
 

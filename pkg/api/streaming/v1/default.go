@@ -2,6 +2,9 @@
 // Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
+/*
+	Streaming package for processing real-time conversations
+*/
 package streaming
 
 import (
@@ -15,6 +18,7 @@ import (
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
 )
 
+// DefaultMessageRouter is a sample implementation that just prints insights to the console
 type DefaultMessageRouter struct {
 	TranscriptionDemo    bool
 	TranscriptionDisable bool
@@ -30,6 +34,7 @@ type DefaultMessageRouter struct {
 	UserDisable    bool
 }
 
+// NewDefaultMessageRouter creates a new DefaultMessageRouter
 func NewDefaultMessageRouter() *DefaultMessageRouter {
 	var transcriptionDemoStr string
 	if v := os.Getenv("SYMBL_TRANSCRIPTION_DEMO"); v != "" {
@@ -109,6 +114,7 @@ func NewDefaultMessageRouter() *DefaultMessageRouter {
 	}
 }
 
+// InitializedConversation implements the interface
 func (dmr *DefaultMessageRouter) InitializedConversation(im *interfaces.InitializationMessage) error {
 	data, err := json.Marshal(im)
 	if err != nil {
@@ -126,6 +132,7 @@ func (dmr *DefaultMessageRouter) InitializedConversation(im *interfaces.Initiali
 	return nil
 }
 
+// RecognitionResultMessage implements the streaming interface
 func (dmr *DefaultMessageRouter) RecognitionResultMessage(rr *interfaces.RecognitionResult) error {
 	if dmr.TranscriptionDisable {
 		return nil // disable all output
@@ -161,6 +168,7 @@ func (dmr *DefaultMessageRouter) RecognitionResultMessage(rr *interfaces.Recogni
 	return nil
 }
 
+// MessageResponseMessage implements the streaming interface
 func (dmr *DefaultMessageRouter) MessageResponseMessage(mr *interfaces.MessageResponse) error {
 	if dmr.ChatmessageDisable {
 		return nil // disable chat output
@@ -190,6 +198,7 @@ func (dmr *DefaultMessageRouter) MessageResponseMessage(mr *interfaces.MessageRe
 	return nil
 }
 
+// InsightResponseMessage implements the streaming interface
 func (dmr *DefaultMessageRouter) InsightResponseMessage(ir *interfaces.InsightResponse) error {
 	if dmr.AllDisable || dmr.InsightDisable {
 		return nil // disable all output
@@ -211,6 +220,7 @@ func (dmr *DefaultMessageRouter) InsightResponseMessage(ir *interfaces.InsightRe
 	return nil
 }
 
+// TopicResponseMessage implements the streaming interface
 func (dmr *DefaultMessageRouter) TopicResponseMessage(tr *interfaces.TopicResponse) error {
 	if dmr.AllDisable || dmr.TopicDisable {
 		return nil // disable all output
@@ -231,6 +241,8 @@ func (dmr *DefaultMessageRouter) TopicResponseMessage(tr *interfaces.TopicRespon
 	klog.Infof("\n\nTopicResponseMessage Object DUMP:\n%s\n\n", prettyJson)
 	return nil
 }
+
+// TrackerResponseMessage implements the streaming interface
 func (dmr *DefaultMessageRouter) TrackerResponseMessage(tr *interfaces.TrackerResponse) error {
 	if dmr.AllDisable || dmr.TrackerDisable {
 		return nil // disable all output
@@ -252,6 +264,7 @@ func (dmr *DefaultMessageRouter) TrackerResponseMessage(tr *interfaces.TrackerRe
 	return nil
 }
 
+// EntityResponseMessage implements the streaming interface
 func (dmr *DefaultMessageRouter) EntityResponseMessage(tr *interfaces.EntityResponse) error {
 	if dmr.AllDisable || dmr.EntityDisable {
 		return nil // disable all output
@@ -273,6 +286,7 @@ func (dmr *DefaultMessageRouter) EntityResponseMessage(tr *interfaces.EntityResp
 	return nil
 }
 
+// TeardownConversation implements the streaming interface
 func (dmr *DefaultMessageRouter) TeardownConversation(tm *interfaces.TeardownMessage) error {
 	data, err := json.Marshal(tm)
 	if err != nil {
@@ -290,6 +304,7 @@ func (dmr *DefaultMessageRouter) TeardownConversation(tm *interfaces.TeardownMes
 	return nil
 }
 
+// UserDefinedMessage implements the streaming interface
 func (dmr *DefaultMessageRouter) UserDefinedMessage(byMsg []byte) error {
 	if dmr.AllDisable || dmr.UserDisable {
 		return nil // disable all output
@@ -305,6 +320,7 @@ func (dmr *DefaultMessageRouter) UserDefinedMessage(byMsg []byte) error {
 	return nil
 }
 
+// UnhandledMessage implements the streaming interface
 func (dmr *DefaultMessageRouter) UnhandledMessage(byMsg []byte) error {
 	prettyJson, err := prettyjson.Format(byMsg)
 	if err != nil {
