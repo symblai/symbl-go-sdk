@@ -38,6 +38,7 @@ const (
 	MessagesURI    string = "https://api.symbl.ai/%s/conversations/%s/messages"
 	AnalyticsURI   string = "https://api.symbl.ai/%s/conversations/%s/analytics"
 	TrackersURI    string = "https://api.symbl.ai/%s/conversations/%s/trackers"
+	TranscriptURI  string = "https://api.symbl.ai/%s/conversations/%s/transcript"
 
 	// bookmarks
 	BookmarksURI            string = "https://api.symbl.ai/%s/conversations/%s/bookmarks"

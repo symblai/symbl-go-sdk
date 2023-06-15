@@ -8,10 +8,13 @@
 package async
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 
+	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
 	asyncinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
@@ -421,5 +424,77 @@ func (c *Client) GetTracker(ctx context.Context, conversationId string) (*asynci
 
 	klog.V(3).Infof("GET Tracker succeeded\n")
 	klog.V(6).Infof("async.GetTracker LEAVE\n")
+	return &result, nil
+}
+
+// GetTranscript obtains transcript for a conversation
+func (c *Client) GetTranscript(ctx context.Context, conversationId string, request asyncinterfaces.TranscriptRequest) (*asyncinterfaces.TranscriptResult, error) {
+	klog.V(6).Infof("async.GetTranscript ENTER\n")
+
+	// checks
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	if conversationId == "" {
+		klog.V(1).Infof("conversationId is empty\n")
+		klog.V(6).Infof("async.GetTranscript LEAVE\n")
+		return nil, ErrInvalidInput
+	}
+
+	switch request.ContentType {
+	case asyncinterfaces.TranscriptContentTypeMarkdown:
+	case asyncinterfaces.TranscriptContentTypeSrt:
+		klog.V(3).Infof("ContentType = %s\n", request.ContentType)
+	default:
+		request.ContentType = asyncinterfaces.TranscriptContentTypeSrt
+		klog.V(3).Infof("ContentType defaulting to \n", request.ContentType)
+	}
+
+	// validate input
+	v := validator.New()
+	err := v.Struct(request)
+	if err != nil {
+		for _, e := range err.(validator.ValidationErrors) {
+			klog.V(1).Infof("GetTranscript validation failed. Err: %v\n", e)
+		}
+		klog.V(6).Infof("mgmt.GetTranscript LEAVE\n")
+		return nil, err
+	}
+
+	// request
+	URI := fmt.Sprintf("%s?%s",
+		version.GetAsyncAPI(version.TranscriptURI, conversationId),
+		c.getQueryParamFromContext(ctx))
+	klog.V(6).Infof("Calling %s\n", URI)
+
+	jsonStr, err := json.Marshal(request)
+	if err != nil {
+		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
+		klog.V(6).Infof("mgmt.GetTranscript LEAVE\n")
+		return nil, err
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "POST", URI, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(6).Infof("async.GetTranscript LEAVE\n")
+		return nil, err
+	}
+
+	// check the status
+	var result asyncinterfaces.TranscriptResult
+
+	err = c.Client.Do(ctx, req, &result)
+
+	if e, ok := err.(*interfaces.StatusError); ok {
+		if e.Resp.StatusCode != http.StatusOK {
+			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+			klog.V(6).Infof("async.GetTranscript LEAVE\n")
+			return nil, err
+		}
+	}
+
+	klog.V(3).Infof("GET Transcript succeeded\n")
+	klog.V(6).Infof("async.GetTranscript LEAVE\n")
 	return &result, nil
 }
