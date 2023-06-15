@@ -245,6 +245,22 @@ type TextMessage struct {
 /*
 	Input parameters for Async API calls
 */
+// shared structs in request
+type Phrases struct {
+	HighlightOnlyInsightKeyPhrases bool `json:"highlightOnlyInsightKeyPhrases,omitempty"`
+	HighlightAllKeyPhrases         bool `json:"highlightAllKeyPhrases,omitempty"`
+}
+
+type Speaker struct {
+	Name  string `json:"name,omitempty"`
+	Email string `json:"email,omitempty"`
+}
+
+type ChannelMetadata struct {
+	Speaker Speaker `json:"speaker,omitempty"`
+	Channel int     `json:"channel,omitempty"`
+}
+
 // AsyncURLFileRequest for PostURL to post a file to the platform
 type AsyncURLFileRequest struct {
 	CustomVocabulary                    []string          `json:"customVocabulary,omitempty"`
@@ -262,16 +278,6 @@ type AsyncURLFileRequest struct {
 	DiarizationSpeakerCount             int               `json:"diarizationSpeakerCount,omitempty"`
 	ParentRefs                          bool              `json:"parentRefs,omitempty"`
 	Sentiment                           bool              `json:"sentiment,omitempty"`
-}
-
-type ChannelMetadata struct {
-	Speaker Speaker `json:"speaker,omitempty"`
-	Channel int     `json:"channel,omitempty"`
-}
-
-type Speaker struct {
-	Name  string `json:"name,omitempty"`
-	Email string `json:"email,omitempty"`
 }
 
 // AsyncTextRequest for PostText to post text to the platform
@@ -322,9 +328,22 @@ type UpdateSpeakerRequest struct {
 	SpeakerEvents []SpeakerEvent `json:"speakerEvents,omitempty"`
 }
 
+type TranscriptRequest struct {
+	ContentType           string  `json:"contentType"`
+	Phrases               Phrases `json:"phrases,omitempty"`
+	CreateParagraphs      bool    `json:"createParagraphs,omitempty"`
+	ShowSpeakerSeparation bool    `json:"showSpeakerSeparation,omitempty"`
+}
+
 /*
 	Output parameters for Async API calls
 */
+// shared structs in result
+type Transcript struct {
+	Payload     string `json:"payload,omitempty"`
+	ContentType string `json:"contentType,omitempty"`
+}
+
 // TopicResult provides Async API results for topics
 type TopicResult struct {
 	Topics []Topic `json:"topics,omitempty"`
@@ -402,6 +421,10 @@ type BookmarkSummaryResult struct {
 // BookmarksSummaryResult provides Async API results for bookmarks summary results
 type BookmarksSummaryResult struct {
 	BookmarksSummary []BookmarksSummary `json:"bookmarksSummary,omitempty"`
+}
+
+type TranscriptResult struct {
+	Transcript Transcript `json:"transcript,omitempty"`
 }
 
 /*

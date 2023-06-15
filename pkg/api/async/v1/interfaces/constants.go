@@ -8,6 +8,10 @@
 package interfaces
 
 const (
+	// transcript options
+	TranscriptContentTypeMarkdown string = "text/markdown"
+	TranscriptContentTypeSrt      string = "text/srt"
+
 	// speaker update
 	SpeakerEventTypeStart   string = "started_speaking"
 	SpeakerEventTypeStopped string = "stopped_speaking"
