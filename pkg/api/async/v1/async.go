@@ -242,9 +242,23 @@ func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts asyncinte
 		return false, err
 	}
 
+	// is valid?
+	if jobStatusOpts.TotalWaitInSeconds <= 0 {
+		jobStatusOpts.TotalWaitInSeconds = defaultWaitForCompletion
+		klog.V(3).Infof("Use fauled wait interval. Input: %d\n", jobStatusOpts.TotalWaitInSeconds)
+	}
+
+	// is valid?
 	if jobStatusOpts.WaitInSeconds <= 0 {
 		jobStatusOpts.WaitInSeconds = defaultDelayBetweenCheck
 		klog.V(3).Infof("Use fauled wait interval. Input: %d\n", jobStatusOpts.WaitInSeconds)
+	}
+
+	// do only 1 retry in the loop
+	if jobStatusOpts.WaitInSeconds >= jobStatusOpts.TotalWaitInSeconds {
+		jobStatusOpts.WaitInSeconds = jobStatusOpts.TotalWaitInSeconds
+		jobStatusOpts.TotalWaitInSeconds = jobStatusOpts.TotalWaitInSeconds * 2
+		klog.V(3).Infof("Invalid Input. Changing to TotalWaitInSeconds: %d, : %d\n", jobStatusOpts.TotalWaitInSeconds, jobStatusOpts.WaitInSeconds)
 	}
 
 	// checks
@@ -252,7 +266,7 @@ func (c *Client) WaitForJobComplete(ctx context.Context, jobStatusOpts asyncinte
 		ctx = context.Background()
 	}
 
-	numOfLoops := defaultWaitForCompletion / jobStatusOpts.WaitInSeconds
+	numOfLoops := jobStatusOpts.TotalWaitInSeconds / jobStatusOpts.WaitInSeconds
 	klog.V(4).Infof("numOfLoops: %d\n", numOfLoops)
 	klog.V(4).Infof("WaitInSeconds: %d\n", jobStatusOpts.WaitInSeconds)
 

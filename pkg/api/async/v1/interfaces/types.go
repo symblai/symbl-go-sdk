@@ -293,8 +293,9 @@ type AsyncTextRequest struct {
 
 // WaitForJobStatusOpts parameter needed for Wait call
 type WaitForJobStatusOpts struct {
-	JobId         string `validate:"required"`
-	WaitInSeconds int64
+	JobId              string `validate:"required"`
+	TotalWaitInSeconds int64
+	WaitInSeconds      int64
 }
 
 type MessageRefRequest struct {

@@ -46,7 +46,11 @@ func main() {
 	}
 
 	// wait
-	completed, err := asyncClient.WaitForJobComplete(ctx, interfaces.WaitForJobStatusOpts{JobId: jobConvo.JobID})
+	completed, err := asyncClient.WaitForJobComplete(ctx, interfaces.WaitForJobStatusOpts{
+		JobId: jobConvo.JobID,
+		// TotalWaitInSeconds: 600,
+		// WaitInSeconds:      5,
+	})
 	if err != nil {
 		fmt.Printf("WaitForJobComplete failed. Err: %v\n", err)
 		os.Exit(1)
