@@ -99,10 +99,19 @@ func (c *Client) PostURLWithOptions(ctx context.Context, ufRequest asyncinterfac
 	var jobConvo JobConversation
 
 	err := c.DoURLWithOptions(ctx, ufRequest, &jobConvo)
-	if e, ok := err.(*interfaces.StatusError); ok {
-		klog.V(1).Infof("DoURL failed. HTTP Code: %v\n", e.Resp.StatusCode)
+
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.PostURLWithOptions LEAVE\n")
+				return nil, err
+			}
+		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
 		klog.V(6).Infof("async.PostURLWithOptions LEAVE\n")
-		return nil, e
+		return nil, err
 	}
 
 	klog.V(3).Infof("async.PostURLWithOptions Succeeded\n")
@@ -125,10 +134,19 @@ func (c *Client) PostFileWithOptions(ctx context.Context, filePath string, ufReq
 	var jobConvo JobConversation
 
 	err := c.DoFileWithOptions(ctx, filePath, ufRequest, &jobConvo)
-	if e, ok := err.(*interfaces.StatusError); ok {
-		klog.V(1).Infof("DoFile failed. HTTP Code: %v\n", e.Resp.StatusCode)
+
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.PostFileWithOptions LEAVE\n")
+				return nil, err
+			}
+		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
 		klog.V(6).Infof("async.PostFileWithOptions LEAVE\n")
-		return nil, e
+		return nil, err
 	}
 
 	klog.V(3).Infof("async.PostFileWithOptions Succeeded\n")
@@ -164,12 +182,18 @@ func (c *Client) WaitForJobCompleteOnce(ctx context.Context, jobId string) (bool
 
 	err = c.Client.Do(ctx, req, &jobStatus)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.WaitForJobCompleteOnce LEAVE\n")
-			return false, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.WaitForJobCompleteOnce LEAVE\n")
+				return false, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.WaitForJobCompleteOnce LEAVE\n")
+		return false, err
 	}
 
 	complete := (jobStatus.Status == JobStatusComplete)
@@ -192,10 +216,19 @@ func (c *Client) PostTextWithOptions(ctx context.Context, textRequest asyncinter
 	var jobConvo JobConversation
 
 	err := c.DoTextWithOptions(ctx, textRequest, &jobConvo)
-	if e, ok := err.(*interfaces.StatusError); ok {
-		klog.V(1).Infof("DoURL failed. HTTP Code: %v\n", e.Resp.StatusCode)
+
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.PostTextWithOptions LEAVE\n")
+				return nil, err
+			}
+		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
 		klog.V(6).Infof("async.PostTextWithOptions LEAVE\n")
-		return nil, e
+		return nil, err
 	}
 
 	klog.V(3).Infof("async.PostTextWithOptions Succeeded\n")
@@ -216,10 +249,19 @@ func (c *Client) PostAppendTextWithOptions(ctx context.Context, conversationId s
 	var jobConvo JobConversation
 
 	err := c.DoAppendTextWithOptions(ctx, conversationId, textRequest, &jobConvo)
-	if e, ok := err.(*interfaces.StatusError); ok {
-		klog.V(1).Infof("DoURL failed. HTTP Code: %v\n", e.Resp.StatusCode)
+
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.PostAppendTextWithOptions LEAVE\n")
+				return nil, err
+			}
+		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
 		klog.V(6).Infof("async.PostAppendTextWithOptions LEAVE\n")
-		return nil, e
+		return nil, err
 	}
 
 	klog.V(3).Infof("async.PostAppendTextWithOptions Succeeded\n")

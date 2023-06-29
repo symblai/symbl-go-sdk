@@ -8,9 +8,12 @@ package main
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"time"
+
+	prettyjson "github.com/hokaccha/go-prettyjson"
 
 	streaming "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1"
 	microphone "github.com/dvonthenen/symbl-go-sdk/pkg/audio/microphone"
@@ -33,6 +36,27 @@ func main() {
 	cfg.Speaker.UserID = "john.doe@mymail.com"
 	cfg.Config.DetectEntities = true
 	cfg.Config.Sentiment = true
+
+	// cfg.Trackers = append(cfg.Trackers, cfginterfaces.Tracker{
+	// 	Name:       "MyTest1",
+	// 	Vocabulary: []string{"value1", "value2"},
+	// })
+	// cfg.Trackers = append(cfg.Trackers, cfginterfaces.Tracker{
+	// 	Name:       "MyTest2",
+	// 	Vocabulary: []string{"value1", "value2"},
+	// })
+
+	data, err := json.Marshal(cfg)
+	if err != nil {
+		fmt.Println("TeardownConversation json.Marshal failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+	prettyJson, err := prettyjson.Format(data)
+	if err != nil {
+		fmt.Println("prettyjson.Marshal failed. Err: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("\nJSON:\n\n%s\n\n", prettyJson)
 
 	options := symbl.StreamingOptions{
 		SymblConfig: cfg,
