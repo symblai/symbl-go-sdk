@@ -241,12 +241,12 @@ func (c *Client) doCommonText(ctx context.Context, conversationId string, text a
 		case http.StatusCreated:
 		case http.StatusNoContent:
 		case http.StatusBadRequest:
-			klog.V(4).Infof("HTTP Error Code: %d\n", res.StatusCode)
-			detail, err := io.ReadAll(res.Body)
+			klog.V(1).Infof("HTTP Error Code: %d\n", res.StatusCode)
+			detail, errBody := io.ReadAll(res.Body)
 			if err != nil {
-				klog.V(4).Infof("io.ReadAll failed. Err: %e\n", err)
+				klog.V(1).Infof("io.ReadAll failed. Err: %e\n", errBody)
 				klog.V(6).Infof("rest.doCommonText LEAVE\n")
-				return err
+				return &interfaces.StatusError{res}
 			}
 			klog.V(6).Infof("rest.doCommonText LEAVE\n")
 			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
@@ -255,23 +255,23 @@ func (c *Client) doCommonText(ctx context.Context, conversationId string, text a
 		}
 
 		if resBody == nil {
-			klog.V(4).Infof("resBody == nil\n")
+			klog.V(1).Infof("resBody == nil\n")
 			klog.V(6).Infof("rest.doCommonText LEAVE\n")
 			return nil
 		}
 
 		switch b := resBody.(type) {
 		case *interfaces.RawResponse:
-			klog.V(4).Infof("RawResponse\n")
+			klog.V(3).Infof("RawResponse\n")
 			klog.V(6).Infof("rest.doCommonText LEAVE\n")
 			return res.Write(b)
 		case io.Writer:
-			klog.V(4).Infof("io.Writer\n")
+			klog.V(3).Infof("io.Writer\n")
 			klog.V(6).Infof("rest.doCommonText LEAVE\n")
 			_, err := io.Copy(b, res.Body)
 			return err
 		default:
-			klog.V(4).Infof("json.NewDecoder\n")
+			klog.V(3).Infof("json.NewDecoder\n")
 			d := json.NewDecoder(res.Body)
 			klog.V(6).Infof("rest.doCommonText LEAVE\n")
 			return d.Decode(resBody)
@@ -451,11 +451,11 @@ func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, ufRe
 		case http.StatusNoContent:
 		case http.StatusBadRequest:
 			klog.V(4).Infof("HTTP Error Code: %d\n", res.StatusCode)
-			detail, err := io.ReadAll(res.Body)
+			detail, errBody := io.ReadAll(res.Body)
 			if err != nil {
-				klog.V(4).Infof("io.ReadAll failed. Err: %e\n", err)
+				klog.V(4).Infof("io.ReadAll failed. Err: %e\n", errBody)
 				klog.V(6).Infof("rest.doCommonFile LEAVE\n")
-				return err
+				return &interfaces.StatusError{res}
 			}
 			klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
@@ -464,23 +464,23 @@ func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, ufRe
 		}
 
 		if resBody == nil {
-			klog.V(4).Infof("resBody == nil\n")
+			klog.V(1).Infof("resBody == nil\n")
 			klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 			return nil
 		}
 
 		switch b := resBody.(type) {
 		case *interfaces.RawResponse:
-			klog.V(4).Infof("RawResponse\n")
+			klog.V(3).Infof("RawResponse\n")
 			klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 			return res.Write(b)
 		case io.Writer:
-			klog.V(4).Infof("io.Writer\n")
+			klog.V(3).Infof("io.Writer\n")
 			klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 			_, err := io.Copy(b, res.Body)
 			return err
 		default:
-			klog.V(4).Infof("json.NewDecoder\n")
+			klog.V(3).Infof("json.NewDecoder\n")
 			d := json.NewDecoder(res.Body)
 			klog.V(6).Infof("rest.doCommonFile LEAVE\n")
 			return d.Decode(resBody)
@@ -633,11 +633,11 @@ func (c *Client) doCommonURL(ctx context.Context, apiURI string, ufRequest async
 		case http.StatusNoContent:
 		case http.StatusBadRequest:
 			klog.V(4).Infof("HTTP Error Code: %d\n", res.StatusCode)
-			detail, err := io.ReadAll(res.Body)
+			detail, errBody := io.ReadAll(res.Body)
 			if err != nil {
-				klog.V(4).Infof("io.ReadAll failed. Err: %e\n", err)
+				klog.V(1).Infof("io.ReadAll failed. Err: %e\n", errBody)
 				klog.V(6).Infof("rest.doCommonURL LEAVE\n")
-				return err
+				return &interfaces.StatusError{res}
 			}
 			klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
@@ -646,23 +646,23 @@ func (c *Client) doCommonURL(ctx context.Context, apiURI string, ufRequest async
 		}
 
 		if resBody == nil {
-			klog.V(4).Infof("resBody == nil\n")
+			klog.V(1).Infof("resBody == nil\n")
 			klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 			return nil
 		}
 
 		switch b := resBody.(type) {
 		case *interfaces.RawResponse:
-			klog.V(4).Infof("RawResponse\n")
+			klog.V(3).Infof("RawResponse\n")
 			klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 			return res.Write(b)
 		case io.Writer:
-			klog.V(4).Infof("io.Writer\n")
+			klog.V(3).Infof("io.Writer\n")
 			klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 			_, err := io.Copy(b, res.Body)
 			return err
 		default:
-			klog.V(4).Infof("json.NewDecoder\n")
+			klog.V(3).Infof("json.NewDecoder\n")
 			d := json.NewDecoder(res.Body)
 			klog.V(6).Infof("rest.doCommonURL LEAVE\n")
 			return d.Decode(resBody)
@@ -710,12 +710,12 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 		case http.StatusCreated:
 		case http.StatusNoContent:
 		case http.StatusBadRequest:
-			klog.V(4).Infof("HTTP Error Code: %d\n", res.StatusCode)
-			detail, err := io.ReadAll(res.Body)
-			if err != nil {
-				klog.V(4).Infof("io.ReadAll failed. Err: %e\n", err)
+			klog.V(1).Infof("HTTP Error Code: %d\n", res.StatusCode)
+			detail, errBody := io.ReadAll(res.Body)
+			if errBody != nil {
+				klog.V(1).Infof("io.ReadAll failed. Err: %e\n", errBody)
 				klog.V(6).Infof("rest.DoFile LEAVE\n")
-				return err
+				return &interfaces.StatusError{res}
 			}
 			klog.V(6).Infof("rest.Do LEAVE\n")
 			return fmt.Errorf("%s: %s", res.Status, bytes.TrimSpace(detail))
@@ -724,23 +724,23 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 		}
 
 		if resBody == nil {
-			klog.V(4).Infof("resBody == nil\n")
+			klog.V(1).Infof("resBody == nil\n")
 			klog.V(6).Infof("rest.Do LEAVE\n")
 			return nil
 		}
 
 		switch b := resBody.(type) {
 		case *interfaces.RawResponse:
-			klog.V(4).Infof("RawResponse\n")
+			klog.V(3).Infof("RawResponse\n")
 			klog.V(6).Infof("rest.Do LEAVE\n")
 			return res.Write(b)
 		case io.Writer:
-			klog.V(4).Infof("io.Writer\n")
+			klog.V(3).Infof("io.Writer\n")
 			klog.V(6).Infof("rest.Do LEAVE\n")
 			_, err := io.Copy(b, res.Body)
 			return err
 		default:
-			klog.V(4).Infof("json.NewDecoder\n")
+			klog.V(3).Infof("json.NewDecoder\n")
 			d := json.NewDecoder(res.Body)
 			klog.V(6).Infof("rest.Do LEAVE\n")
 			return d.Decode(resBody)

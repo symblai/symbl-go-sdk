@@ -54,12 +54,18 @@ func (c *Client) GetTopics(ctx context.Context, conversationId string) (*asyncin
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetTopics LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetTopics LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetTopics LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Topics succeeded\n")
@@ -99,12 +105,18 @@ func (c *Client) GetQuestions(ctx context.Context, conversationId string) (*asyn
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetQuestions LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetQuestions LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetQuestions LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Questions succeeded\n")
@@ -144,12 +156,18 @@ func (c *Client) GetFollowUps(ctx context.Context, conversationId string) (*asyn
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetFollowUps LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetFollowUps LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetFollowUps LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Follow Ups succeeded\n")
@@ -189,12 +207,18 @@ func (c *Client) GetEntities(ctx context.Context, conversationId string) (*async
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetEntities LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetEntities LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetEntities LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Entities succeeded\n")
@@ -234,12 +258,18 @@ func (c *Client) GetActionItems(ctx context.Context, conversationId string) (*as
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetActionItems LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetActionItems LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetActionItems LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Action Items succeeded\n")
@@ -279,12 +309,18 @@ func (c *Client) GetMessages(ctx context.Context, conversationId string) (*async
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetMessages LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetMessages LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetMessages LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Messages succeeded\n")
@@ -324,12 +360,18 @@ func (c *Client) GetSummary(ctx context.Context, conversationId string) (*asynci
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetSummary LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetSummary LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetSummary LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Summary succeeded\n")
@@ -369,12 +411,18 @@ func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*asyn
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetAnalytics LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetAnalytics LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetAnalytics LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Analytics succeeded\n")
@@ -414,12 +462,18 @@ func (c *Client) GetTracker(ctx context.Context, conversationId string) (*asynci
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetTracker LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetTracker LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetTracker LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Tracker succeeded\n")
@@ -486,12 +540,18 @@ func (c *Client) GetTranscript(ctx context.Context, conversationId string, reque
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetTranscript LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetTranscript LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetTranscript LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Transcript succeeded\n")

@@ -53,12 +53,18 @@ func (c *Client) GetMembers(ctx context.Context, conversationId string) (*asynci
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetMembers LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetMembers LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetMembers LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Members succeeded\n")
@@ -103,12 +109,18 @@ func (c *Client) UpdateMember(ctx context.Context, conversationId string, member
 	// check the status
 	err = c.Client.Do(ctx, req, nil)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.UpdateMember LEAVE\n")
-			return err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.UpdateMember LEAVE\n")
+				return err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.UpdateMember LEAVE\n")
+		return err
 	}
 
 	klog.V(3).Infof("PUT Member succeeded\n")
@@ -153,12 +165,18 @@ func (c *Client) UpdateSpeakers(ctx context.Context, conversationId string, spea
 	// check the status
 	err = c.Client.Do(ctx, req, nil)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.UpdateSpeakers LEAVE\n")
-			return err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.UpdateSpeakers LEAVE\n")
+				return err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.UpdateSpeakers LEAVE\n")
+		return err
 	}
 
 	klog.V(3).Infof("PUT UpdateSpeakers succeeded\n")

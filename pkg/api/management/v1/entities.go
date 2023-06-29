@@ -42,12 +42,18 @@ func (m *Management) GetEntites(ctx context.Context) (*mgmtinterfaces.EntitiesRe
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.GetEntites LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetEntites LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetEntites LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Management Entities succeeded\n")
@@ -79,12 +85,18 @@ func (m *Management) GetEntitById(ctx context.Context, entityId string) (*mgmtin
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.GetEntitById LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetEntitById LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetEntitById LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Management Entity succeeded\n")
@@ -137,12 +149,18 @@ func (m *Management) CreateEntity(ctx context.Context, request mgmtinterfaces.Cr
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.CreateEntity LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.CreateEntity LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.CreateEntity LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Create Entity succeeded\n")
@@ -192,12 +210,18 @@ func (m *Management) UpdateEntity(ctx context.Context, entityId string, request 
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.UpdateEntity LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.UpdateEntity LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.UpdateEntity LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("PUT UpdateEntity succeeded\n")
@@ -234,12 +258,18 @@ func (m *Management) DeleteEntity(ctx context.Context, entityId string) error {
 	// check the status
 	err = m.Client.Do(ctx, req, nil)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.DeleteEntity LEAVE\n")
-			return e
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.DeleteEntity LEAVE\n")
+				return err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.DeleteEntity LEAVE\n")
+		return err
 	}
 
 	klog.V(3).Infof("GET Delete Entity succeeded\n")
@@ -276,12 +306,18 @@ func (m *Management) DeleteEntityBySubType(ctx context.Context, subType string) 
 	// check the status
 	err = m.Client.Do(ctx, req, nil)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.DeleteEntityBySubType LEAVE\n")
-			return err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.DeleteEntityBySubType LEAVE\n")
+				return err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.DeleteEntityBySubType LEAVE\n")
+		return err
 	}
 
 	klog.V(3).Infof("GET Delete EntityBySubType succeeded\n")

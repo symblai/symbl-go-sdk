@@ -42,12 +42,18 @@ func (m *Management) GetConversationGroups(ctx context.Context) (*mgmtinterfaces
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.GetConversationGroups LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetConversationGroups LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetConversationGroups LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET ConversationGroups succeeded\n")
@@ -79,12 +85,18 @@ func (m *Management) GetConversationGroupById(ctx context.Context, conversationG
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.GetConversationGroupById LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetConversationGroupById LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetConversationGroupById LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET ConversationGroupById succeeded\n")
@@ -134,12 +146,18 @@ func (m *Management) CreateConversationGroup(ctx context.Context, request mgmtin
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.CreateConversationGroup LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.CreateConversationGroup LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.CreateConversationGroup LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("POST CreateConversationGroup succeeded\n")
@@ -195,12 +213,18 @@ func (m *Management) UpdateConversationGroup(ctx context.Context, request mgmtin
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.UpdateConversationGroup LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.UpdateConversationGroup LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.UpdateConversationGroup LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("PUT UpdateConversationGroup succeeded\n")
@@ -237,12 +261,18 @@ func (m *Management) DeleteConversationGroup(ctx context.Context, conversationGr
 	// check the status
 	err = m.Client.Do(ctx, req, nil)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.DeleteConversationGroup LEAVE\n")
-			return e
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.DeleteConversationGroup LEAVE\n")
+				return err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.DeleteConversationGroup LEAVE\n")
+		return err
 	}
 
 	klog.V(3).Infof("DELETE ConversationGroup succeeded\n")

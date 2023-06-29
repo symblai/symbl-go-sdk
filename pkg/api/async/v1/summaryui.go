@@ -63,7 +63,11 @@ func (c *Client) GetSummaryUI(ctx context.Context, conversationId string, uri st
 	// is audio?
 	switch extension {
 	case common.AudioTypeMP3:
-	case common.AudioTypeMpeg:
+		request := asyncinterfaces.AudioSummaryRequest{
+			Name:     "audio-summary",
+			AudioURL: uri,
+		}
+		return c.GetAudioSummaryUI(ctx, conversationId, request)
 	case common.AudioTypeWav:
 		request := asyncinterfaces.AudioSummaryRequest{
 			Name:     "audio-summary",
@@ -119,12 +123,18 @@ func (c *Client) GetTextSummaryUI(ctx context.Context, conversationId string, re
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetTextSummaryUI LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetTextSummaryUI LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetTextSummaryUI LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET TextSummaryUI succeeded\n")
@@ -171,12 +181,18 @@ func (c *Client) GetAudioSummaryUI(ctx context.Context, conversationId string, r
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetAudioSummaryUI LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetAudioSummaryUI LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetAudioSummaryUI LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET AudioSummaryUI succeeded\n")
@@ -223,12 +239,18 @@ func (c *Client) GetVideoSummaryUI(ctx context.Context, conversationId string, r
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetVideoSummaryUI LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetVideoSummaryUI LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetVideoSummaryUI LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET VideoSummaryUI succeeded\n")

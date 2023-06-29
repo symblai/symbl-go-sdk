@@ -55,12 +55,18 @@ func (c *Client) GetBookmarks(ctx context.Context, conversationId string) (*asyn
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetBookmarks LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetBookmarks LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetBookmarks LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Bookmarks succeeded\n")
@@ -105,12 +111,18 @@ func (c *Client) GetBookmarkById(ctx context.Context, conversationId, bookmarkId
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetBookmarkById LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetBookmarkById LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetBookmarkById LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET BookmarkById succeeded\n")
@@ -178,12 +190,18 @@ func (c *Client) CreateBookmark(ctx context.Context, conversationId string, requ
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.CreateBookmark LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.CreateBookmark LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.CreateBookmark LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Create Bookmark succeeded\n")
@@ -246,12 +264,18 @@ func (c *Client) UpdateBookmark(ctx context.Context, conversationId, bookmarkId 
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.UpdateBookmark LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Update Bookmark succeeded\n")
@@ -296,12 +320,18 @@ func (c *Client) DeleteBookmark(ctx context.Context, conversationId, bookmarkId 
 	// check the status
 	err = c.Client.Do(ctx, req, nil)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.DeleteBookmark LEAVE\n")
-			return err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.DeleteBookmark LEAVE\n")
+				return err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.DeleteBookmark LEAVE\n")
+		return err
 	}
 
 	klog.V(3).Infof("GET Delete Bookmark succeeded\n")
@@ -346,12 +376,18 @@ func (c *Client) GetSummaryOfBookmark(ctx context.Context, conversationId, bookm
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetSummaryOfBookmark LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetSummaryOfBookmark LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetSummaryOfBookmark LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET SummaryOfBookmark succeeded\n")
@@ -400,12 +436,18 @@ func (c *Client) GetSummaryOfBookmarks(ctx context.Context, conversationId strin
 
 	err = c.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("async.GetSummaryOfBookmarks LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetSummaryOfBookmarks LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetSummaryOfBookmarks LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET SummaryOfBookmarks succeeded\n")

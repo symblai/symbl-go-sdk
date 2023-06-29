@@ -42,12 +42,18 @@ func (m *Management) GetTrackers(ctx context.Context) (*mgmtinterfaces.TrackersR
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.GetTrackers LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetTrackers LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetTrackers LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Management Trackers succeeded\n")
@@ -97,12 +103,18 @@ func (m *Management) CreateTracker(ctx context.Context, request mgmtinterfaces.T
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.CreateTracker LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.CreateTracker LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.CreateTracker LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("GET Create Trackers succeeded\n")
@@ -152,12 +164,18 @@ func (m *Management) UpdateTracker(ctx context.Context, trackerId string, reques
 
 	err = m.Client.Do(ctx, req, &result)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.UpdateTracker LEAVE\n")
-			return nil, err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.UpdateTracker LEAVE\n")
+				return nil, err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.UpdateTracker LEAVE\n")
+		return nil, err
 	}
 
 	klog.V(3).Infof("PATCH UpdateTracker succeeded\n")
@@ -194,12 +212,18 @@ func (m *Management) DeleteTracker(ctx context.Context, trackerId string) error 
 	// check the status
 	err = m.Client.Do(ctx, req, nil)
 
-	if e, ok := err.(*interfaces.StatusError); ok {
-		if e.Resp.StatusCode != http.StatusOK {
-			klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
-			klog.V(6).Infof("mgmt.DeleteTracker LEAVE\n")
-			return err
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.DeleteTracker LEAVE\n")
+				return err
+			}
 		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.DeleteTracker LEAVE\n")
+		return err
 	}
 
 	klog.V(3).Infof("GET Delete Trackers succeeded\n")
