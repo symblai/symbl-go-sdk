@@ -40,7 +40,15 @@ func main() {
 
 	asyncClient := async.New(restClient)
 
-	jobConvo, err := asyncClient.PostFile(ctx, "phoneNumber.mp3")
+	// jobConvo, err := asyncClient.PostFile(ctx, "phoneNumber.mp3")
+	ufRequest := interfaces.AsyncURLFileRequest{
+		DetectEntities:           true,
+		EnableSpeakerDiarization: true,
+		DiarizationSpeakerCount:  2,
+		ParentRefs:               true,
+		Sentiment:                true,
+	}
+	jobConvo, err := asyncClient.PostFileWithOptions(ctx, "phoneNumber.mp3", ufRequest)
 	if err == nil {
 		fmt.Printf("JobID: %s, ConversationID: %s\n\n", jobConvo.JobID, jobConvo.ConversationID)
 	} else {
@@ -60,7 +68,10 @@ func main() {
 
 	// custom headers to enable options
 	params := make(map[string][]string, 0)
-	params["exclude"] = []string{"[\"PERSON_NAME\"]"}
+	// params["exclude"] = []string{"[\"PERSON_NAME\"]"}
+	// params["exclude"] = []string{"[\"PHONE_NUMBER\"]"}
+	// params["exclude"] = []string{"[\"PERSON_NAME\"]", "[\"PHONE_NUMBER\"]"}
+	params["exclude"] = []string{"\"PERSON_NAME\"", "\"PHONE_NUMBER\""}
 	params["redact"] = []string{"true"}
 	ctx = cfginterfaces.WithCustomParameters(ctx, params)
 

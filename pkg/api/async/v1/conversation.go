@@ -29,7 +29,7 @@ func (c *Client) GetConversations(ctx context.Context) (*asyncinterfaces.Convers
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.ConversationsURI),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -80,7 +80,7 @@ func (c *Client) GetConversation(ctx context.Context, conversationId string) (*a
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.ConversationURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)

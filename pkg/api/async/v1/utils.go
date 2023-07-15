@@ -27,14 +27,35 @@ func (c *Client) getQueryParamFromContext(ctx context.Context) string {
 		}
 	}
 
-	if len(params) > 0 {
-		queryString := ""
+	// TODO: replace with https://github.com/google/go-querystring
+	// API differs from how go-querystring works
+	//
+	//	go-querystring : []vals -> key=vals[0]&key=vals[1]
+	//	symbl API: []vals -> key=["$vals[0]", "$vals[1]"]
+	//
+	// need to look into switching that behavior in order to use go-querystring lib
+	if len(params) > 1 {
+		queryString := "?"
 		for k, vs := range params {
-			for _, v := range vs {
-				if len(queryString) > 1 {
-					queryString += "&"
+			if len(queryString) > 3 {
+				queryString += "&"
+			}
+			if len(vs) == 1 {
+				queryString += fmt.Sprintf("%s=%s", k, vs[0])
+			} else {
+				appended := false
+				for _, v := range vs {
+					if !appended {
+						queryString += fmt.Sprintf("%s=[", k)
+						appended = true
+					} else {
+						queryString += ","
+					}
+					queryString += fmt.Sprintf("%s", v)
 				}
-				queryString += fmt.Sprintf("%s=%s", k, v)
+				if len(vs) > 0 {
+					queryString += "]"
+				}
 			}
 		}
 		klog.V(5).Infof("Final Query String: %s\n", queryString)

@@ -54,7 +54,7 @@ func (c *Client) AskNebula(ctx context.Context, request nebulainterfaces.AskNebu
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetNebulaAsyncAPI(version.AskNebulaURI),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
