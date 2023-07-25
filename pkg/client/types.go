@@ -41,3 +41,11 @@ type StreamClient struct {
 
 	options *StreamingOptions
 }
+
+// NebulaClient extends the pkg/client/rest Client and also keeps tabs on the auth token
+type NebulaClient struct {
+	*rest.Client
+
+	creds *interfaces.Credentials
+	auth  *interfaces.AuthResp
+}

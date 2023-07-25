@@ -101,9 +101,11 @@ func (c *Client) SetAuthorization(auth *AccessToken) {
 // 	}
 
 // 	req.Header.Set("Accept", "application/json")
-// 	if c.auth != nil && c.auth.AccessToken != "" {
-// 		req.Header.Set("Authorization", "Bearer "+c.auth.AccessToken)
-// 	}
+// if c.auth != nil && c.auth.NebulaToken != "" {
+// 	req.Header.Set("ApiKey", c.auth.NebulaToken)
+// } else if c.auth != nil && c.auth.AccessToken != "" {
+// 	req.Header.Set("Authorization", "Bearer "+c.auth.AccessToken)
+// }
 
 // 	contentType := m.FormDataContentType()
 // 	req.Header.Set("Content-Type", contentType)
@@ -231,7 +233,9 @@ func (c *Client) doCommonText(ctx context.Context, conversationId string, text a
 	}
 
 	req.Header.Set("Accept", "application/json")
-	if c.auth != nil && c.auth.AccessToken != "" {
+	if c.auth != nil && c.auth.NebulaToken != "" {
+		req.Header.Set("ApiKey", c.auth.NebulaToken)
+	} else if c.auth != nil && c.auth.AccessToken != "" {
 		req.Header.Set("Authorization", "Bearer "+c.auth.AccessToken)
 	}
 
@@ -440,7 +444,9 @@ func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, ufRe
 	}
 
 	req.Header.Set("Accept", "application/json")
-	if c.auth != nil && c.auth.AccessToken != "" {
+	if c.auth != nil && c.auth.NebulaToken != "" {
+		req.Header.Set("ApiKey", c.auth.NebulaToken)
+	} else if c.auth != nil && c.auth.AccessToken != "" {
 		req.Header.Set("Authorization", "Bearer "+c.auth.AccessToken)
 	}
 
@@ -622,7 +628,9 @@ func (c *Client) doCommonURL(ctx context.Context, apiURI string, ufRequest async
 	}
 
 	req.Header.Set("Accept", "application/json")
-	if c.auth != nil && c.auth.AccessToken != "" {
+	if c.auth != nil && c.auth.NebulaToken != "" {
+		req.Header.Set("ApiKey", c.auth.NebulaToken)
+	} else if c.auth != nil && c.auth.AccessToken != "" {
 		req.Header.Set("Authorization", "Bearer "+c.auth.AccessToken)
 	}
 
@@ -700,7 +708,9 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 	}
 
 	req.Header.Set("Accept", "application/json")
-	if c.auth != nil && c.auth.AccessToken != "" {
+	if c.auth != nil && c.auth.NebulaToken != "" {
+		req.Header.Set("ApiKey", c.auth.NebulaToken)
+	} else if c.auth != nil && c.auth.AccessToken != "" {
 		req.Header.Set("Authorization", "Bearer "+c.auth.AccessToken)
 	}
 
