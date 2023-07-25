@@ -54,7 +54,7 @@ func (c *Client) AskNebula(ctx context.Context, request nebulainterfaces.AskNebu
 	}
 
 	// request
-	URI := fmt.Sprintf("%s",
+	URI := fmt.Sprintf("%s?%s",
 		version.GetNebulaAsyncAPI(version.AskNebulaURI),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -66,7 +66,7 @@ func (c *Client) AskNebula(ctx context.Context, request nebulainterfaces.AskNebu
 		return nil, err
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "GET", URI, bytes.NewBuffer(jsonStr))
+	req, err := http.NewRequestWithContext(ctx, "POST", URI, bytes.NewBuffer(jsonStr))
 	if err != nil {
 		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
 		klog.V(6).Infof("nebula.AskNebula LEAVE\n")
