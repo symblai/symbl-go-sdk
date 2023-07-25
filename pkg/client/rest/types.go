@@ -13,6 +13,7 @@ import (
 // AccessToken represents a Symbl platform bearer access token with expiry information.
 type AccessToken struct {
 	AccessToken string
+	NebulaToken string
 	ExpiresOn   time.Time
 }
 

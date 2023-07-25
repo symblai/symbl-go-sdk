@@ -18,5 +18,6 @@ type Credentials struct {
 // AuthResp represents a Symbl platform bearer access token with expiry information.
 type AuthResp struct {
 	AccessToken string `json:"accessToken"`
+	NebulaToken string `json:"newbulaToken"`
 	ExpiresIn   int    `json:"expiresIn"`
 }
