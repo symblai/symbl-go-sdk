@@ -17,6 +17,9 @@ import (
 )
 
 func main() {
+	conversationId := "4687270580060160"
+	jobId := "e1568a02-533b-4ecb-b5db-21b18446dbc4"
+
 	symbl.Init(symbl.SybmlInit{
 		LogLevel: symbl.LogLevelTrace,
 	})
@@ -36,18 +39,9 @@ func main() {
 
 	asyncClient := async.New(restClient)
 
-	// post url
-	jobConvo, err := asyncClient.PostFile(ctx, "newPhonecall.mp3")
-	if err == nil {
-		fmt.Printf("JobID: %s, ConversationID: %s\n\n", jobConvo.JobID, jobConvo.ConversationID)
-	} else {
-		fmt.Printf("PostFile failed. Err: %v\n", err)
-		os.Exit(1)
-	}
-
 	// wait
 	completed, err := asyncClient.WaitForJobComplete(ctx, interfaces.WaitForJobStatusOpts{
-		JobId:              jobConvo.JobID,
+		JobId:              jobId,
 		TotalWaitInSeconds: 3600,
 		WaitInSeconds:      30,
 	})
@@ -64,7 +58,7 @@ func main() {
 	getTranscript := interfaces.TranscriptRequest{
 		ContentType: interfaces.TranscriptContentTypeSrt,
 	}
-	transcriptResponse, err := asyncClient.GetTranscript(ctx, jobConvo.ConversationID, getTranscript)
+	transcriptResponse, err := asyncClient.GetTranscript(ctx, conversationId, getTranscript)
 	if err != nil {
 		fmt.Printf("CreateEntity failed. Err: %v\n", err)
 		os.Exit(1)
