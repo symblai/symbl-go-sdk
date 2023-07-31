@@ -7,7 +7,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"os"
 
@@ -19,10 +18,6 @@ import (
 )
 
 func main() {
-	var accessToken string
-	flag.StringVar(&accessToken, "token", "", "Symbl.ai Nebula Token")
-	flag.Parse()
-
 	symbl.Init(symbl.SybmlInit{
 		LogLevel: symbl.LogLevelTrace,
 	})
@@ -34,7 +29,7 @@ func main() {
 	*/
 	ctx := context.Background()
 
-	client, err := symbl.NewNebulaClientWithToken(ctx, accessToken)
+	client, err := symbl.NewNebulaRestClient(ctx)
 	if err == nil {
 		fmt.Println("Succeeded!")
 	} else {

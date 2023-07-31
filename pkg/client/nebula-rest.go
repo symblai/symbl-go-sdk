@@ -6,6 +6,7 @@ package symbl
 
 import (
 	"context"
+	"os"
 	"time"
 
 	klog "k8s.io/klog/v2"
@@ -13,6 +14,21 @@ import (
 	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
 	rest "github.com/dvonthenen/symbl-go-sdk/pkg/client/rest"
 )
+
+// NewNebulaRestClient creates a new Nebula client on the Symbl.ai platform.
+// The client authenticates with the server with SYMBLAI_NEBULA_TOKEN as defined in environment variables.
+func NewNebulaRestClient(ctx context.Context) (*NebulaClient, error) {
+	var nebulaToken string
+	if v := os.Getenv("SYMBLAI_NEBULA_TOKEN"); v != "" {
+		klog.V(4).Info("SYMBLAI_NEBULA_TOKEN found")
+		nebulaToken = v
+	} else {
+		klog.Error("APP_ID not found")
+		return nil, ErrInvalidInput
+	}
+
+	return NewNebulaClientWithToken(ctx, nebulaToken)
+}
 
 // NewNebulaClientWithToken creates a new Nebula client.
 // The client authenticates reusing an already valid Symbl Platform auth token
