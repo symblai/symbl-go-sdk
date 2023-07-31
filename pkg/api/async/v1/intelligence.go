@@ -37,7 +37,7 @@ func (c *Client) GetTopics(ctx context.Context, conversationId string) (*asyncin
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.TopicsURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -88,7 +88,7 @@ func (c *Client) GetQuestions(ctx context.Context, conversationId string) (*asyn
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.QuestionsURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -139,7 +139,7 @@ func (c *Client) GetFollowUps(ctx context.Context, conversationId string) (*asyn
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.FollowUpsURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -190,7 +190,7 @@ func (c *Client) GetEntities(ctx context.Context, conversationId string) (*async
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.EntitiesURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -241,7 +241,7 @@ func (c *Client) GetActionItems(ctx context.Context, conversationId string) (*as
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.ActionItemsURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -292,7 +292,7 @@ func (c *Client) GetMessages(ctx context.Context, conversationId string) (*async
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.MessagesURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -343,7 +343,7 @@ func (c *Client) GetSummary(ctx context.Context, conversationId string) (*asynci
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.SummaryURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -394,7 +394,7 @@ func (c *Client) GetAnalytics(ctx context.Context, conversationId string) (*asyn
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.AnalyticsURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -445,7 +445,7 @@ func (c *Client) GetTracker(ctx context.Context, conversationId string) (*asynci
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.TrackersURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -516,7 +516,7 @@ func (c *Client) GetTranscript(ctx context.Context, conversationId string, reque
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.TranscriptURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)

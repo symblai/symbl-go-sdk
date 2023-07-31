@@ -38,7 +38,7 @@ func (c *Client) GetBookmarks(ctx context.Context, conversationId string) (*asyn
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetManagementAPI(version.BookmarksURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -94,7 +94,7 @@ func (c *Client) GetBookmarkById(ctx context.Context, conversationId, bookmarkId
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetManagementAPI(version.BookmarksByIdURI, conversationId, bookmarkId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -166,7 +166,7 @@ func (c *Client) CreateBookmark(ctx context.Context, conversationId string, requ
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetManagementAPI(version.BookmarksURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -240,7 +240,7 @@ func (c *Client) UpdateBookmark(ctx context.Context, conversationId, bookmarkId 
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetManagementAPI(version.BookmarksByIdURI, conversationId, bookmarkId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -305,7 +305,7 @@ func (c *Client) DeleteBookmark(ctx context.Context, conversationId, bookmarkId 
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetManagementAPI(version.BookmarksByIdURI, conversationId, bookmarkId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -359,7 +359,7 @@ func (c *Client) GetSummaryOfBookmark(ctx context.Context, conversationId, bookm
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.BookmarkSummaryURI, conversationId, bookmarkId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)

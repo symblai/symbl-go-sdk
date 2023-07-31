@@ -99,7 +99,7 @@ func (c *Client) GetTextSummaryUI(ctx context.Context, conversationId string, re
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.SummaryURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -157,7 +157,7 @@ func (c *Client) GetAudioSummaryUI(ctx context.Context, conversationId string, r
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.SummaryURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -215,7 +215,7 @@ func (c *Client) GetVideoSummaryUI(ctx context.Context, conversationId string, r
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.SummaryURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)

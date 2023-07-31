@@ -387,6 +387,7 @@ func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, ufRe
 	if ufRequest.ConfidenceThreshold > 0 {
 		params["confidenceThreshold"] = []string{fmt.Sprintf("%f", ufRequest.ConfidenceThreshold)}
 	}
+	// TODO: channelMetadata... need to see what that looks like as a query string param
 	if ufRequest.DetectPhrases {
 		params["detectPhrases"] = []string{fmt.Sprintf("%t", ufRequest.DetectPhrases)}
 	}
@@ -399,33 +400,33 @@ func (c *Client) doCommonFile(ctx context.Context, apiURI, filePath string, ufRe
 	if len(ufRequest.CustomVocabulary) > 0 {
 		params["customVocabulary"] = ufRequest.CustomVocabulary
 	}
+	if ufRequest.Sentiment {
+		params["mode"] = []string{ufRequest.Mode}
+	}
 	if ufRequest.ParentRefs {
 		params["parentRefs"] = []string{fmt.Sprintf("%t", ufRequest.ParentRefs)}
 	}
 	if ufRequest.Sentiment {
 		params["sentiment"] = []string{fmt.Sprintf("%t", ufRequest.Sentiment)}
 	}
+	if ufRequest.Sentiment {
+		params["enableSeparateRecognitionPerChannel"] = []string{fmt.Sprintf("%t", ufRequest.EnableSeparateRecognitionPerChannel)}
+	}
+	if ufRequest.Sentiment {
+		params["enableSpeakerDiarization"] = []string{fmt.Sprintf("%t", ufRequest.EnableSpeakerDiarization)}
+	}
+	if ufRequest.Sentiment {
+		params["diarizationSpeakerCount"] = []string{fmt.Sprintf("%d", ufRequest.DiarizationSpeakerCount)}
+	}
+	if ufRequest.Sentiment {
+		params["webhookUrl"] = []string{ufRequest.WebhookURL}
+	}
 	// end
 
-	// additional query parameters to URL
-	if parameters, ok := ctx.Value(interfaces.ParametersContext{}).(map[string][]string); ok {
-		for k, vs := range parameters {
-			klog.V(4).Infof("Append URL: %s = %v\n", k, vs)
-			params[k] = vs
-		}
-	}
-
-	URI := version.GetAsyncAPI(apiURI, baseName)
-	if len(params) > 0 {
-		queryString := "?"
-		for k, vs := range params {
-			for _, v := range vs {
-				queryString += fmt.Sprintf("%s=%s", k, v)
-			}
-		}
-		URI = URI + queryString
-	}
-	klog.V(6).Infof("URI: %s\n", URI)
+	URI := fmt.Sprintf("%s%s",
+		version.GetAsyncAPI(apiURI, baseName),
+		c.getQueryParamFromContext(ctx, &params))
+	klog.V(6).Infof("Calling %s\n", URI)
 
 	req, err := http.NewRequestWithContext(ctx, "POST", URI, file)
 	if err != nil {
@@ -575,27 +576,10 @@ func (c *Client) doCommonURL(ctx context.Context, apiURI string, ufRequest async
 		ufRequest.Name = baseName
 	}
 
-	// restore query parameters to URL
-	params := make(map[string][]string, 0)
-
-	if parameters, ok := ctx.Value(interfaces.ParametersContext{}).(map[string][]string); ok {
-		for k, vs := range parameters {
-			klog.V(4).Infof("Append URL: %s = %v\n", k, vs)
-			params[k] = vs
-		}
-	}
-
-	URI := version.GetAsyncAPI(apiURI)
-	if len(params) > 1 {
-		queryString := "?"
-		for k, vs := range params {
-			for _, v := range vs {
-				queryString += fmt.Sprintf("%s=%s", k, v)
-			}
-		}
-		URI = URI + queryString
-	}
-	klog.V(6).Infof("URI: %s\n", URI)
+	URI := fmt.Sprintf("%s%s",
+		version.GetAsyncAPI(apiURI),
+		c.getQueryParamFromContext(ctx, nil))
+	klog.V(6).Infof("Calling %s\n", URI)
 
 	var buf bytes.Buffer
 	err := json.NewEncoder(&buf).Encode(ufRequest)
@@ -766,4 +750,56 @@ func (c *Client) Do(ctx context.Context, req *http.Request, resBody interface{})
 	klog.V(3).Infof("rest.Do Succeeded\n")
 	klog.V(6).Infof("rest.Do LEAVE\n")
 	return nil
+}
+
+func (c *Client) getQueryParamFromContext(ctx context.Context, input *map[string][]string) string {
+	if input == nil {
+		tmp := make(map[string][]string, 0)
+		input = &tmp
+	}
+
+	if parameters, ok := ctx.Value(interfaces.ParametersContext{}).(map[string][]string); ok {
+		for k, vs := range parameters {
+			klog.V(5).Infof("Key/Value: %s = %v\n", k, vs)
+			(*input)[k] = vs
+		}
+	}
+
+	// TODO: replace with https://github.com/google/go-querystring
+	// API differs from how go-querystring works
+	//
+	//	go-querystring : []vals -> key=vals[0]&key=vals[1]
+	//	symbl API: []vals -> key=["$vals[0]", "$vals[1]"]
+	//
+	// need to look into switching that behavior in order to use go-querystring lib
+	if len(*input) > 1 {
+		queryString := "&"
+		for k, vs := range *input {
+			if len(queryString) > 3 {
+				queryString += "&"
+			}
+			if len(vs) == 1 {
+				queryString += fmt.Sprintf("%s=%s", k, vs[0])
+			} else {
+				appended := false
+				for _, v := range vs {
+					if !appended {
+						queryString += fmt.Sprintf("%s=[", k)
+						appended = true
+					} else {
+						queryString += ","
+					}
+					queryString += fmt.Sprintf("%s", v)
+				}
+				if len(vs) > 0 {
+					queryString += "]"
+				}
+			}
+		}
+		klog.V(5).Infof("Final Query String: %s\n", queryString)
+		return queryString
+	}
+
+	klog.V(6).Infof("Final Query String is Empty\n")
+	return ""
 }

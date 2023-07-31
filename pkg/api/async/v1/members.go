@@ -36,7 +36,7 @@ func (c *Client) GetMembers(ctx context.Context, conversationId string) (*asynci
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.MembersURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -87,7 +87,7 @@ func (c *Client) UpdateMember(ctx context.Context, conversationId string, member
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.MemberURI, conversationId, member.ID),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
@@ -143,7 +143,7 @@ func (c *Client) UpdateSpeakers(ctx context.Context, conversationId string, spea
 	}
 
 	// request
-	URI := fmt.Sprintf("%s?%s",
+	URI := fmt.Sprintf("%s%s",
 		version.GetAsyncAPI(version.SpeakersURI, conversationId),
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
