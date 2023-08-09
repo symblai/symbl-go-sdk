@@ -12,7 +12,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/dvonthenen/symbl-go-sdk/pkg/client/simple/debug"
+	"github.com/symblai/symbl-go-sdk/pkg/client/simple/debug"
 )
 
 var (

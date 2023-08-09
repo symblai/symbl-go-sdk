@@ -10,10 +10,10 @@ import (
 	"github.com/google/uuid"
 	klog "k8s.io/klog/v2"
 
-	streaming "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1"
-	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
-	stream "github.com/dvonthenen/symbl-go-sdk/pkg/client/stream"
+	streaming "github.com/symblai/symbl-go-sdk/pkg/api/streaming/v1"
+	version "github.com/symblai/symbl-go-sdk/pkg/api/version"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/client/interfaces"
+	stream "github.com/symblai/symbl-go-sdk/pkg/client/stream"
 )
 
 const (

@@ -15,9 +15,9 @@ import (
 
 	prettyjson "github.com/hokaccha/go-prettyjson"
 
-	streaming "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1"
-	microphone "github.com/dvonthenen/symbl-go-sdk/pkg/audio/microphone"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	streaming "github.com/symblai/symbl-go-sdk/pkg/api/streaming/v1"
+	microphone "github.com/symblai/symbl-go-sdk/pkg/audio/microphone"
+	symbl "github.com/symblai/symbl-go-sdk/pkg/client"
 )
 
 func main() {

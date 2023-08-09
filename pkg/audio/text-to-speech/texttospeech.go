@@ -17,7 +17,7 @@ import (
 	texttospeechpb "google.golang.org/genproto/googleapis/cloud/texttospeech/v1"
 	klog "k8s.io/klog/v2"
 
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/audio/text-to-speech/interfaces"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/audio/text-to-speech/interfaces"
 )
 
 // New creates a new text-to-speech Client

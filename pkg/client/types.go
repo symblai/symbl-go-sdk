@@ -5,11 +5,11 @@
 package symbl
 
 import (
-	rtinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
-	cfginterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
-	rest "github.com/dvonthenen/symbl-go-sdk/pkg/client/rest"
-	stream "github.com/dvonthenen/symbl-go-sdk/pkg/client/stream"
+	rtinterfaces "github.com/symblai/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
+	cfginterfaces "github.com/symblai/symbl-go-sdk/pkg/client/interfaces"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/client/interfaces"
+	rest "github.com/symblai/symbl-go-sdk/pkg/client/rest"
+	stream "github.com/symblai/symbl-go-sdk/pkg/client/stream"
 )
 
 // RestClient extends the pkg/client/rest Client and also keeps tabs on the

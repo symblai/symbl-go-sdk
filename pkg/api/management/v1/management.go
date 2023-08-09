@@ -5,7 +5,7 @@
 package management
 
 import (
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	symbl "github.com/symblai/symbl-go-sdk/pkg/client"
 )
 
 type Management struct {

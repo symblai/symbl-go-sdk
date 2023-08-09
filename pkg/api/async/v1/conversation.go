@@ -14,9 +14,9 @@ import (
 
 	klog "k8s.io/klog/v2"
 
-	asyncinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
-	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
+	asyncinterfaces "github.com/symblai/symbl-go-sdk/pkg/api/async/v1/interfaces"
+	version "github.com/symblai/symbl-go-sdk/pkg/api/version"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/client/interfaces"
 )
 
 // GetConversations obtains a list of conversations for the account

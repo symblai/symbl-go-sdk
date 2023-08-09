@@ -12,11 +12,11 @@ import (
 	"os"
 	"time"
 
-	nebula "github.com/dvonthenen/symbl-go-sdk/pkg/api/nebula/v1"
-	microphone "github.com/dvonthenen/symbl-go-sdk/pkg/audio/microphone"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	nebula "github.com/symblai/symbl-go-sdk/pkg/api/nebula/v1"
+	microphone "github.com/symblai/symbl-go-sdk/pkg/audio/microphone"
+	symbl "github.com/symblai/symbl-go-sdk/pkg/client"
 
-	handler "github.com/dvonthenen/symbl-go-sdk/examples/nebula/realtime/handler"
+	handler "github.com/symblai/symbl-go-sdk/examples/nebula/realtime/handler"
 )
 
 func main() {

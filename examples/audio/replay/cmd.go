@@ -12,9 +12,9 @@ import (
 	"os"
 	"time"
 
-	streaming "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1"
-	replay "github.com/dvonthenen/symbl-go-sdk/pkg/audio/replay"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	streaming "github.com/symblai/symbl-go-sdk/pkg/api/streaming/v1"
+	replay "github.com/symblai/symbl-go-sdk/pkg/audio/replay"
+	symbl "github.com/symblai/symbl-go-sdk/pkg/client"
 )
 
 func main() {

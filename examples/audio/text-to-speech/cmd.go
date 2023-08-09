@@ -12,9 +12,9 @@ import (
 	"os"
 	"time"
 
-	streaming "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1"
-	tts "github.com/dvonthenen/symbl-go-sdk/pkg/audio/text-to-speech"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	streaming "github.com/symblai/symbl-go-sdk/pkg/api/streaming/v1"
+	tts "github.com/symblai/symbl-go-sdk/pkg/audio/text-to-speech"
+	symbl "github.com/symblai/symbl-go-sdk/pkg/client"
 )
 
 func main() {

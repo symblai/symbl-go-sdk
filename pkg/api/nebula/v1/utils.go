@@ -13,7 +13,7 @@ import (
 
 	klog "k8s.io/klog/v2"
 
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/client/interfaces"
 )
 
 func (c *Client) getQueryParamFromContext(ctx context.Context) string {

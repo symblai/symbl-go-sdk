@@ -15,9 +15,9 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
-	asyncinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
-	rest "github.com/dvonthenen/symbl-go-sdk/pkg/client/rest"
+	asyncinterfaces "github.com/symblai/symbl-go-sdk/pkg/api/async/v1/interfaces"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/client/interfaces"
+	rest "github.com/symblai/symbl-go-sdk/pkg/client/rest"
 )
 
 const (

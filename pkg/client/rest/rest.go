@@ -20,11 +20,11 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
-	asyncinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
-	common "github.com/dvonthenen/symbl-go-sdk/pkg/api/common"
-	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
-	simple "github.com/dvonthenen/symbl-go-sdk/pkg/client/simple"
+	asyncinterfaces "github.com/symblai/symbl-go-sdk/pkg/api/async/v1/interfaces"
+	common "github.com/symblai/symbl-go-sdk/pkg/api/common"
+	version "github.com/symblai/symbl-go-sdk/pkg/api/version"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/client/interfaces"
+	simple "github.com/symblai/symbl-go-sdk/pkg/client/simple"
 )
 
 // New allocated a REST client

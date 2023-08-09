@@ -11,8 +11,8 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 
-	async "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	async "github.com/symblai/symbl-go-sdk/pkg/api/async/v1"
+	symbl "github.com/symblai/symbl-go-sdk/pkg/client"
 )
 
 func main() {
