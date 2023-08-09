@@ -6,8 +6,8 @@
 Package provides Go library for extracting Asynchoronous and Real-Time conversation insights
 on the Symbl.ai platform.
 
-GitHub repo: https://github.com/dvonthenen/symbl-go-sdk
-Go SDK Examples: https://github.com/dvonthenen/symbl-go-sdk/tree/main/examples
+GitHub repo: https://github.com/symblai/symbl-go-sdk
+Go SDK Examples: https://github.com/symblai/symbl-go-sdk/tree/main/examples
 
 Symbl Platform API reference: https://docs.symbl.ai/reference
 
@@ -18,6 +18,6 @@ The two main entry points are:
 package sdk
 
 import (
-	_ "github.com/dvonthenen/symbl-go-sdk/cli/cmd"
-	_ "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	_ "github.com/symblai/symbl-go-sdk/cli/cmd"
+	_ "github.com/symblai/symbl-go-sdk/pkg/client"
 )

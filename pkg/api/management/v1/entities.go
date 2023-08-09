@@ -13,9 +13,9 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
-	mgmtinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/management/v1/interfaces"
-	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
+	mgmtinterfaces "github.com/symblai/symbl-go-sdk/pkg/api/management/v1/interfaces"
+	version "github.com/symblai/symbl-go-sdk/pkg/api/version"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/client/interfaces"
 )
 
 func (m *Management) GetEntites(ctx context.Context) (*mgmtinterfaces.EntitiesResponse, error) {

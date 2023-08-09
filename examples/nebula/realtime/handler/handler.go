@@ -8,8 +8,8 @@ import (
 	"context"
 	"fmt"
 
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/nebula/v1/interfaces"
-	sdkinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/api/nebula/v1/interfaces"
+	sdkinterfaces "github.com/symblai/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
 )
 
 func NewHandler(options HandlerOptions) *Handler {

@@ -11,8 +11,8 @@ import (
 
 	klog "k8s.io/klog/v2"
 
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
-	rest "github.com/dvonthenen/symbl-go-sdk/pkg/client/rest"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/client/interfaces"
+	rest "github.com/symblai/symbl-go-sdk/pkg/client/rest"
 )
 
 // NewNebulaRestClient creates a new Nebula client on the Symbl.ai platform.

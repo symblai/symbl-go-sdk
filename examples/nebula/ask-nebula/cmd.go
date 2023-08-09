@@ -12,9 +12,9 @@ import (
 
 	prettyjson "github.com/hokaccha/go-prettyjson"
 
-	nebula "github.com/dvonthenen/symbl-go-sdk/pkg/api/nebula/v1"
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/nebula/v1/interfaces"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	nebula "github.com/symblai/symbl-go-sdk/pkg/api/nebula/v1"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/api/nebula/v1/interfaces"
+	symbl "github.com/symblai/symbl-go-sdk/pkg/client"
 )
 
 func main() {

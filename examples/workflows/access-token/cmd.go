@@ -13,9 +13,9 @@ import (
 
 	prettyjson "github.com/hokaccha/go-prettyjson"
 
-	async "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1"
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	async "github.com/symblai/symbl-go-sdk/pkg/api/async/v1"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/api/async/v1/interfaces"
+	symbl "github.com/symblai/symbl-go-sdk/pkg/client"
 )
 
 func main() {

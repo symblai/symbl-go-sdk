@@ -17,9 +17,9 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 	klog "k8s.io/klog/v2"
 
-	asyncinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
-	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
+	asyncinterfaces "github.com/symblai/symbl-go-sdk/pkg/api/async/v1/interfaces"
+	version "github.com/symblai/symbl-go-sdk/pkg/api/version"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/client/interfaces"
 )
 
 // GetTopics obtains topics in a conversation

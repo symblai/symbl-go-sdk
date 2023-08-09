@@ -14,8 +14,8 @@ import (
 
 	klog "k8s.io/klog/v2"
 
-	microphone "github.com/dvonthenen/symbl-go-sdk/pkg/audio/microphone"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	microphone "github.com/symblai/symbl-go-sdk/pkg/audio/microphone"
+	symbl "github.com/symblai/symbl-go-sdk/pkg/client"
 )
 
 func main() {

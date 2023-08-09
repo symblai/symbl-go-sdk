@@ -7,7 +7,7 @@ package rest
 import (
 	"time"
 
-	simple "github.com/dvonthenen/symbl-go-sdk/pkg/client/simple"
+	simple "github.com/symblai/symbl-go-sdk/pkg/client/simple"
 )
 
 // AccessToken represents a Symbl platform bearer access token with expiry information.

@@ -18,10 +18,10 @@ import (
 
 	klog "k8s.io/klog/v2"
 
-	asyncinterfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/async/v1/interfaces"
-	common "github.com/dvonthenen/symbl-go-sdk/pkg/api/common"
-	version "github.com/dvonthenen/symbl-go-sdk/pkg/api/version"
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/client/interfaces"
+	asyncinterfaces "github.com/symblai/symbl-go-sdk/pkg/api/async/v1/interfaces"
+	common "github.com/symblai/symbl-go-sdk/pkg/api/common"
+	version "github.com/symblai/symbl-go-sdk/pkg/api/version"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/client/interfaces"
 )
 
 // GetSummaryUI obtains a summary ui for conversation

@@ -15,7 +15,7 @@ import (
 	prettyjson "github.com/hokaccha/go-prettyjson"
 	klog "k8s.io/klog/v2"
 
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/api/streaming/v1/interfaces"
 )
 
 // DefaultMessageRouter is a sample implementation that just prints insights to the console

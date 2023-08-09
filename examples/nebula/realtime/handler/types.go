@@ -8,7 +8,7 @@ import (
 	"container/list"
 	"sync"
 
-	nebula "github.com/dvonthenen/symbl-go-sdk/pkg/api/nebula/v1"
+	nebula "github.com/symblai/symbl-go-sdk/pkg/api/nebula/v1"
 )
 
 /*

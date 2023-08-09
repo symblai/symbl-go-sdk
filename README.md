@@ -65,7 +65,7 @@ go run async-file.go
 
 ### For the Streaming API (Real-Time) Example
 
-The Streaming API (Real-Time) example makes use of a [microphone package](https://github.com/dvonthenen/symbl-go-sdk/tree/main/pkg/audio/microphone) contained within the repository. That package makes use of the [PortAudio library](http://www.portaudio.com/) which is a cross-platform open source audio library. If you are on Linux, you can install this library using whatever package manager is available (yum, apt, etc.) on your operating system. If you are on macOS, you can install this library using [brew](https://brew.sh/).
+The Streaming API (Real-Time) example makes use of a [microphone package](https://github.com/symblai/symbl-go-sdk/tree/main/pkg/audio/microphone) contained within the repository. That package makes use of the [PortAudio library](http://www.portaudio.com/) which is a cross-platform open source audio library. If you are on Linux, you can install this library using whatever package manager is available (yum, apt, etc.) on your operating system. If you are on macOS, you can install this library using [brew](https://brew.sh/).
 
 ## Community
 
@@ -83,7 +83,7 @@ This library is released under the [Apache 2.0 License][license]
 [management_api-docs]: https://docs.symbl.ai/docs/management-api
 [symbl_signup]: https://platform.symbl.ai/signup?utm_source=symbl&utm_medium=blog&utm_campaign=devrel&_ga=2.226597914.683175584.1662998385-1953371422.1659457591&_gl=1*mm3foy*_ga*MTk1MzM3MTQyMi4xNjU5NDU3NTkx*_ga_FN4MP7CES4*MTY2MzEwNDQyNi44Mi4xLjE2NjMxMDQ0MzcuMC4wLjA.
 [examples-folder]: examples/
-[issues]: https://github.com/dvonthenen/symbl-go-sdk/issues
-[pulls]: https://github.com/dvonthenen/symbl-go-sdk/pulls
+[issues]: https://github.com/symblai/symbl-go-sdk/issues
+[pulls]: https://github.com/symblai/symbl-go-sdk/pulls
 [license]: LICENSE
 [slack]: https://join.slack.com/t/symbldotai/shared_invite/zt-4sic2s11-D3x496pll8UHSJ89cm78CA

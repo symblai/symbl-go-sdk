@@ -15,4 +15,4 @@ export APP_SECRET=YOUR-APP-SECRET-HERE
 
 ## Installation
 
-The Streaming API (Real-Time) example makes use of a [microphone package](https://github.com/dvonthenen/symbl-go-sdk/tree/main/pkg/audio/microphone) contained within the repository. That package makes use of the [PortAudio library](http://www.portaudio.com/) which is a cross-platform open source audio library. If you are on Linux, you can install this library using whatever package manager is available (yum, apt, etc.) on your operating system. If you are on macOS, you can install this library using [brew](https://brew.sh/).
+The Streaming API (Real-Time) example makes use of a [microphone package](https://github.com/symblai/symbl-go-sdk/tree/main/pkg/audio/microphone) contained within the repository. That package makes use of the [PortAudio library](http://www.portaudio.com/) which is a cross-platform open source audio library. If you are on Linux, you can install this library using whatever package manager is available (yum, apt, etc.) on your operating system. If you are on macOS, you can install this library using [brew](https://brew.sh/).

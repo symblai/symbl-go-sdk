@@ -11,9 +11,9 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 
-	management "github.com/dvonthenen/symbl-go-sdk/pkg/api/management/v1"
-	interfaces "github.com/dvonthenen/symbl-go-sdk/pkg/api/management/v1/interfaces"
-	symbl "github.com/dvonthenen/symbl-go-sdk/pkg/client"
+	management "github.com/symblai/symbl-go-sdk/pkg/api/management/v1"
+	interfaces "github.com/symblai/symbl-go-sdk/pkg/api/management/v1/interfaces"
+	symbl "github.com/symblai/symbl-go-sdk/pkg/client"
 )
 
 func main() {
