@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /*
-	Defines everything that makes up the Async API interface
+Defines everything that makes up the Async API interface
 */
 package interfaces
 
 /*
-	Shared definitions
+Shared definitions
 */
 type User struct {
 	Name   string `json:"name,omitempty" validate:"required"`
@@ -85,9 +85,10 @@ type Entity struct {
 }
 
 /*
-	TODO: When exercising the API and description is blank...
+TODO: When exercising the API and description is blank...
 
-	HTTP Code: 400
+HTTP Code: 400
+
 	{
 		"message":"\"description\" is not allowed to be empty"
 	}
@@ -316,8 +317,25 @@ type TextSummaryRequest struct {
 }
 
 type AudioSummaryRequest struct {
-	Name     string `json:"name,omitempty"`
-	AudioURL string `json:"audioUrl,omitempty"`
+	Name                string `json:"name,omitempty"`
+	AudioURL            string `json:"audioUrl,omitempty"`
+	Logo                string `json:"logo,omitempty"`
+	Favicon             string `json:"favicon,omitempty"`
+	Color               Color  `json:"color,omitempty"`
+	Font                Font   `json:"font,omitempty"`
+	SummaryURLExpiresIn int    `json:"summaryURLExpiresIn,omitempty"`
+	ReadOnly            bool   `json:"readOnly,omitempty"`
+	EnableCustomDomain  bool   `json:"enableCustomDomain,omitempty"`
+}
+
+type Color struct {
+	Background     string `json:"background,omitempty"`
+	TopicsFilter   string `json:"topicsFilter,omitempty"`
+	InsightsFilter string `json:"insightsFilter,omitempty"`
+}
+
+type Font struct {
+	Family string `json:"family"`
 }
 
 type VideoSummaryRequest struct {

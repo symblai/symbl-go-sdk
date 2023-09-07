@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /*
-	Async package for processing Async conversations
+Async package for processing Async conversations
 */
 package async
 
@@ -162,6 +162,7 @@ func (c *Client) GetAudioSummaryUI(ctx context.Context, conversationId string, r
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
 
+	request.Name = "audio-summary"
 	jsonStr, err := json.Marshal(request)
 	if err != nil {
 		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
