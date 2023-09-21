@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /*
-	Defines everything that makes up the Async API interface
+Defines everything that makes up the Async API interface
 */
 package interfaces
 
 /*
-	Shared definitions
+Shared definitions
 */
 type User struct {
 	Name   string `json:"name,omitempty" validate:"required"`
@@ -85,9 +85,10 @@ type Entity struct {
 }
 
 /*
-	TODO: When exercising the API and description is blank...
+TODO: When exercising the API and description is blank...
 
-	HTTP Code: 400
+HTTP Code: 400
+
 	{
 		"message":"\"description\" is not allowed to be empty"
 	}
@@ -278,6 +279,18 @@ type AsyncURLFileRequest struct {
 	DiarizationSpeakerCount             int               `json:"diarizationSpeakerCount,omitempty"`
 	ParentRefs                          bool              `json:"parentRefs,omitempty"`
 	Sentiment                           bool              `json:"sentiment,omitempty"`
+	Features                            Features          `json:"features,omitempty"`
+	ConversationType                    string            `json:"conversationType,omitempty"`
+	Metadata                            Metadata          `json:"metadata,omitempty"`
+}
+
+type Features struct {
+	FeatureList []string `json:"featureList"`
+}
+
+type Metadata struct {
+	SalesStage   string `json:"salesStage"`
+	ProspectName string `json:"prospectName"`
 }
 
 // AsyncTextRequest for PostText to post text to the platform
