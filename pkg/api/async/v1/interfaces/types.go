@@ -458,10 +458,39 @@ type TeardownMessage struct {
 }
 
 // CallScoreResult
-type CallScoreResult struct{}
+type CallScoreResult struct {
+	Score    string              `json:"score"`
+	Summary  string              `json:"summary"`
+	Criteria []CallScoreCriteria `json:"criteria"`
+}
+
+// CallScoreCriteria
+type CallScoreCriteria struct {
+	Name     string            `json:"name"`
+	Score    string            `json:"score"`
+	Summary  string            `json:"summary"`
+	Feedback CallScoreFeedback `json:"feedback"`
+}
+
+// CallScoreFeedback
+type CallScoreFeedback struct {
+	Positive CallScoreFeedbackDetail `json:"positive"`
+	Negative CallScoreFeedbackDetail `json:"negative"`
+}
+
+// CallScoreFeedbackDetail
+type CallScoreFeedbackDetail struct {
+	Summary string `json:"summary"`
+}
 
 // CallScoreStatusResult
-type CallScoreStatusResult struct{}
+type CallScoreStatusResult struct {
+	JobId  string `json:"jobId,omitempty"`
+	Status string `json:"status,omitempty"`
+}
 
 // InsightStatusResult
-type InsightStatusResult struct{}
+type InsightStatusResult struct {
+	JobId  string `json:"jobId,omitempty"`
+	Status string `json:"status,omitempty"`
+}
