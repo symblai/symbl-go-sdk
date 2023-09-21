@@ -494,3 +494,13 @@ type InsightStatusResult struct {
 	JobId  string `json:"jobId,omitempty"`
 	Status string `json:"status,omitempty"`
 }
+
+// InsightsListUiUrlResult
+type InsightsListUiResult struct {
+	Url string `json:"url,omitempty"`
+}
+
+// InsightsDetailsUiResult
+type InsightsDetailsUiResult struct {
+	Url string `json:"url,omitempty"`
+}
