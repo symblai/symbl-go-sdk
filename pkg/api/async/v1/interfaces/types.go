@@ -456,3 +456,12 @@ type InitializationMessage struct {
 type TeardownMessage struct {
 	ConversationID string `json:"conversationId,omitempty"`
 }
+
+// CallScoreResult
+type CallScoreResult struct{}
+
+// CallScoreStatusResult
+type CallScoreStatusResult struct{}
+
+// InsightStatusResult
+type InsightStatusResult struct{}

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /*
-	This package handles the versioning in the API both async and streaming
+This package handles the versioning in the API both async and streaming
 */
 package version
 
@@ -57,6 +57,11 @@ const (
 	MembersURI  string = "https://api.symbl.ai/%s/conversations/%s/members"
 	MemberURI   string = "https://api.symbl.ai/%s/conversations/%s/members/%s"
 	SpeakersURI string = "https://api.symbl.ai/%s/conversations/%s/speakers"
+
+	// Call Score
+	CallScoreStatusURI string = "https://api.symbl.ai/%s/conversations/%s/callscore/status"
+	InsightStatusURI   string = "https://api.symbl.ai/%s/conversations/%s/lm-insights/status"
+	CallScoreURI       string = "https://api.symbl.ai/%s/conversations/%s/callscore"
 )
 
 func GetAsyncAPI(URI string, args ...interface{}) string {
