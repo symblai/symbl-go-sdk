@@ -262,6 +262,15 @@ type ChannelMetadata struct {
 	Channel int     `json:"channel,omitempty"`
 }
 
+type Features struct {
+	FeatureList []string `json:"featureList"`
+}
+
+type Metadata struct {
+	SalesStage   string `json:"salesStage"`
+	ProspectName string `json:"prospectName"`
+}
+
 // AsyncURLFileRequest for PostURL to post a file to the platform
 type AsyncURLFileRequest struct {
 	CustomVocabulary                    []string          `json:"customVocabulary,omitempty"`
@@ -284,15 +293,6 @@ type AsyncURLFileRequest struct {
 	Metadata                            Metadata          `json:"metadata,omitempty"`
 }
 
-type Features struct {
-	FeatureList []string `json:"featureList"`
-}
-
-type Metadata struct {
-	SalesStage   string `json:"salesStage"`
-	ProspectName string `json:"prospectName"`
-}
-
 // AsyncTextRequest for PostText to post text to the platform
 type AsyncTextRequest struct {
 	Messages            []TextMessage `json:"messages,omitempty" validate:"required"`
@@ -302,6 +302,9 @@ type AsyncTextRequest struct {
 	WebhookURL          string        `json:"webhookUrl,omitempty"`
 	DetectEntities      bool          `json:"detectEntities,omitempty"`
 	EnableSummary       bool          `json:"enableSummary,omitempty"`
+	Features            Features      `json:"features,omitempty"`
+	ConversationType    string        `json:"conversationType,omitempty"`
+	Metadata            Metadata      `json:"metadata,omitempty"`
 }
 
 // WaitForJobStatusOpts parameter needed for Wait call
