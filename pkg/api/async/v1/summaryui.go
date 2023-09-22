@@ -259,7 +259,7 @@ func (c *Client) GetVideoSummaryUI(ctx context.Context, conversationId string, r
 }
 
 // GetInsightsListUiURI - Get insights list url for the logged in user
-func (c *Client) GetInsightsListUiURI(ctx context.Context, uri string) (*asyncinterfaces.InsightsListUiResult, error) {
+func (c *Client) GetInsightsListUiURI(ctx context.Context) (*asyncinterfaces.InsightsListUiResult, error) {
 	klog.V(6).Infof("async.GetInsightsListUiUrl ENTER\n")
 
 	// checks
@@ -305,7 +305,7 @@ func (c *Client) GetInsightsListUiURI(ctx context.Context, uri string) (*asyncin
 }
 
 // GetInsightsDetailsUiURI - Get insights details url for the logged in user by conversationId
-func (c *Client) GetInsightsDetailsUiURI(ctx context.Context, conversationId string, uri string) (*asyncinterfaces.InsightsDetailsUiResult, error) {
+func (c *Client) GetInsightsDetailsUiURI(ctx context.Context, conversationId string) (*asyncinterfaces.InsightsDetailsUiResult, error) {
 	klog.V(6).Infof("async.GetInsightsDetailsUiURI ENTER\n")
 
 	// checks
