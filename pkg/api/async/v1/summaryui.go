@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /*
-	Async package for processing Async conversations
+Async package for processing Async conversations
 */
 package async
 
@@ -255,5 +255,102 @@ func (c *Client) GetVideoSummaryUI(ctx context.Context, conversationId string, r
 
 	klog.V(3).Infof("GET VideoSummaryUI succeeded\n")
 	klog.V(6).Infof("async.GetVideoSummaryUI LEAVE\n")
+	return &result, nil
+}
+
+// GetInsightsListUiURI - Get insights list url for the logged in user
+func (c *Client) GetInsightsListUiURI(ctx context.Context) (*asyncinterfaces.InsightsListUiResult, error) {
+	klog.V(6).Infof("async.GetInsightsListUiUrl ENTER\n")
+
+	// checks
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	// request
+	URI := fmt.Sprintf("%s%s",
+		version.GetAsyncAPI(version.InsightsListUiURI),
+		c.getQueryParamFromContext(ctx))
+	klog.V(6).Infof("Calling %s\n", URI)
+
+	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
+	if err != nil {
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(6).Infof("async.GetInsightsListUiUrl LEAVE\n")
+		return nil, err
+	}
+
+	// check the status
+	var result asyncinterfaces.InsightsListUiResult
+
+	err = c.Client.Do(ctx, req, &result)
+
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetInsightsListUiUrl LEAVE\n")
+				return nil, err
+			}
+		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetInsightsListUiUrl LEAVE\n")
+		return nil, err
+	}
+
+	klog.V(3).Infof("GET InsightsListUiUrl succeeded\n")
+	klog.V(6).Infof("async.GetInsightsListUiUrl LEAVE\n")
+	return &result, nil
+}
+
+// GetInsightsDetailsUiURI - Get insights details url for the logged in user by conversationId
+func (c *Client) GetInsightsDetailsUiURI(ctx context.Context, conversationId string) (*asyncinterfaces.InsightsDetailsUiResult, error) {
+	klog.V(6).Infof("async.GetInsightsDetailsUiURI ENTER\n")
+
+	// checks
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	if conversationId == "" {
+		klog.V(1).Infof("conversationId is empty\n")
+		klog.V(6).Infof("async.GetInsightsDetailsUiURI LEAVE\n")
+		return nil, ErrInvalidInput
+	}
+
+	// request
+	URI := fmt.Sprintf("%s%s",
+		version.GetAsyncAPI(version.InsightsDetailsUiURI, conversationId),
+		c.getQueryParamFromContext(ctx))
+	klog.V(6).Infof("Calling %s\n", URI)
+
+	req, err := http.NewRequestWithContext(ctx, "GET", URI, nil)
+	if err != nil {
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
+		klog.V(6).Infof("async.GetInsightsDetailsUiURI LEAVE\n")
+		return nil, err
+	}
+
+	// check the status
+	var result asyncinterfaces.InsightsDetailsUiResult
+
+	err = c.Client.Do(ctx, req, &result)
+
+	if err != nil {
+		if e, ok := err.(*interfaces.StatusError); ok {
+			if e.Resp.StatusCode != http.StatusOK {
+				klog.V(1).Infof("HTTP Code: %v\n", e.Resp.StatusCode)
+				klog.V(6).Infof("async.GetInsightsDetailsUiURI LEAVE\n")
+				return nil, err
+			}
+		}
+
+		klog.V(1).Infof("Platform Supplied Err: %v\n", err)
+		klog.V(6).Infof("async.GetInsightsDetailsUiURI LEAVE\n")
+		return nil, err
+	}
+
+	klog.V(3).Infof("GET InsightsDetailsUiURI succeeded\n")
+	klog.V(6).Infof("async.GetInsightsDetailsUiURI LEAVE\n")
 	return &result, nil
 }

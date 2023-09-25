@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /*
-	Defines everything that makes up the Async API interface
+Defines everything that makes up the Async API interface
 */
 package interfaces
 
 /*
-	Shared definitions
+Shared definitions
 */
 type User struct {
 	Name   string `json:"name,omitempty" validate:"required"`
@@ -85,9 +85,10 @@ type Entity struct {
 }
 
 /*
-	TODO: When exercising the API and description is blank...
+TODO: When exercising the API and description is blank...
 
-	HTTP Code: 400
+HTTP Code: 400
+
 	{
 		"message":"\"description\" is not allowed to be empty"
 	}
@@ -261,6 +262,15 @@ type ChannelMetadata struct {
 	Channel int     `json:"channel,omitempty"`
 }
 
+type Features struct {
+	FeatureList []string `json:"featureList"`
+}
+
+type Metadata struct {
+	SalesStage   string `json:"salesStage"`
+	ProspectName string `json:"prospectName"`
+}
+
 // AsyncURLFileRequest for PostURL to post a file to the platform
 type AsyncURLFileRequest struct {
 	CustomVocabulary                    []string          `json:"customVocabulary,omitempty"`
@@ -278,6 +288,9 @@ type AsyncURLFileRequest struct {
 	DiarizationSpeakerCount             int               `json:"diarizationSpeakerCount,omitempty"`
 	ParentRefs                          bool              `json:"parentRefs,omitempty"`
 	Sentiment                           bool              `json:"sentiment,omitempty"`
+	Features                            Features          `json:"features,omitempty"`
+	ConversationType                    string            `json:"conversationType,omitempty"`
+	Metadata                            Metadata          `json:"metadata,omitempty"`
 }
 
 // AsyncTextRequest for PostText to post text to the platform
@@ -289,6 +302,9 @@ type AsyncTextRequest struct {
 	WebhookURL          string        `json:"webhookUrl,omitempty"`
 	DetectEntities      bool          `json:"detectEntities,omitempty"`
 	EnableSummary       bool          `json:"enableSummary,omitempty"`
+	Features            Features      `json:"features,omitempty"`
+	ConversationType    string        `json:"conversationType,omitempty"`
+	Metadata            Metadata      `json:"metadata,omitempty"`
 }
 
 // WaitForJobStatusOpts parameter needed for Wait call
@@ -439,4 +455,52 @@ type InitializationMessage struct {
 // TeardownMessage is an internal representation for an Async conversation stop event
 type TeardownMessage struct {
 	ConversationID string `json:"conversationId,omitempty"`
+}
+
+// CallScoreResult
+type CallScoreResult struct {
+	Score    string              `json:"score"`
+	Summary  string              `json:"summary"`
+	Criteria []CallScoreCriteria `json:"criteria"`
+}
+
+// CallScoreCriteria
+type CallScoreCriteria struct {
+	Name     string            `json:"name"`
+	Score    string            `json:"score"`
+	Summary  string            `json:"summary"`
+	Feedback CallScoreFeedback `json:"feedback"`
+}
+
+// CallScoreFeedback
+type CallScoreFeedback struct {
+	Positive CallScoreFeedbackDetail `json:"positive"`
+	Negative CallScoreFeedbackDetail `json:"negative"`
+}
+
+// CallScoreFeedbackDetail
+type CallScoreFeedbackDetail struct {
+	Summary string `json:"summary"`
+}
+
+// CallScoreStatusResult
+type CallScoreStatusResult struct {
+	JobId  string `json:"jobId,omitempty"`
+	Status string `json:"status,omitempty"`
+}
+
+// InsightStatusResult
+type InsightStatusResult struct {
+	JobId  string `json:"jobId,omitempty"`
+	Status string `json:"status,omitempty"`
+}
+
+// InsightsListUiUrlResult
+type InsightsListUiResult struct {
+	Url string `json:"url,omitempty"`
+}
+
+// InsightsDetailsUiResult
+type InsightsDetailsUiResult struct {
+	Url string `json:"url,omitempty"`
 }
