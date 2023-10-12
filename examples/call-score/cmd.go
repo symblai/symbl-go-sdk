@@ -101,6 +101,16 @@ func main() {
 		// os.Exit(1)
 	}
 
+	// Update Media URL for Insights Details UI
+	newMediaUrl := "https://publicly-accessible-audio-url.mp3"
+	err = asyncClient.UpdateMediaUrlForInsightsDetailsUI(ctx, conversationJob.ConversationID, newMediaUrl)
+	if err == nil {
+		fmt.Printf("Media URL for Insights Details UI updated successfully.\n")
+	} else {
+		fmt.Printf("Update Media URL for Insights Details UI failed. Err: %v\n", err)
+		// os.Exit(1)
+	}
+
 	fmt.Printf("\n\n")
 	fmt.Printf("\n\n")
 
