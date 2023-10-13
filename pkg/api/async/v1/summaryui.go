@@ -357,61 +357,42 @@ func (c *Client) GetInsightsDetailsUiURI(ctx context.Context, conversationId str
 
 // UpdateMediaUrlForInsightsDetailsUI updates the audio/video URL that will be played in Insights UI
 func (c *Client) UpdateMediaUrlForInsightsDetailsUI(ctx context.Context, conversationId string, mediaUrl string) error {
-    klog.V(6).Infof("async.UpdateMediaUrlForInsightsDetailsUI ENTER\n")
+	klog.V(6).Info("async.UpdateMediaUrlForInsightsDetailsUI ENTER")
+	defer klog.V(6).Info("async.UpdateMediaUrlForInsightsDetailsUI LEAVE")
 
-    // checks
-    if ctx == nil {
-        ctx = context.Background()
-    }
-    if conversationId == "" {
-        klog.V(1).Infof("conversationId is empty\n")
-        klog.V(6).Infof("async.UpdateMediaUrlForInsightsDetailsUI LEAVE\n")
-        return ErrInvalidInput
-    }
-    if mediaUrl == "" {
-        klog.V(1).Infof("mediaUrl is empty\n")
-        klog.V(6).Infof("async.UpdateMediaUrlForInsightsDetailsUI LEAVE\n")
-        return ErrInvalidInput
-    }
+	// checks
+	if conversationId == "" || mediaUrl == "" {
+		klog.V(1).Info("conversationId or mediaUrl is empty")
+		return ErrInvalidInput
+	}
 
-    // request
-    URI := fmt.Sprintf("%s%s",
-        version.GetAsyncAPI(version.UpdateMediaURI, conversationId), // You'll need to define the endpoint in your version package
-        c.getQueryParamFromContext(ctx))
-    klog.V(6).Infof("Calling %s\n", URI)
+	// request
+	URI := fmt.Sprintf("%s%s",
+		version.GetAsyncAPI(version.UpdateMediaURI, conversationId),
+		c.getQueryParamFromContext(ctx))
+	klog.V(6).Infof("Calling %s", URI)
 
-    requestBody, err := json.Marshal(map[string]string{
-        "url": mediaUrl,
-    })
-    if err != nil {
-        klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)
-        klog.V(6).Infof("async.UpdateMediaUrlForInsightsDetailsUI LEAVE\n")
-        return err
-    }
+	requestBody, err := json.Marshal(map[string]string{
+		"url": mediaUrl,
+	})
+	if err != nil {
+		klog.V(1).Infof("json.Marshal failed. Err: %v", err)
+		return err
+	}
 
-    req, err := http.NewRequestWithContext(ctx, "PUT", URI, bytes.NewBuffer(requestBody))
-    if err != nil {
-        klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v\n", err)
-        klog.V(6).Infof("async.UpdateMediaUrlForInsightsDetailsUI LEAVE\n")
-        return err
-    }
+	req, err := http.NewRequestWithContext(ctx, "PUT", URI, bytes.NewBuffer(requestBody))
+	if err != nil {
+		klog.V(1).Infof("http.NewRequestWithContext failed. Err: %v", err)
+		return err
+	}
 
-    // execute request
-    resp, err := c.Client.Do(req)
-    if err != nil {
-        klog.V(1).Infof("Request execution failed. Err: %v\n", err)
-        klog.V(6).Infof("async.UpdateMediaUrlForInsightsDetailsUI LEAVE\n")
-        return err
-    }
-    defer resp.Body.Close()
+	// execute request
+	err = c.Do(ctx, req, nil) // we don't need the response body
+	if err != nil {
+		klog.V(1).Infof("Request execution failed. Err: %v", err)
+		return err
+	}
 
-    if resp.StatusCode != http.StatusOK {
-        klog.V(1).Infof("HTTP Code: %v\n", resp.StatusCode)
-        klog.V(6).Infof("async.UpdateMediaUrlForInsightsDetailsUI LEAVE\n")
-        return fmt.Errorf("HTTP Code: %v", resp.StatusCode)
-    }
-
-    klog.V(3).Infof("Update MediaUrl For InsightsUI succeeded\n")
-    klog.V(6).Infof("async.UpdateMediaUrlForInsightsDetailsUI LEAVE\n")
-    return nil
+	klog.V(3).Info("Update MediaUrl For InsightsUI succeeded")
+	return nil
 }

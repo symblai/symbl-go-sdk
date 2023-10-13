@@ -52,7 +52,7 @@ const (
 	// Insights Ui
 	InsightsListUiURI    string = "https://api.symbl.ai/%s/conversations/experiences/insights/list?includeCallScore=true"
 	InsightsDetailsUiURI string = "https://api.symbl.ai/%s/conversations/experiences/insights/details/%s?includeCallScore=true"
-	UpdateMediaURI string = "https://api.symbl.ai/%s/conversations/%s/experience/url"
+	UpdateMediaURI       string = "https://api.symbl.ai/%s/conversations/%s/experiences/url"
 
 	// Conversations
 	ConversationsURI string = "https://api.symbl.ai/%s/conversations"
