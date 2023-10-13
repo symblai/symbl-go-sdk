@@ -1,5 +1,4 @@
 // Copyright 2022 Symbl.ai SDK contributors. All Rights Reserved.
-// Use of this source code is governed by an Apache-2.0 license that can be found in the LICENSE file.
 // SPDX-License-Identifier: Apache-2.0
 
 package main
@@ -7,112 +6,87 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
+	"log"
 	"time"
 
 	async "github.com/symblai/symbl-go-sdk/pkg/api/async/v1"
-	interfaces "github.com/symblai/symbl-go-sdk/pkg/api/async/v1/interfaces"
 	symbl "github.com/symblai/symbl-go-sdk/pkg/client"
 )
 
+const (
+	maxRetries     = 20                                          // Maximum number of retries to check for call score status
+	retryInterval  = time.Minute                                 // Time to wait before next retry
+	conversationID = "5740965687197696"                          // A conversation ID
+	newMediaURL    = "https://publicly-accessible-audio-url.mp3" // New media URL for updating insights details
+)
+
 func main() {
+	// Initialize the Symbl client
 	symbl.Init(symbl.SybmlInit{
 		LogLevel: symbl.LogLevelTrace,
 	})
 
 	ctx := context.Background()
 
+	// Create a new REST client
 	restClient, err := symbl.NewRestClient(ctx)
-	if err == nil {
-		fmt.Println("Succeeded!\n\n")
-	} else {
-		fmt.Printf("New failed. Err: %v\n", err)
-		os.Exit(1)
+	if err != nil {
+		log.Fatalf("Failed to create REST client. Error: %v\n", err)
 	}
+	fmt.Println("REST client created successfully.")
 
 	asyncClient := async.New(restClient)
-	ufRequest := interfaces.AsyncURLFileRequest{
-		DetectEntities:           true,
-		EnableSpeakerDiarization: true,
-		DiarizationSpeakerCount:  2,
-		ParentRefs:               true,
-		Sentiment:                true,
-		Mode:                     "default",
-		Features: interfaces.Features{
-			FeatureList: []string{"insights", "callScore"},
-		},
-		ConversationType: "sales",
-		Metadata: interfaces.Metadata{
-			SalesStage:   "general",
-			ProspectName: "John Doe",
-		},
-	}
 
-	// Process Call Score
-	conversationJob, err := asyncClient.PostFileWithOptions(ctx, "newPhonecall.mp3", ufRequest)
-	if err == nil {
-		fmt.Printf("JobID: %s, ConversationID: %s\n\n", conversationJob.JobID, conversationJob.ConversationID)
-	} else {
-		fmt.Printf("PostFile failed. Err: %v\n", err)
-		os.Exit(1)
-	}
+	// Check the status of CallScore and wait until it's completed
+	waitForCallScoreCompletion(ctx, asyncClient)
 
-	// Wait for Processing (Wait for 20 minutes, increase if needed)
-	for i := 0; i < 20; i++ {
-		result, err := asyncClient.GetCallScoreStatusById(ctx, conversationJob.ConversationID)
-		fmt.Printf("Current status (attempt %d): %s", i+1, result.Status)
+	// Subsequent operations and their respective log messages
+	performAsyncClientOperations(ctx, asyncClient)
+}
 
-		if err == nil && result.Status == "completed" {
-			break
-		}
-
+// waitForCallScoreCompletion waits for the CallScoreStatus to be completed, retrying for defined times and interval.
+func waitForCallScoreCompletion(ctx context.Context, asyncClient *async.Client) {
+	for attempt := 1; attempt <= maxRetries; attempt++ {
+		result, err := asyncClient.GetCallScoreStatusById(ctx, conversationID)
 		if err != nil {
-			fmt.Printf("Error fetching status (attempt %d): %v", i+1, err)
+			log.Printf("Error fetching status (attempt %d): %v\n", attempt, err)
+		} else {
+			fmt.Printf("Current status (attempt %d): %s\n", attempt, result.Status)
+			if result.Status == "completed" {
+				fmt.Println("CallScoreStatus is completed!")
+				return
+			}
 		}
-
-		// hardcoded retryDelay
-		time.Sleep(time.Minute)
+		time.Sleep(retryInterval)
 	}
+	log.Println("CallScoreStatus did not complete within the maximum retry limit.")
+}
 
-	// Fetch the CallScore
-	callScore, err := asyncClient.GetCallScore(ctx, conversationJob.ConversationID)
-	if err == nil {
+// performAsyncClientOperations performs various operations using the asyncClient and logs their outcomes.
+func performAsyncClientOperations(ctx context.Context, asyncClient *async.Client) {
+	if callScore, err := asyncClient.GetCallScore(ctx, conversationID); err != nil {
+		log.Printf("Fetch Call Score failed. Error: %v\n", err)
+	} else {
 		fmt.Printf("Call Score: %v\n", callScore)
-	} else {
-		fmt.Printf("Fetch Call Score failed. Err: %v\n", err)
-		// os.Exit(1)
 	}
 
-	// Fetch Insights List UI URL
-	insightsListURL, err := asyncClient.GetInsightsListUiURI(ctx)
-	if err == nil {
+	if insightsListURL, err := asyncClient.GetInsightsListUiURI(ctx); err != nil {
+		log.Printf("Fetch Insights List URL failed. Error: %v\n", err)
+	} else {
 		fmt.Printf("Insights List URL: %s\n", insightsListURL)
-	} else {
-		fmt.Printf("Fetch Insights List URL failed. Err: %v\n", err)
-		// os.Exit(1)
 	}
 
-	// Fetch Insights Details UI URL
-	insightsDetailsURL, err := asyncClient.GetInsightsDetailsUiURI(ctx, conversationJob.ConversationID)
-	if err == nil {
+	if insightsDetailsURL, err := asyncClient.GetInsightsDetailsUiURI(ctx, conversationID); err != nil {
+		log.Printf("Fetch Insights Details URL failed. Error: %v\n", err)
+	} else {
 		fmt.Printf("Insights Details URL: %s\n", insightsDetailsURL)
-	} else {
-		fmt.Printf("Fetch Insights Details URL failed. Err: %v\n", err)
-		// os.Exit(1)
 	}
 
-	// Update Media URL for Insights Details UI
-	newMediaUrl := "https://publicly-accessible-audio-url.mp3"
-	err = asyncClient.UpdateMediaUrlForInsightsDetailsUI(ctx, conversationJob.ConversationID, newMediaUrl)
-	if err == nil {
-		fmt.Printf("Media URL for Insights Details UI updated successfully.\n")
+	if err := asyncClient.UpdateMediaUrlForInsightsDetailsUI(ctx, conversationID, newMediaURL); err != nil {
+		log.Printf("Update Media URL for Insights Details UI failed. Error: %v\n", err)
 	} else {
-		fmt.Printf("Update Media URL for Insights Details UI failed. Err: %v\n", err)
-		// os.Exit(1)
+		fmt.Println("Media URL for Insights Details UI updated successfully.")
 	}
 
-	fmt.Printf("\n\n")
-	fmt.Printf("\n\n")
-
-	fmt.Printf("Succeeded")
+	fmt.Println("Operations Completed Successfully.")
 }
