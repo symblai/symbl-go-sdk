@@ -467,7 +467,7 @@ type CallScoreResult struct {
 // CallScoreCriteria
 type CallScoreCriteria struct {
 	Name     string            `json:"name"`
-	Score    string            `json:"score"`
+	Score    float64           `json:"score"`
 	Summary  string            `json:"summary"`
 	Feedback CallScoreFeedback `json:"feedback"`
 }
