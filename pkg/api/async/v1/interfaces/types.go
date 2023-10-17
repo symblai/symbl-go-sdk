@@ -459,7 +459,7 @@ type TeardownMessage struct {
 
 // CallScoreResult
 type CallScoreResult struct {
-	Score    string              `json:"score"`
+	Score    float64             `json:"score"`
 	Summary  string              `json:"summary"`
 	Criteria []CallScoreCriteria `json:"criteria"`
 }
