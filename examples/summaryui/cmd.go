@@ -75,10 +75,34 @@ func main() {
 		fmt.Printf("prettyjson.Marshal failed. Err: %v\n", err)
 		os.Exit(1)
 	}
-
 	fmt.Printf("\n\n")
 	fmt.Printf("%s\n", prettyJson)
 	fmt.Printf("\n\n")
+
+	// Define an AudioSummaryRequest object with some example values.
+	audioSummaryUICustomizationRequest := interfaces.AudioSummaryRequest{
+		Name:     "audio-summary",
+		AudioURL: "https://symbltestdata.s3.us-east-2.amazonaws.com/newPhonecall.mp3",
+		Logo:     "https://avatars.githubusercontent.com/u/61848556?s=200&v=4",
+		Favicon:  "https://raw.githubusercontent.com/warpspeed/php-slim-sample/master/public/favicon.ico",
+		Color: interfaces.Color{
+			Background:     "#FFFFFF",
+			TopicsFilter:   "#0000FF",
+			InsightsFilter: "#FF0000",
+		},
+		Font: interfaces.Font{
+			Family: "Arial",
+		},
+		SummaryURLExpiresIn: 3600,
+		ReadOnly:            false,
+		EnableCustomDomain:  false,
+	}
+	audioSummaryResult, err := asyncClient.GetAudioSummaryUI(ctx, jobConvo.ConversationID, audioSummaryUICustomizationRequest)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+	fmt.Printf("Audio Summary Result: %+v\n", audioSummaryResult)
 
 	fmt.Printf("Succeeded")
 }

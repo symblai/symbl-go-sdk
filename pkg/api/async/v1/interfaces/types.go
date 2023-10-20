@@ -263,12 +263,12 @@ type ChannelMetadata struct {
 }
 
 type Features struct {
-	FeatureList []string `json:"featureList"`
+	FeatureList []string `json:"featureList,omitempty"`
 }
 
 type Metadata struct {
-	SalesStage   string `json:"salesStage"`
-	ProspectName string `json:"prospectName"`
+	SalesStage   string `json:"salesStage,omitempty"`
+	ProspectName string `json:"prospectName,omitempty"`
 }
 
 // AsyncURLFileRequest for PostURL to post a file to the platform
