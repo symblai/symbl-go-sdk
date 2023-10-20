@@ -104,6 +104,7 @@ func (c *Client) GetTextSummaryUI(ctx context.Context, conversationId string, re
 		c.getQueryParamFromContext(ctx))
 	klog.V(6).Infof("Calling %s\n", URI)
 
+	request.Name = "audio-summary"
 	jsonStr, err := json.Marshal(request)
 	if err != nil {
 		klog.V(1).Infof("json.Marshal failed. Err: %v\n", err)

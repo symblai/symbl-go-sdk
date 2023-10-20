@@ -332,8 +332,25 @@ type TextSummaryRequest struct {
 }
 
 type AudioSummaryRequest struct {
-	Name     string `json:"name,omitempty"`
-	AudioURL string `json:"audioUrl,omitempty"`
+	Name                string `json:"name,omitempty"`
+	AudioURL            string `json:"audioUrl,omitempty"`
+	Logo                string `json:"logo,omitempty"`
+	Favicon             string `json:"favicon,omitempty"`
+	Color               Color  `json:"color,omitempty"`
+	Font                Font   `json:"font,omitempty"`
+	SummaryURLExpiresIn int    `json:"summaryURLExpiresIn,omitempty"`
+	ReadOnly            bool   `json:"readOnly,omitempty"`
+	EnableCustomDomain  bool   `json:"enableCustomDomain,omitempty"`
+}
+
+type Color struct {
+	Background     string `json:"background,omitempty"`
+	TopicsFilter   string `json:"topicsFilter,omitempty"`
+	InsightsFilter string `json:"insightsFilter,omitempty"`
+}
+
+type Font struct {
+	Family string `json:"family,omitempty"`
 }
 
 type VideoSummaryRequest struct {
