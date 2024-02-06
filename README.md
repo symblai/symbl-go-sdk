@@ -1,8 +1,9 @@
 # Symbl.ai Go SDK
 
-The Symbl.ai Go SDK provides a convenient method to work with our APIs, from applications written in Go. A prescribed or opinionated set of interfaces, classes, and functions help you quickly bootstrap to using the Symbl.ai platform and unlock conversation intelligence. 
+The Symbl.ai Go SDK provides a convenient method to work with our APIs, from applications written in Go. A prescribed or opinionated set of interfaces, classes, and functions help you quickly bootstrap to using the Symbl.ai platform and unlock conversation intelligence.
 
 We are working diligently to support every aspect of Symbl.ai APIs. Currently, we support the following:
+
 - [Streaming API][streaming_api-docs]:
   - WebSocket enabled
   - Easy to implement real-time language understanding
@@ -17,12 +18,13 @@ We are working diligently to support every aspect of Symbl.ai APIs. Currently, w
   - Summary
   - Analytics
   - Trackers
+  - Call Score
 - [Management APIs][management_api-docs]:
   - Entities: Get, Create, Delete
   - Bookmarks: Get, Create, Delete
   - Trackers: Get, Create, Delete
 
-> **_IMPORTANT:_** This project is in pre-release status. Since this is the first release, we reserve the right to make breaking API changes at this time. 
+> **_IMPORTANT:_** This project is in pre-release status. Since this is the first release, we reserve the right to make breaking API changes at this time.
 
 ## Documentation
 
@@ -74,7 +76,6 @@ If you have any questions, feel free to contact us at devrelations@symbl.ai or t
 This SDK is actively developed, and we love to hear from you! Please feel free to [create an issue][issues] or [open a pull request][pulls] with your questions, comments, suggestions, and feedback. If you liked our integration guide, please star our repo!
 
 This library is released under the [Apache 2.0 License][license]
-
 
 [api-keys]: https://platform.symbl.ai/#/login
 [symbl-docs]: https://docs.symbl.ai/docs
