@@ -8,6 +8,7 @@ We are working diligently to support every aspect of Symbl.ai APIs. Currently, w
   - WebSocket enabled
   - Easy to implement real-time language understanding
   - For local voice capture, provides an easy-to-understand library to enable microphone audio as an input source
+
 - [Asynchronous APIs][async_api-docs]:
   - Transcription/Messages
   - Dynamic Topics
@@ -18,7 +19,9 @@ We are working diligently to support every aspect of Symbl.ai APIs. Currently, w
   - Summary
   - Analytics
   - Trackers
-  - Call Score
+  - (Applied AI) [Call Score][call_score_api-docs]
+  - (Applied AI) [Insights UI][insights_ui-docs]
+
 - [Management APIs][management_api-docs]:
   - Entities: Get, Create, Delete
   - Bookmarks: Get, Create, Delete
@@ -82,6 +85,8 @@ This library is released under the [Apache 2.0 License][license]
 [streaming_api-docs]: https://docs.symbl.ai/docs/streaming-api
 [async_api-docs]: https://docs.symbl.ai/docs/async-api
 [management_api-docs]: https://docs.symbl.ai/docs/management-api
+[call_score_api-docs]: https://docs.symbl.ai/docs/call-score
+[insights_ui-docs]: https://docs.symbl.ai/docs/insights-ui
 [symbl_signup]: https://platform.symbl.ai/signup?utm_source=symbl&utm_medium=blog&utm_campaign=devrel&_ga=2.226597914.683175584.1662998385-1953371422.1659457591&_gl=1*mm3foy*_ga*MTk1MzM3MTQyMi4xNjU5NDU3NTkx*_ga_FN4MP7CES4*MTY2MzEwNDQyNi44Mi4xLjE2NjMxMDQ0MzcuMC4wLjA.
 [examples-folder]: examples/
 [issues]: https://github.com/symblai/symbl-go-sdk/issues
