@@ -47,7 +47,7 @@ const (
 	SummariesOfBookmarksURI string = "https://api.symbl.ai/%s/conversations/%s/bookmarks-summary"
 
 	// summary ui
-	SummaryURI string = "https://api.symbl.ai/%s/conversations/%s/experiences"
+	SummaryURI string = "https://api.symbl.ai/%s/conversations/%s/summary"
 
 	// Insights Ui
 	InsightsListUiURI    string = "https://api.symbl.ai/%s/conversations/experiences/insights/list?includeCallScore=true"
