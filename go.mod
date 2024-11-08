@@ -1,4 +1,4 @@
-module github.com/bcorrigeux/symbl-go-sdk
+module github.com/symblai/symbl-go-sdk
 
 go 1.18
 
